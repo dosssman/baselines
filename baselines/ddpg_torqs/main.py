@@ -46,7 +46,7 @@ def run(env_id, seed, noise_type, layer_norm, evaluation, **kwargs):
 		race_config_path=race_config_path, rendering=rendering,
 		lap_limiter = lap_limiter)
 
-    env = bench.Monitor(env, logger.get_dir() and os.path.join(logger.get_dir(), str(rank)))
+    # env = bench.Monitor(env, logger.get_dir() and os.path.join(logger.get_dir(), str(rank)))
 
     # TODO: Eval env incocation will kill Torcs bad
     # Either enable parallel torcs apps or kill training env and instantiate
