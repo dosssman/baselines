@@ -51,8 +51,18 @@ def run(env_id, seed, noise_type, layer_norm, evaluation, **kwargs):
     # TODO: Eval env incocation will kill Torcs bad
     # Either enable parallel torcs apps or kill training env and instantiate
     # eval env, then kill it again, and so on
+
+    # Original
+    # if evaluation and rank==0:
+    #     eval_env = gym.make(env_id)
+    #     eval_env = bench.Monitor(eval_env, os.path.join(logger.get_dir(), 'gym_eval'))
+    #     env = bench.Monitor(env, None)
+    # else:
+    #     eval_env = None
+
+    # Torcs Custom: the same env is used for eval ... fingercrossed
     if evaluation and rank==0:
-        eval_env = gym.make(env_id)
+        eval_env = env
         eval_env = bench.Monitor(eval_env, os.path.join(logger.get_dir(), 'gym_eval'))
         env = bench.Monitor(env, None)
     else:
@@ -112,7 +122,7 @@ def parse_args():
     boolean_flag(parser, 'layer-norm', default=True)
     boolean_flag(parser, 'render', default=False)
     boolean_flag(parser, 'normalize-returns', default=False)
-    boolean_flag(parser, 'normalize-observations', default=True)
+    boolean_flag(parser, 'normalize-observations', default=False)
     parser.add_argument('--seed', help='RNG seed', type=int, default=0)
     parser.add_argument('--critic-l2-reg', type=float, default=1e-2)
     parser.add_argument('--batch-size', type=int, default=64)  # per MPI worker
@@ -129,7 +139,7 @@ def parse_args():
     parser.add_argument('--nb-rollout-steps', type=int, default=100)  # per epoch cycle and MPI worker
     parser.add_argument('--noise-type', type=str, default='adaptive-param_0.2')  # choices are adaptive-param_xx, ou_xx, normal_xx, none
     parser.add_argument('--num-timesteps', type=int, default=None)
-    boolean_flag(parser, 'evaluation', default=False)
+    boolean_flag(parser, 'evaluation', default=True)
     args = parser.parse_args()
     # we don't directly specify timesteps for this script, so make sure that if we do specify them
     # they agree with the other parameters

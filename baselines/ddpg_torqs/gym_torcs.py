@@ -106,6 +106,7 @@ class TorcsEnv( gym.Env):
 
             # Baselines compatibility support, also
             # Specs found here: http://xed.ch/help/torcs.html
+            # Also used for automatic observation normalizations in baselines
             high = np.hstack(( math.pi, # Angle
                                np.array( [ 1.0 for _ in range( 19)]), # track
                                np.inf, # trackPos
