@@ -312,6 +312,9 @@ class TorcsEnv( gym.Env):
                 self.torcs_process_id = None
             #Sad life to be a process
 
+    def close(self):
+        self.end()
+
     def get_obs(self):
         # Original:
         # return self.observation
