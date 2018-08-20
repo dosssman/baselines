@@ -169,7 +169,7 @@ def train(env, nb_epochs, nb_epoch_cycles, render_eval, reward_scale, render, pa
                 combined_stats['eval/Q'] = eval_qs
                 combined_stats['eval/episodes'] = len(eval_episode_rewards)
             def as_scalar(x):
-                if isinstance(x, np.ndarray):
+                if isinstance(x, np.array):
                     assert x.size == 1
                     return x[0]
                 elif np.isscalar(x):
