@@ -1,6 +1,7 @@
 import argparse
-import time
+import time, datetime
 import os
+import os.path as osp
 import logging
 from baselines import logger, bench
 from baselines.common.misc_util import (
@@ -150,6 +151,18 @@ def parse_args():
 if __name__ == '__main__':
     args = parse_args()
     if MPI.COMM_WORLD.Get_rank() == 0:
-        logger.configure()
+        #Custom logging method to separate DDPG and GAIL for instance
+        dir = os.getenv('OPENAI_GEN_LOGDIR')
+        print( "Getnv", dir)
+        if dir is None:
+            dir = osp.join(tempfile.gettempdir(),
+                datetime.datetime.now().strftime("openai-%Y-%m-%d-%H-%M-%S-%f"))
+        else:
+            dir = osp.join( dir, datetime.datetime.now().strftime("openai-ddpgtorcs-%Y-%m-%d-%H-%M-%S-%f"))
+
+        assert isinstance(dir, str)
+        os.makedirs(dir, exist_ok=True)
+        logger.configure( dir)
+
     # Run actual script.
     run(**args)

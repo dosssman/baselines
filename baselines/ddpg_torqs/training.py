@@ -1,4 +1,5 @@
 import os
+import os.path as osp
 import time
 from collections import deque
 import pickle
@@ -34,6 +35,13 @@ def train(env, nb_epochs, nb_epoch_cycles, render_eval, reward_scale, render, pa
         saver = tf.train.Saver()
     else:
         saver = None
+
+
+    # Save dirs for weights
+    save_folder = osp.join( logger.get_dir(),
+        "model_data")
+    assert isinstance(save_folder, str)
+    os.makedirs(save_folder, exist_ok=True)
 
     step = 0
     episode = 0
@@ -80,8 +88,9 @@ def train(env, nb_epochs, nb_epoch_cycles, render_eval, reward_scale, render, pa
                     assert max_action.shape == action.shape
                     new_obs, r, done, info = env.step(max_action * action)  # scale for execution in env (as far as DDPG is concerned, every action is in [-1, 1])
                     t += 1
-                    if rank == 0 and render:
-                        env.render()
+                    # Boy ... you don't want to do that with Torcs
+                    # if rank == 0 and render:
+                    #     env.render()
                     episode_reward += r
                     episode_step += 1
 
@@ -198,3 +207,10 @@ def train(env, nb_epochs, nb_epoch_cycles, render_eval, reward_scale, render, pa
                 if eval_env and hasattr(eval_env, 'get_state'):
                     with open(os.path.join(logdir, 'eval_env_state.pkl'), 'wb') as f:
                         pickle.dump(eval_env.get_state(), f)
+
+            # Gen file name for epoch and save weights
+            save_name = "epoch_%d.ckpt" % ( epoch)
+            save_filename = osp.join( save_folder, save_name)
+            print( "Saving weights to %s" % save_filename)
+
+            saver.save( sess, save_filename)
