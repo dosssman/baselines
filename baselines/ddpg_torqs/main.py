@@ -16,6 +16,7 @@ from baselines.ddpg_torqs.noise import *
 import gym
 import tensorflow as tf
 from mpi4py import MPI
+import tempfile
 
 # dosssman
 from baselines.ddpg_torqs.gym_torcs import TorcsEnv
