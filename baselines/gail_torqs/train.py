@@ -3,6 +3,7 @@ Disclaimer: this code is highly based on trpo_mpi at @openai/baselines and @open
 '''
 
 import argparse
+import os
 import os.path as osp
 import logging
 from mpi4py import MPI
@@ -19,6 +20,7 @@ from baselines import logger
 from baselines.gail.dataset.mujoco_dset import Mujoco_Dset
 from baselines.gail.adversary import TransitionClassifier
 
+from baselines.gail_torqs.gym_torcs import TorcsEnv
 
 def argsparser():
     parser = argparse.ArgumentParser("Tensorflow Implementation of GAIL")
@@ -72,12 +74,30 @@ def main(args):
     U.make_session(num_cpu=1).__enter__()
     set_global_seeds(args.seed)
 
-    # TODO: Hook up Gym Torcs
-    env = gym.make(args.env_id)
+    # XXX: Hook up Gym Torcs
+    vision = False
+    throttle = True
+    gear_change = False
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+        "/raceconfig/agent_practice.xml"
+    rendering = False
+
+    # TODO: Restrict to 3 laps when evaling ?
+    lap_limiter = 4
+
+    # env = gym.make(args.env_id)
+    env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
+		race_config_path=race_config_path, rendering=rendering,
+		lap_limiter = lap_limiter)
 
     def policy_fn(name, ob_space, ac_space, reuse=False):
         return mlp_policy.MlpPolicy(name=name, ob_space=ob_space, ac_space=ac_space,
                                     reuse=reuse, hid_size=args.policy_hidden_size, num_hid_layers=2)
+
+    # TODO: Intuitive log folder, probably save weihts there too
+    print( logger.get_dir())
+    input()
+
     env = bench.Monitor(env, logger.get_dir() and
                         osp.join(logger.get_dir(), "monitor.json"))
     env.seed(args.seed)
