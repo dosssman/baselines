@@ -12,6 +12,7 @@ from tqdm import tqdm
 import numpy as np
 import datetime
 import gym
+import tempfile
 
 from baselines.gail import mlp_policy
 from baselines.common import set_global_seeds, tf_util as U
