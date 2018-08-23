@@ -10,6 +10,7 @@ from mpi4py import MPI
 from tqdm import tqdm
 
 import numpy as np
+import datetime
 import gym
 
 from baselines.gail import mlp_policy
@@ -94,7 +95,10 @@ def main(args):
         return mlp_policy.MlpPolicy(name=name, ob_space=ob_space, ac_space=ac_space,
                                     reuse=reuse, hid_size=args.policy_hidden_size, num_hid_layers=2)
 
-    # XXX: Intuitive log folder, probably save weihts there too
+    # XXX: Intuitive log folder, probably save weihts there too & params overide
+    args.task = "train"
+    task_name = get_task_name( args)
+
     dir = os.getenv('OPENAI_GEN_LOGDIR')
     if dir is None:
         dir = osp.join(tempfile.gettempdir(),
@@ -105,20 +109,29 @@ def main(args):
     assert isinstance(dir, str)
     os.makedirs(dir, exist_ok=True)
     args.log_dir = dir
+    # args.log_dir = osp.join(args.log_dir, task_name)
+    # assert isinstance(args.log_dir, str)
+    # os.makedirs(args.log_dir, exist_ok=True)
     print( "# DEBUG: Logging to %s" % dir)
 
     env = bench.Monitor(env, logger.get_dir() and
                         osp.join(logger.get_dir(), "monitor.json"))
     env.seed(args.seed)
     gym.logger.setLevel(logging.WARN)
-    task_name = get_task_name(args)
-    args.checkpoint_dir = osp.join(args.checkpoint_dir, task_name)
-    args.log_dir = osp.join(args.log_dir, task_name)
+    # task_name = get_task_name(args)
+    # args.checkpoint_dir = osp.join(args.checkpoint_dir, task_name)
+    # args.log_dir = osp.join(args.log_dir, task_name)
 
     #XXX Default params override
-    args.expert_path = "/home/z3r0/random/rl/torcs_expertdata_tools/damned_200ep_1000step/full_data.npz"
-    args.task = "train"
-    
+    args.expert_path = os.path.join( args.log_dir,
+        "damned_200ep_1000step/expert_data.npz")
+    task_name = get_task_name( args)
+    args.checkpoint_dir = os.path.join( args.log_dir, "checkpoint")
+    args.checkpoint_dir = os.path.join( args.checkpoint_dir, task_name)
+    assert isinstance(args.checkpoint_dir, str)
+    os.makedirs(args.checkpoint_dir, exist_ok=True)
+
+
     if args.task == 'train':
         dataset = Mujoco_Dset(expert_path=args.expert_path, traj_limitation=args.traj_limitation)
         reward_giver = TransitionClassifier(env, args.adversary_hidden_size, entcoeff=args.adversary_entcoeff)
