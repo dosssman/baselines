@@ -43,11 +43,11 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     throttle = True
     gear_change = False
     # Agent only
-    # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-    #     "/raceconfig/agent_practice.xml"
-    # Agent and one bot
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/agent_damned_practice.xml"
+        "/raceconfig/agent_practice.xml"
+    # Agent and one bot
+    # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    #     "/raceconfig/agent_damned_practice.xml"
     # Duh
     rendering = True
     lap_limiter = 4
