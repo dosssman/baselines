@@ -95,8 +95,6 @@ def main(args):
                                     reuse=reuse, hid_size=args.policy_hidden_size, num_hid_layers=2)
 
     # TODO: Intuitive log folder, probably save weihts there too
-    print( logger.get_dir())
-    input()
 
     env = bench.Monitor(env, logger.get_dir() and
                         osp.join(logger.get_dir(), "monitor.json"))
@@ -106,6 +104,9 @@ def main(args):
     args.checkpoint_dir = osp.join(args.checkpoint_dir, task_name)
     args.log_dir = osp.join(args.log_dir, task_name)
 
+    #XXX Default params override
+    args.expert_path = "/home/z3r0/random/rl/torcs_expertdata_tools/damned_200ep_1000step/full_data.npz"
+    
     if args.task == 'train':
         dataset = Mujoco_Dset(expert_path=args.expert_path, traj_limitation=args.traj_limitation)
         reward_giver = TransitionClassifier(env, args.adversary_hidden_size, entcoeff=args.adversary_entcoeff)
