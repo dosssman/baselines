@@ -94,7 +94,18 @@ def main(args):
         return mlp_policy.MlpPolicy(name=name, ob_space=ob_space, ac_space=ac_space,
                                     reuse=reuse, hid_size=args.policy_hidden_size, num_hid_layers=2)
 
-    # TODO: Intuitive log folder, probably save weihts there too
+    # XXX: Intuitive log folder, probably save weihts there too
+    dir = os.getenv('OPENAI_GEN_LOGDIR')
+    if dir is None:
+        dir = osp.join(tempfile.gettempdir(),
+            datetime.datetime.now().strftime("openai-gailtorcs"))
+    else:
+        dir = osp.join( dir, datetime.datetime.now().strftime("openai-gailtorcs"))
+
+    assert isinstance(dir, str)
+    os.makedirs(dir, exist_ok=True)
+    args.log_dir = dir
+    print( "# DEBUG: Logging to %s" % dir)
 
     env = bench.Monitor(env, logger.get_dir() and
                         osp.join(logger.get_dir(), "monitor.json"))
@@ -106,6 +117,7 @@ def main(args):
 
     #XXX Default params override
     args.expert_path = "/home/z3r0/random/rl/torcs_expertdata_tools/damned_200ep_1000step/full_data.npz"
+    args.task = "train"
     
     if args.task == 'train':
         dataset = Mujoco_Dset(expert_path=args.expert_path, traj_limitation=args.traj_limitation)
