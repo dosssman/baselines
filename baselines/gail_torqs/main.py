@@ -123,7 +123,7 @@ def main(args):
     # args.checkpoint_dir = osp.join(args.checkpoint_dir, task_name)
     # args.log_dir = osp.join(args.log_dir, task_name)
 
-    #XXX Default params override
+    # XXX Default params override
     args.expert_path = os.path.join( args.log_dir,
         "damned_200ep_1000step/expert_data.npz")
     task_name = get_task_name( args)
@@ -131,7 +131,8 @@ def main(args):
     args.checkpoint_dir = os.path.join( args.checkpoint_dir, task_name)
     assert isinstance(args.checkpoint_dir, str)
     os.makedirs(args.checkpoint_dir, exist_ok=True)
-
+    # Save samples
+    args.save_sample = True
 
     if args.task == 'train':
         dataset = Mujoco_Dset(expert_path=args.expert_path, traj_limitation=args.traj_limitation)
