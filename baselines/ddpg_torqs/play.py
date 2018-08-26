@@ -138,7 +138,8 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
         saver = None
 
     # Weight file name
-    save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-08-21-22-34-42-448321/model_data/epoch_495.ckpt"
+    # save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-08-21-22-34-42-448321/model_data/epoch_495.ckpt"
+    save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-08-25-00-18-11-372623/model_data/epoch_495.ckpt"
 
     step = 0
     episode = 0
