@@ -84,7 +84,7 @@ def main(args):
         "/raceconfig/agent_practice.xml"
     rendering = False
 
-    # TODO: Restrict to 3 laps when evaling ?
+    # TODO: How Restrict to 3 laps when evaling ?
     lap_limiter = 4
 
     # env = gym.make(args.env_id)
@@ -131,6 +131,7 @@ def main(args):
     args.checkpoint_dir = os.path.join( args.checkpoint_dir, task_name)
     assert isinstance(args.checkpoint_dir, str)
     os.makedirs(args.checkpoint_dir, exist_ok=True)
+    # Training time ( hopefully) and timestep constraints
     # Save samples
     args.save_sample = True
 
