@@ -11,7 +11,6 @@ from baselines.common.mpi_running_mean_std import RunningMeanStd
 from baselines.common.distributions import make_pdtype
 from baselines.acktr.utils import dense
 
-
 class MlpPolicy(object):
     recurrent = False
 

@@ -5,19 +5,22 @@ and plot the results in the same figure for easy comparison.
 
 import argparse
 import os
+import os.path as osp
 import glob
 import gym
+import datetime
 
 import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
 
-from baselines.gail import run_mujoco
-from baselines.gail import mlp_policy
+from baselines.gail_torqs import main as run_torcs
+from baselines.gail_torqs import mlp_policy
 from baselines.common import set_global_seeds, tf_util as U
 from baselines.common.misc_util import boolean_flag
-from baselines.gail.dataset.mujoco_dset import Mujoco_Dset
+from baselines.gail_torqs.dataset.mujoco_dset import Mujoco_Dset
 
+from baselines.gail_torqs.gym_torcs import TorcsEnv
 
 plt.style.use('ggplot')
 CONFIG = {
@@ -51,10 +54,23 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
     def policy_fn(name, ob_space, ac_space, reuse=False):
         return mlp_policy.MlpPolicy(name=name, ob_space=ob_space, ac_space=ac_space,
                                     reuse=reuse, hid_size=policy_hidden_size, num_hid_layers=2)
+    # XXX Readapt expert path
+    dir = os.getenv('OPENAI_GEN_LOGDIR')
+    if dir is None:
+        dir = osp.join(tempfile.gettempdir(),
+            datetime.datetime.now().strftime("openai-gailtorcs"))
+    else:
+        dir = osp.join( dir, datetime.datetime.now().strftime("openai-gailtorcs"))
 
-    data_path = os.path.join('data', 'deterministic.trpo.' + env_name + '.0.00.npz')
+    assert isinstance(dir, str)
+    os.makedirs(dir, exist_ok=True)
+
+    log_dir = dir
+    data_path = os.path.join( log_dir,
+        "damned_200ep_1000step/expert_data.npz")
+    # data_path = os.path.join('data', 'deterministic.trpo.' + env_name + '.0.00.npz')
     dataset = load_dataset(data_path)
-    checkpoint_list = glob.glob(os.path.join('checkpoint', '*' + env_name + ".*"))
+    # checkpoint_list = glob.glob(os.path.join('checkpoint', '*' + env_name + ".*"))
     log = {
         'traj_limitation': [],
         'upper_bound': [],
@@ -65,12 +81,31 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
     for i, limit in enumerate(CONFIG['traj_limitation']):
         # Do one evaluation
         upper_bound = sum(dataset.rets[:limit])/limit
-        checkpoint_dir = get_checkpoint_dir(checkpoint_list, limit, prefix=prefix)
-        checkpoint_path = tf.train.latest_checkpoint(checkpoint_dir)
-        env = gym.make(env_name + '-v1')
+        # checkpoint_dir = get_checkpoint_dir(checkpoint_list, limit, prefix=prefix)
+        # checkpoint_path = tf.train.latest_checkpoint(checkpoint_dir)
+        # XXX Checkpoint path
+        checkpoint_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/checkpoint/" + \
+            "trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0/" + \
+            "trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0"
+        # env = gym.make(env_name + '-v1')
+        # XXX: Custom env declaration
+        vision = False
+        throttle = True
+        gear_change = False
+        race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+            "/raceconfig/agent_practice.xml"
+        rendering = False
+        lap_limiter = 2
+
+        # env = gym.make(env_id)
+        env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
+    		race_config_path=race_config_path, rendering=rendering,
+    		lap_limiter = lap_limiter)
+
         env.seed(seed)
         print('Trajectory limitation: {}, Load checkpoint: {}, '.format(limit, checkpoint_path))
-        avg_len, avg_ret = run_mujoco.runner(env,
+        # TODO: RUn Mujoco not meant to be used here
+        avg_len, avg_ret = run_torcs.runner(env,
                                              policy_fn,
                                              checkpoint_path,
                                              timesteps_per_batch=1024,
@@ -102,9 +137,23 @@ def plot(env_name, bc_log, gail_log, stochastic):
     plt.legend(['expert', 'bc-imitator', 'gail-imitator'], loc='lower right')
     plt.grid(b=True, which='major', color='gray', linestyle='--')
     if stochastic:
-        title_name = 'result/{}-unnormalized-stochastic-scores.png'.format(env_name)
+        title_name = '{}-unnormalized-stochastic-scores.png'.format(env_name)
     else:
-        title_name = 'result/{}-unnormalized-deterministic-scores.png'.format(env_name)
+        title_name = '{}-unnormalized-deterministic-scores.png'.format(env_name)
+
+    # XXX Better logging policy ?
+    dir = os.getenv('OPENAI_GEN_LOGDIR')
+    if dir is None:
+        dir = osp.join(tempfile.gettempdir(),
+            datetime.datetime.now().strftime("openai-gailtorcs/result"))
+    else:
+        dir = osp.join( dir, datetime.datetime.now().strftime("openai-gailtorcs/result"))
+
+    assert isinstance(dir, str)
+    os.makedirs(dir, exist_ok=True)
+
+    log_dir = dir
+    title_name = osp.join( log_dir, title_name)
     plt.savefig(title_name)
     plt.close()
 
@@ -119,10 +168,12 @@ def plot(env_name, bc_log, gail_log, stochastic):
     plt.legend(['expert', 'bc-imitator', 'gail-imitator'], loc='lower right')
     plt.grid(b=True, which='major', color='gray', linestyle='--')
     if stochastic:
-        title_name = 'result/{}-normalized-stochastic-scores.png'.format(env_name)
+        title_name = '{}-normalized-stochastic-scores.png'.format(env_name)
     else:
-        title_name = 'result/{}-normalized-deterministic-scores.png'.format(env_name)
+        title_name = '{}-normalized-deterministic-scores.png'.format(env_name)
     plt.ylim(0, 1.6)
+    # XXX Better logging policy ?
+    title_name = osp.join( log_dir, title_name)
     plt.savefig(title_name)
     plt.close()
 
@@ -130,6 +181,7 @@ def plot(env_name, bc_log, gail_log, stochastic):
 def main(args):
     U.make_session(num_cpu=1).__enter__()
     set_global_seeds(args.seed)
+    args.env = "Torcs GAIL"
     print('Evaluating {}'.format(args.env))
     bc_log = evaluate_env(args.env, args.seed, args.policy_hidden_size,
                           args.stochastic_policy, False, 'BC')

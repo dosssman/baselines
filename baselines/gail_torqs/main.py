@@ -14,13 +14,13 @@ import datetime
 import gym
 import tempfile
 
-from baselines.gail import mlp_policy
+from baselines.gail_torqs import mlp_policy
 from baselines.common import set_global_seeds, tf_util as U
 from baselines.common.misc_util import boolean_flag
 from baselines import bench
 from baselines import logger
-from baselines.gail.dataset.mujoco_dset import Mujoco_Dset
-from baselines.gail.adversary import TransitionClassifier
+from baselines.gail_torqs.dataset.mujoco_dset import Mujoco_Dset
+from baselines.gail_torqs.adversary import TransitionClassifier
 
 from baselines.gail_torqs.gym_torcs import TorcsEnv
 
@@ -113,12 +113,16 @@ def main(args):
     # args.log_dir = osp.join(args.log_dir, task_name)
     # assert isinstance(args.log_dir, str)
     # os.makedirs(args.log_dir, exist_ok=True)
-    print( "# DEBUG: Logging to %s" % dir)
+    logger.configure( dir=args.log_dir, format_strs="stdout,log,csv,tensorboard")
+    print( "# DEBUG: Logging to %s" % logger.get_dir())
+    # print( "# DEBUG: LOgger out formats", logger.output_formats)
+    # input()
 
     env = bench.Monitor(env, logger.get_dir() and
                         osp.join(logger.get_dir(), "monitor.json"))
     env.seed(args.seed)
     gym.logger.setLevel(logging.WARN)
+    logger.set_level( logger.DEBUG)
     # task_name = get_task_name(args)
     # args.checkpoint_dir = osp.join(args.checkpoint_dir, task_name)
     # args.log_dir = osp.join(args.log_dir, task_name)
@@ -133,7 +137,7 @@ def main(args):
     os.makedirs(args.checkpoint_dir, exist_ok=True)
     # Training time ( hopefully) and timestep constraints
     # Save samples
-    args.save_sample = True
+    args.save_sample = False
     args.num_timestep = 1000000
 
     if args.task == 'train':
@@ -167,6 +171,7 @@ def main(args):
                )
     else:
         raise NotImplementedError
+
     env.close()
 
 
@@ -182,7 +187,7 @@ def train(env, seed, policy_fn, reward_giver, dataset, algo,
                                                  max_iters=BC_max_iter)
 
     if algo == 'trpo':
-        from baselines.gail import trpo_mpi
+        from baselines.gail_torqs import trpo_mpi
         # Set up for MPI seed
         rank = MPI.COMM_WORLD.Get_rank()
         if rank != 0:

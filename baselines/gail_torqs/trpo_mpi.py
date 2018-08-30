@@ -17,7 +17,7 @@ from baselines import logger
 from baselines.common import colorize
 from baselines.common.mpi_adam import MpiAdam
 from baselines.common.cg import cg
-from baselines.gail.statistics import stats
+from baselines.gail_torqs.statistics import stats
 
 
 def traj_segment_generator(pi, env, reward_giver, horizon, stochastic):
@@ -113,6 +113,7 @@ def learn(env, policy_func, reward_giver, expert_dataset, rank,
           callback=None
           ):
 
+    print( "")
     nworkers = MPI.COMM_WORLD.Get_size()
     rank = MPI.COMM_WORLD.Get_rank()
     np.set_printoptions(precision=3)
@@ -201,6 +202,7 @@ def learn(env, policy_func, reward_giver, expert_dataset, rank,
 
     # Prepare for rollouts
     # ----------------------------------------
+    # XXX Aren't we Detertministic focused thoug ? Torcs wise
     seg_gen = traj_segment_generator(pi, env, reward_giver, timesteps_per_batch, stochastic=True)
 
     episodes_so_far = 0
@@ -261,11 +263,15 @@ def learn(env, policy_func, reward_giver, expert_dataset, rank,
                 *lossbefore, g = compute_lossandgrad(*args)
             lossbefore = allmean(np.array(lossbefore))
             g = allmean(g)
+            print( "## DEBUG: G before cg", g)
             if np.allclose(g, 0):
                 logger.log("Got zero gradient. not updating")
             else:
                 with timed("cg"):
                     stepdir = cg(fisher_vector_product, g, cg_iters=cg_iters, verbose=rank == 0)
+                # TODO: How to make sure the stepdir is not infinit
+                print( "# DEBUG: Stepdir leng ", len( stepdir))
+                print( stepdir)
                 assert np.isfinite(stepdir).all()
                 shs = .5*stepdir.dot(fisher_vector_product(stepdir))
                 lm = np.sqrt(shs / max_kl)
@@ -346,8 +352,9 @@ def learn(env, policy_func, reward_giver, expert_dataset, rank,
         logger.record_tabular("TimestepsSoFar", timesteps_so_far)
         logger.record_tabular("TimeElapsed", time.time() - tstart)
 
-        if rank == 0:
-            logger.dump_tabular()
+        # if rank == 0:
+            # logger.dump_tabular()
+        logger.dump_tabular()
 
 
 def flatten_lists(listoflists):
