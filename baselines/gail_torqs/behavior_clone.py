@@ -146,7 +146,7 @@ def main(args):
 
     # args.checkpoint_dir = osp.join(args.checkpoint_dir, task_name)
     # args.log_dir = osp.join(args.log_dir, task_name)
-    args.stochastic_policy = True
+    args.stochastic_policy = False
     dataset = Mujoco_Dset(expert_path=args.expert_path, traj_limitation=args.traj_limitation)
     savedir_fname = learn(env,
                           policy_fn,
