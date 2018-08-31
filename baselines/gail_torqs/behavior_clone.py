@@ -4,6 +4,7 @@ The code is used to train BC imitator, or pretrained GAIL imitator
 
 import argparse
 import tempfile
+import os, datetime
 import os.path as osp
 import gym
 import logging
@@ -11,19 +12,20 @@ from tqdm import tqdm
 
 import tensorflow as tf
 
-from baselines.gail import mlp_policy
+from baselines.gail_torqs import mlp_policy
 from baselines import bench
 from baselines import logger
 from baselines.common import set_global_seeds, tf_util as U
 from baselines.common.misc_util import boolean_flag
 from baselines.common.mpi_adam import MpiAdam
-from baselines.gail.run_mujoco import runner
-from baselines.gail.dataset.mujoco_dset import Mujoco_Dset
+from baselines.gail_torqs.main import runner
+from baselines.gail_torqs.dataset.mujoco_dset import Mujoco_Dset
 
+from baselines.gail_torqs.gym_torcs import TorcsEnv
 
 def argsparser():
     parser = argparse.ArgumentParser("Tensorflow Implementation of Behavior Cloning")
-    parser.add_argument('--env_id', help='environment ID', default='Hopper-v1')
+    parser.add_argument('--env_id', help='environment ID', default='Torcs')
     parser.add_argument('--seed', help='RNG seed', type=int, default=0)
     parser.add_argument('--expert_path', type=str, default='data/deterministic.trpo.Hopper.0.00.npz')
     parser.add_argument('--checkpoint_dir', help='the directory to save model', default='checkpoint')
@@ -88,7 +90,40 @@ def get_task_name(args):
 def main(args):
     U.make_session(num_cpu=1).__enter__()
     set_global_seeds(args.seed)
-    env = gym.make(args.env_id)
+
+    # env = gym.make(args.env_id)
+    # XXX: Hook up Gym Torcs
+    vision = False
+    throttle = True
+    gear_change = False
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+        "/raceconfig/agent_practice.xml"
+    rendering = False
+
+    # TODO: How Restrict to 3 laps when evaling ?
+    lap_limiter = 4
+
+    # env = gym.make(args.env_id)
+    env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
+		race_config_path=race_config_path, rendering=rendering,
+		lap_limiter = lap_limiter)
+
+    # XXX Log dir config
+    dir = os.getenv('OPENAI_GEN_LOGDIR')
+    if dir is None:
+        dir = osp.join(tempfile.gettempdir(),
+            datetime.datetime.now().strftime("openai-gailtorcs"))
+    else:
+        dir = osp.join( dir, datetime.datetime.now().strftime("openai-gailtorcs"))
+
+    assert isinstance(dir, str)
+    os.makedirs(dir, exist_ok=True)
+    args.log_dir = dir
+    # args.log_dir = osp.join(args.log_dir, task_name)
+    # assert isinstance(args.log_dir, str)
+    # os.makedirs(args.log_dir, exist_ok=True)
+    logger.configure( dir=args.log_dir, format_strs="stdout,log,csv,tensorboard")
+    print( "# DEBUG: Logging to %s" % logger.get_dir())
 
     def policy_fn(name, ob_space, ac_space, reuse=False):
         return mlp_policy.MlpPolicy(name=name, ob_space=ob_space, ac_space=ac_space,
@@ -98,8 +133,17 @@ def main(args):
     env.seed(args.seed)
     gym.logger.setLevel(logging.WARN)
     task_name = get_task_name(args)
-    args.checkpoint_dir = osp.join(args.checkpoint_dir, task_name)
-    args.log_dir = osp.join(args.log_dir, task_name)
+    # XXX Default params override
+    args.expert_path = os.path.join( args.log_dir,
+        "damned_200ep_1000step/expert_data.npz")
+    task_name = get_task_name( args)
+    args.checkpoint_dir = os.path.join( args.log_dir, "checkpoint")
+    args.checkpoint_dir = os.path.join( args.checkpoint_dir, task_name)
+    assert isinstance(args.checkpoint_dir, str)
+    os.makedirs(args.checkpoint_dir, exist_ok=True)
+
+    # args.checkpoint_dir = osp.join(args.checkpoint_dir, task_name)
+    # args.log_dir = osp.join(args.log_dir, task_name)
     dataset = Mujoco_Dset(expert_path=args.expert_path, traj_limitation=args.traj_limitation)
     savedir_fname = learn(env,
                           policy_fn,
