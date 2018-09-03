@@ -129,7 +129,7 @@ def main(args):
 
     # XXX Default params override
     args.expert_path = os.path.join( args.log_dir,
-        "damned_200ep_1000step/expert_data.npz")
+        "damned_204ep_1000step/expert_data.npz")
     task_name = get_task_name( args)
     args.checkpoint_dir = os.path.join( args.log_dir, "checkpoint")
     args.checkpoint_dir = os.path.join( args.checkpoint_dir, task_name)

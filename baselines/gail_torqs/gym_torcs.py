@@ -107,12 +107,14 @@ class TorcsEnv( gym.Env):
             # Baselines compatibility support, also
             # Specs found here: http://xed.ch/help/torcs.html
             # Also used for automatic observation normalizations in baselines
+            # Unfortun. this is poretty useles sa ssthe noprmalization are done
+            # in self.make_observation function
             high = np.hstack(( math.pi, # Angle
                                np.array( [ 1.0 for _ in range( 19)]), # track
                                np.inf, # trackPos
                                np.inf, np.inf, np.inf,  # speedX, speedY, speedZ
                                np.array( [ 500.0 for _ in range( 4)]), # wheelSpinVel ( Didn't really check max)
-                               np.inf, # rpm
+                               np.inf, # rpm, but it seems to be 10000
                                np.array( [ 1.0 for _ in range( 36)])
                 ))
 
@@ -321,11 +323,12 @@ class TorcsEnv( gym.Env):
         # return self.observation
 
         # Custom: To adapt with baselines, return proper array ( dosssman)
+        # Also pay attention to the regularation made at self.make_observation !
         return np.hstack((self.observation.angle, self.observation.track,
             self.observation.trackPos, self.observation.speedX,
             self.observation.speedY,  self.observation.speedZ,
-            self.observation.wheelSpinVel/100.0, self.observation.rpm,
-            self.observation.opponents/200.))
+            self.observation.wheelSpinVel, self.observation.rpm,
+            self.observation.opponents))
         # End custom
 
     def reset_torcs(self):
@@ -433,7 +436,7 @@ class TorcsEnv( gym.Env):
                                rpm=np.array(raw_obs['rpm'], dtype=np.float32)/10000,
                                track=np.array(raw_obs['track'], dtype=np.float32)/200.,
                                trackPos=np.array(raw_obs['trackPos'], dtype=np.float32)/1.,
-                               wheelSpinVel=np.array(raw_obs['wheelSpinVel'], dtype=np.float32),
+                               wheelSpinVel=np.array(raw_obs['wheelSpinVel'], dtype=np.float32)/ 100.0,
                                lap=np.array( raw_obs["lap"], dtype=np.uint8))
         else:
             names = ['focus',

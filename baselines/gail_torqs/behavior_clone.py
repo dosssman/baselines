@@ -43,7 +43,7 @@ def argsparser():
     parser.add_argument('--BC_max_iter', help='Max iteration for training BC', type=int, default=1e5)
     return parser.parse_args()
 
-# TODO Better ...
+# XXX TRASH
 class TorcsActor( object):
     def __init__( self, ob_space, ac_space, name="actor", layer_norm=True,
         reuse=False, gaussian_fixed_var=False):

@@ -11,7 +11,6 @@ from baselines.common.mpi_running_mean_std import RunningMeanStd
 from baselines.common.distributions import make_pdtype
 from baselines.acktr.utils import dense
 
-
 class MlpPolicy(object):
     recurrent = False
 
@@ -34,6 +33,8 @@ class MlpPolicy(object):
             self.ob_rms = RunningMeanStd(shape=ob_space.shape)
 
         obz = tf.clip_by_value((ob - self.ob_rms.mean) / self.ob_rms.std, -5.0, 5.0)
+        # XXX Skipping various op on observations
+        obz = ob
         last_out = obz
         for i in range(num_hid_layers):
             last_out = tf.nn.tanh(dense(last_out, hid_size, "vffc%i" % (i+1), weight_init=U.normc_initializer(1.0)))
