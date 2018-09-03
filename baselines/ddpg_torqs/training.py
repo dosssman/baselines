@@ -32,7 +32,7 @@ def train(env, nb_epochs, nb_epoch_cycles, render_eval, reward_scale, render, pa
 
     # Set up logging stuff only for a single worker.
     if rank == 0:
-        saver = tf.train.Saver()
+        saver = tf.train.Saver(max_to_keep=nb_epochs)
     else:
         saver = None
 
