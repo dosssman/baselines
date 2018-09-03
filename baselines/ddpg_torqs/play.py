@@ -42,8 +42,12 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     vision = False
     throttle = True
     gear_change = False
+    # Agent only
+    # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    #     "/raceconfig/agent_practice.xml"
+    # Agent and one bot
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/agent_practice.xml"
+        "/raceconfig/agent_damned_practice.xml"
     # Duh
     rendering = True
     lap_limiter = 4
@@ -134,7 +138,8 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
         saver = None
 
     # Weight file name
-    save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-08-21-16-29-01-134514/model_data/epoch_12.ckpt"
+    # save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-08-21-22-34-42-448321/model_data/epoch_495.ckpt"
+    save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-08-25-00-18-11-372623/model_data/epoch_495.ckpt"
 
     step = 0
     episode = 0
@@ -173,7 +178,8 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
             for cycle in range(nb_epoch_cycles):
                 while not done:
                     # Predict next action.
-                    action, q = agent.pi(obs, apply_noise=True, compute_Q=True)
+                    # TODO: Noise on or off ?
+                    action, q = agent.pi(obs, apply_noise=False, compute_Q=True)
 
                     assert action.shape == env.action_space.shape
 
