@@ -323,7 +323,7 @@ class TorcsEnv( gym.Env):
         # Custom: To adapt with baselines, return proper array ( dosssman)
         return np.hstack((self.observation.angle, self.observation.track,
             self.observation.trackPos, self.observation.speedX,
-            self.observation.speedY,  self.observation.speedZ,
+            self.observation.speedY, self.observation.speedZ,
             self.observation.wheelSpinVel, self.observation.rpm,
             self.observation.opponents))
         # End custom

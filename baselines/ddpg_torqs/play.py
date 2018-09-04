@@ -203,9 +203,10 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
                     # agent.store_transition(obs, action, r, new_obs, done)
                     obss.append( obs)
                     obs = new_obs
+
                     lapsed = (time.time() - start_time)
 
-                    if lapsed >= 30.0:
+                    if  lapsed >= 30.0:
                         done = True
 
                     if done:
@@ -228,9 +229,8 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
                         else:
                             obs = env.reset()
                         # obs = env.reset()
-
                         print( len( obss))
-                        np.save( "/home/z3r0/torcs_data/ddpg_obs.csv", np.asarray( obss))
+                        np.save( "/home/z3r0/torcs_data/ddpg_obs", np.asarray( obss))
                         print( "TIme %.6f\n" % (time.time() - start_time))
 
     ### ENd training code
