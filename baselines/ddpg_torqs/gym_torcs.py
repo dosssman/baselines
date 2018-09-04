@@ -325,7 +325,7 @@ class TorcsEnv( gym.Env):
             self.observation.trackPos, self.observation.speedX,
             self.observation.speedY,  self.observation.speedZ,
             self.observation.wheelSpinVel/100.0, self.observation.rpm,
-            self.observation.opponents/200.))
+            self.observation.opponents))
         # End custom
 
     def reset_torcs(self):
