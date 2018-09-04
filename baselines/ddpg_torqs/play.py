@@ -230,7 +230,11 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
                             obs = env.reset()
                         # obs = env.reset()
                         print( len( obss))
+<<<<<<< HEAD
                         np.save( "/home/z3r0/torcs_data/ddpg_obs.csv", np.asarray( obss))
+=======
+                        np.save( "/home/z3r0/torcs_data/ddpg_obs", np.asarray( obss))
+>>>>>>> torqs-ddpg
                         print( "TIme %.6f\n" % (time.time() - start_time))
 
     ### ENd training code

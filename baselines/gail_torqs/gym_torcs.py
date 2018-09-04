@@ -2,7 +2,7 @@ import gym
 from gym import spaces
 import numpy as np
 # from os import path
-import baselines.ddpg_torqs.snakeoil3_gym as snakeoil3
+import baselines.gail_torqs.snakeoil3_gym as snakeoil3
 import numpy as np
 import copy
 import collections as col
@@ -107,14 +107,12 @@ class TorcsEnv( gym.Env):
             # Baselines compatibility support, also
             # Specs found here: http://xed.ch/help/torcs.html
             # Also used for automatic observation normalizations in baselines
-            # Unfortun. this is poretty useles sa ssthe noprmalization are done
-            # in self.make_observation function
             high = np.hstack(( math.pi, # Angle
                                np.array( [ 1.0 for _ in range( 19)]), # track
                                np.inf, # trackPos
                                np.inf, np.inf, np.inf,  # speedX, speedY, speedZ
                                np.array( [ 500.0 for _ in range( 4)]), # wheelSpinVel ( Didn't really check max)
-                               np.inf, # rpm, but it seems to be 10000
+                               np.inf, # rpm
                                np.array( [ 1.0 for _ in range( 36)])
                 ))
 
@@ -323,10 +321,9 @@ class TorcsEnv( gym.Env):
         # return self.observation
 
         # Custom: To adapt with baselines, return proper array ( dosssman)
-        # Also pay attention to the regularation made at self.make_observation !
         return np.hstack((self.observation.angle, self.observation.track,
             self.observation.trackPos, self.observation.speedX,
-            self.observation.speedY,  self.observation.speedZ,
+            self.observation.speedY, self.observation.speedZ,
             self.observation.wheelSpinVel, self.observation.rpm,
             self.observation.opponents))
         # End custom

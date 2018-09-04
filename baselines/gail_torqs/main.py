@@ -119,7 +119,7 @@ def main(args):
     # input()
 
     env = bench.Monitor(env, logger.get_dir() and
-                        osp.join(logger.get_dir(), "monitor.json"))
+                        osp.join(logger.get_dir(), "monitor.csv"))
     env.seed(args.seed)
     gym.logger.setLevel(logging.WARN)
     logger.set_level( logger.DEBUG)
@@ -129,7 +129,7 @@ def main(args):
 
     # XXX Default params override
     args.expert_path = os.path.join( args.log_dir,
-        "damned_204ep_1000step/expert_data.npz")
+        "damned201ep200stpScoreFixedAndSlicedto5Hz/expert_data.npz")
     task_name = get_task_name( args)
     args.checkpoint_dir = os.path.join( args.log_dir, "checkpoint")
     args.checkpoint_dir = os.path.join( args.checkpoint_dir, task_name)
