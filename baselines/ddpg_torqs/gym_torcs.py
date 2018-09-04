@@ -324,8 +324,8 @@ class TorcsEnv( gym.Env):
         return np.hstack((self.observation.angle, self.observation.track,
             self.observation.trackPos, self.observation.speedX,
             self.observation.speedY,  self.observation.speedZ,
-            self.observation.wheelSpinVel/100.0, self.observation.rpm,
-            self.observation.opponents/200.))
+            self.observation.wheelSpinVel, self.observation.rpm,
+            self.observation.opponents))
         # End custom
 
     def reset_torcs(self):
@@ -433,7 +433,7 @@ class TorcsEnv( gym.Env):
                                rpm=np.array(raw_obs['rpm'], dtype=np.float32)/10000,
                                track=np.array(raw_obs['track'], dtype=np.float32)/200.,
                                trackPos=np.array(raw_obs['trackPos'], dtype=np.float32)/1.,
-                               wheelSpinVel=np.array(raw_obs['wheelSpinVel'], dtype=np.float32),
+                               wheelSpinVel=np.array(raw_obs['wheelSpinVel'], dtype=np.float32)/ 100.0,
                                lap=np.array( raw_obs["lap"], dtype=np.uint8))
         else:
             names = ['focus',
