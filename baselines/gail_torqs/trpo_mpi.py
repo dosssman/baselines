@@ -263,14 +263,14 @@ def learn(env, policy_func, reward_giver, expert_dataset, rank,
                 *lossbefore, g = compute_lossandgrad(*args)
             lossbefore = allmean(np.array(lossbefore))
             g = allmean(g)
-            print( "## DEBUG: G before cg", g)
+            # print( "## DEBUG: G before cg", g)
             if np.allclose(g, 0):
                 logger.log("Got zero gradient. not updating")
             else:
                 with timed("cg"):
                     stepdir = cg(fisher_vector_product, g, cg_iters=cg_iters, verbose=rank == 0)
                 # TODO: How to make sure the stepdir is not infinit
-                print( "# DEBUG: Stepdir leng ", len( stepdir))
+                # print( "# DEBUG: Stepdir leng ", len( stepdir))
                 print( stepdir)
                 assert np.isfinite(stepdir).all()
                 shs = .5*stepdir.dot(fisher_vector_product(stepdir))
