@@ -23,6 +23,7 @@ from collections import deque
 
 # dosssman
 from baselines.ddpg_torqs.gym_torcs import TorcsEnv
+import csv # CHecking trace for GIAL
 
 def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     normalize_returns, normalize_observations, critic_l2_reg, actor_lr, critic_lr,
@@ -43,14 +44,14 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     throttle = True
     gear_change = False
     # Agent only
-    # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-    #     "/raceconfig/agent_practice.xml"
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+        "/raceconfig/agent_practice.xml"
     # Agent and one bot
     # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     #     "/raceconfig/agent_damned_practice.xml"
     # Agent and 3 bots ?
-    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/agent_damned_grid_practice.xml"
+    # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    #     "/raceconfig/agent_damned_grid_practice.xml"
     # Duh
     rendering = True
     lap_limiter = 4
@@ -171,7 +172,7 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
 
         epoch = 0
         start_time = time.time()
-
+        obss = []
         epoch_episode_rewards = []
         epoch_episode_steps = []
         epoch_episode_eval_rewards = []
@@ -200,6 +201,7 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
                     # epoch_actions.append(action)
                     # epoch_qs.append(q)
                     # agent.store_transition(obs, action, r, new_obs, done)
+                    # obss.append( obs)
                     obs = new_obs
 
                     if done:
@@ -222,6 +224,9 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
                         else:
                             obs = env.reset()
                         # obs = env.reset()
+                        # print( len( obss))
+                        # np.save( "/home/z3r0/torcs_data/ddpg_obs.csv", np.asarray( obss))
+                        # print( "TIme", % time.time() - start_time, "\n")
 
     ### ENd training code
 
