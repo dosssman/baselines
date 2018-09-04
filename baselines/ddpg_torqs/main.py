@@ -38,16 +38,16 @@ def run(env_id, seed, noise_type, layer_norm, evaluation, **kwargs):
     rendering = kwargs["render"]
     lap_limiter = 4
     # Alone
-    # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-    #     "/raceconfig/agent_practice.xml"
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+        "/raceconfig/agent_practice.xml"
 
     # With 1 Damned
-    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/agent_damned_practice.xml"
+    # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    #     "/raceconfig/agent_damned_practice.xml"
 
     # With Damned, Inferno and Berniw
-    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/agent_damned_grid_practice.xml"
+    # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    #     "/raceconfig/agent_damned_grid_practice.xml"
 
     # env = gym.make(env_id)
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
