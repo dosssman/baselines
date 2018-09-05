@@ -365,10 +365,11 @@ def configure(dir=None, format_strs=None):
     if format_strs is None:
         strs, strs_mpi = os.getenv('OPENAI_LOG_FORMAT'), os.getenv('OPENAI_LOG_FORMAT_MPI')
         format_strs = strs_mpi if rank>0 else strs
-        if format_strs is not None:
-            format_strs = format_strs.split(',')
-        else:
-            format_strs = LOG_OUTPUT_FORMATS_MPI if rank>0 else LOG_OUTPUT_FORMATS
+        
+    if format_strs is not None:
+        format_strs = format_strs.split(',')
+    else:
+        format_strs = LOG_OUTPUT_FORMATS_MPI if rank>0 else LOG_OUTPUT_FORMATS
 
     output_formats = [make_output_format(f, dir, log_suffix) for f in format_strs]
 

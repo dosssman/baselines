@@ -2,6 +2,7 @@ import tensorflow as tf
 
 def dense(x, size, name, weight_init=None, bias_init=0, weight_loss_dict=None, reuse=None):
     with tf.variable_scope(name, reuse=reuse):
+        # print( "### DEBUG: Var scope name: %s" % tf.get_variable_scope().name)
         assert (len(tf.get_variable_scope().name.split('/')) == 2)
 
         w = tf.get_variable("w", [x.get_shape()[1], size], initializer=weight_init)

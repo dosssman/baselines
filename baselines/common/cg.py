@@ -28,6 +28,9 @@ def cg(f_Ax, b, cg_iters=10, callback=None, verbose=False, residual_tol=1e-10):
         if rdotr < residual_tol:
             break
 
+        # DEBUG dosssman
+        # print( "## DEBUG CG: Iter %d / %d" % ( i, cg_iters))
+
     if callback is not None:
         callback(x)
     if verbose: print(fmtstr % (i+1, rdotr, np.linalg.norm(x)))  # pylint: disable=W0631

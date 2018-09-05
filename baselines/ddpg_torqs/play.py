@@ -232,7 +232,7 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
                             obs = env.reset()
                         # obs = env.reset()
                         print( len( obss))
-                        np.save( "/home/z3r0/torcs_data/ddpg_obs", np.asarray( obss))
+                        np.save( "/home/z3r0/torcs_data/ddpg_obs.csv", np.asarray( obss))
                         print( "TIme %.6f\n" % (lapsed))
                         print( "Sampl. Rate: %f" % ( len( obss) / lapsed))
 

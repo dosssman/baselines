@@ -25,7 +25,7 @@ class TorcsEnv( gym.Env):
     # Customized to accept more params
     def __init__(self, vision=False, throttle=False, gear_change=False,
         race_config_path=None,race_speed=1.0, rendering=True, damage=False,
-        lap_limiter=2, recdata=False):
+        lap_limiter=2):
         #print("Init")
         self.vision = vision
         self.throttle = throttle
@@ -33,7 +33,6 @@ class TorcsEnv( gym.Env):
         self.race_speed = race_speed
         self.rendering = rendering
         self.damage = damage
-        self.recdata = recdata
         # The episode will end when the lap_limiter is reached
         # To put it simply if you want env to stap after 3 laps, set this to 4
         # Make sure to run torcs itself for more than 3 laps too, otherwise,
@@ -64,9 +63,6 @@ class TorcsEnv( gym.Env):
             args.append( "-raceconfig")
             # args.append( "\"" + race_config_path + "\"")
             args.append( self.race_config_path)
-
-        if self.recdata:
-            args.append( "-rechum")
 
         args.append("&")
 
@@ -282,7 +278,7 @@ class TorcsEnv( gym.Env):
             race_config_path=self.race_config_path,
             race_speed=self.race_speed,
             rendering=self.rendering, lap_limiter=self.lap_limiter,
-            damage=self.damage, recdata=self.recdata)  #Open new UDP in vtorcs
+            damage=self.damage,)  #Open new UDP in vtorcs
 
         self.client.MAX_STEPS = np.inf
 
