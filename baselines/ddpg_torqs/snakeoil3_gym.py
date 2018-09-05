@@ -118,7 +118,7 @@ def bargraph(x,mn,mx,w,c='X'):
 class Client():
     def __init__(self,H=None,p=None,i=None,e=None,t=None,s=None,d=None,
         vision=False, process_id=None, race_config_path=None, race_speed=1.0,
-        rendering=True, damage=False, lap_limiter=2):
+        rendering=True, damage=False, lap_limiter=2, recdata=False):
         # If you don't like the option defaults,  change them here.
         self.vision = vision
 
@@ -146,6 +146,7 @@ class Client():
         self.rendering = rendering
         self.damage = damage
         self.lap_limiter = lap_limiter
+        self.recdata = recdata
 
         self.S= ServerState()
         self.R= DriverAction()
@@ -213,6 +214,9 @@ class Client():
                         args.append( "-raceconfig")
                         # args.append( "\"" + race_config_path + "\"")
                         args.append( self.race_config_path)
+
+                    if self.recdata:
+                        args.append( "-rechum")
 
                     args.append("&")
 

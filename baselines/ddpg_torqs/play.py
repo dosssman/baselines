@@ -53,13 +53,14 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     #     "/raceconfig/agent_damned_grid_practice.xml"
     # Duh
-    rendering = True
-    lap_limiter = 4
+    rendering = False
+    lap_limiter = 2
+    recdata = True
 
     # env = gym.make(env_id)
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
 		race_config_path=race_config_path, rendering=rendering,
-		lap_limiter = lap_limiter)
+		lap_limiter = lap_limiter, recdata=recdata)
 
     # env = bench.Monitor(env, logger.get_dir() and os.path.join(logger.get_dir(), str(rank)))
 
@@ -146,7 +147,8 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     # save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-08-25-00-18-11-372623/model_data/epoch_495.ckpt"
 
     # 20180827 08-42-00-658308, Defiant, Training with enemy from the start, Best scoreing model DAMN This guy is good
-    save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-03-13-10-09-537924/model_data/epoch_518.ckpt"
+    # save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-03-13-10-09-537924/model_data/epoch_518.ckpt"
+    save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-04-15-18-28-480417/model_data/epoch_742.ckpt"
 
     step = 0
     episode = 0
@@ -231,7 +233,8 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
                         # obs = env.reset()
                         print( len( obss))
                         np.save( "/home/z3r0/torcs_data/ddpg_obs", np.asarray( obss))
-                        print( "TIme %.6f\n" % (time.time() - start_time))
+                        print( "TIme %.6f\n" % (lapsed))
+                        print( "Sampl. Rate: %f" % ( len( obss) / lapsed))
 
     ### ENd training code
 
@@ -275,7 +278,8 @@ def parse_args():
 
 if __name__ == '__main__':
     args = parse_args()
-    if MPI.COMM_WORLD.Get_rank() == 0:
-        logger.configure()
+    # DO not log
+    # if MPI.COMM_WORLD.Get_rank() == 0:
+        # logger.configure()
     # Run actual script.
     run(**args)
