@@ -118,14 +118,17 @@ def main(args):
     # XXX Eval reparams
     args.task = "evaluate"
     args.load_model_path = os.path.join( args.log_dir, "checkpoint")
-    args.load_model_path = os.path.join( args.load_model_path,
-        "trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0" +
-        "/trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0")
+    # args.load_model_path = os.path.join( args.load_model_path,
+    #     "trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0" +
+    #     "/trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0")
+
+    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/logbakExprtDataScorefixedAndSlicedto5Hz/checkpoint/trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0/" \
+        + "trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0"
 
     print( "# DEBUG: Model path: ", args.load_model_path)
 
     env = bench.Monitor(env, logger.get_dir() and
-                        osp.join(logger.get_dir(), "monitor.json"), allow_early_resets=True)
+                        osp.join(logger.get_dir(), "monitor.csv"), allow_early_resets=True)
     env.seed(args.seed)
     gym.logger.setLevel(logging.WARN)
     # task_name = get_task_name(args)
@@ -134,7 +137,7 @@ def main(args):
 
     # XXX Default params override
     args.expert_path = os.path.join( args.log_dir,
-        "damned_200ep_1000step/expert_data.npz")
+        "damned201ep200stpScoreFixedAndSlicedto5Hz/expert_data.npz")
     task_name = get_task_name( args)
     args.checkpoint_dir = os.path.join( args.log_dir, "checkpoint")
     args.checkpoint_dir = os.path.join( args.checkpoint_dir, task_name)

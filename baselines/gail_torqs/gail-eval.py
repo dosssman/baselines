@@ -67,7 +67,7 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
 
     log_dir = dir
     data_path = os.path.join( log_dir,
-        "damned_200ep_1000step/expert_data.npz")
+        "damned201ep200stpScoreFixedAndSlicedto5Hz/expert_data.npz")
     # data_path = os.path.join('data', 'deterministic.trpo.' + env_name + '.0.00.npz')
     dataset = load_dataset(data_path)
     # checkpoint_list = glob.glob(os.path.join('checkpoint', '*' + env_name + ".*"))
@@ -84,9 +84,11 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         # checkpoint_dir = get_checkpoint_dir(checkpoint_list, limit, prefix=prefix)
         # checkpoint_path = tf.train.latest_checkpoint(checkpoint_dir)
         # XXX Checkpoint path
-        checkpoint_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/checkpoint/" + \
-            "trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0/" + \
-            "trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0"
+        # checkpoint_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/checkpoint/" + \
+        #     "trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0/" + \
+        #     "trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0"
+        checkpoint_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/logbakExprtDataScorefixedAndSlicedto5Hz/checkpoint/trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0/" \
+            + "trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0"
         # env = gym.make(env_name + '-v1')
         # XXX: Custom env declaration
         vision = False
