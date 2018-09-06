@@ -10,7 +10,7 @@ from mpi4py import MPI
 from tqdm import tqdm
 
 import numpy as np
-import datetime
+import datetime, time
 import gym
 import tempfile
 
@@ -273,6 +273,7 @@ def traj_1_generator(pi, env, horizon, stochastic):
     rews = []
     news = []
     acs = []
+    start_time = time.time()
 
     while True:
         ac, vpred = pi.act(stochastic, ob)
@@ -288,6 +289,12 @@ def traj_1_generator(pi, env, horizon, stochastic):
         if new or t >= horizon:
             break
         t += 1
+
+    duration = time.time() - start_time
+
+    print( "### DEBUG: Duration %f" % (duration))
+    print( "### DEBUG: Episode length %d" % cur_ep_len)
+    print( "### DEBUG: Sampling rate %f" % ( cur_ep_len / duration))
 
     obs = np.array(obs)
     rews = np.array(rews)
