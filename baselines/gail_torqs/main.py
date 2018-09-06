@@ -60,15 +60,17 @@ def argsparser():
 
 
 def get_task_name(args):
-    task_name = args.algo + "_gail."
-    if args.pretrained:
-        task_name += "with_pretrained."
-    if args.traj_limitation != np.inf:
-        task_name += "transition_limitation_%d." % args.traj_limitation
-    task_name += args.env_id.split("-")[0]
-    task_name = task_name + ".g_step_" + str(args.g_step) + ".d_step_" + str(args.d_step) + \
-        ".policy_entcoeff_" + str(args.policy_entcoeff) + ".adversary_entcoeff_" + str(args.adversary_entcoeff)
-    task_name += ".seed_" + str(args.seed)
+    # task_name = args.algo + "_gail."
+    # if args.pretrained:
+    #     task_name += "with_pretrained."
+    # if args.traj_limitation != np.inf:
+    #     task_name += "transition_limitation_%d." % args.traj_limitation
+    # task_name += args.env_id.split("-")[0]
+    # task_name = task_name + ".g_step_" + str(args.g_step) + ".d_step_" + str(args.d_step) + \
+    #     ".policy_entcoeff_" + str(args.policy_entcoeff) + ".adversary_entcoeff_" + str(args.adversary_entcoeff)
+    # task_name += ".seed_" + str(args.seed)
+
+    task_name = "torcs_gail"
     return task_name
 
 
@@ -129,7 +131,7 @@ def main(args):
 
     # XXX Default params override
     args.expert_path = os.path.join( args.log_dir,
-        "damned201ep200stpScoreFixedAndSlicedto5Hz/expert_data.npz")
+        "best20180907damned200ep720tstpInterpolated/expert_data.npz")
     task_name = get_task_name( args)
     args.checkpoint_dir = os.path.join( args.log_dir, "checkpoint")
     args.checkpoint_dir = os.path.join( args.checkpoint_dir, task_name)
@@ -138,7 +140,7 @@ def main(args):
     # Training time ( hopefully) and timestep constraints
     # Save samples
     args.save_sample = False
-    args.num_timesteps = 1000000
+    args.num_timesteps = 10000000
 
     if args.task == 'train':
         dataset = Mujoco_Dset(expert_path=args.expert_path, traj_limitation=args.traj_limitation)

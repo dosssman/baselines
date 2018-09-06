@@ -236,7 +236,7 @@ def learn(env, policy_func, reward_giver, expert_dataset, rank,
             fname = os.path.join(ckpt_dir, task_name)
             os.makedirs(os.path.dirname(fname), exist_ok=True)
             saver = tf.train.Saver( max_to_keep=max_iters)
-            saver.save(tf.get_default_session(), fname)
+            saver.save(tf.get_default_session(), fname + "_" + str( iters_so_far ))
 
         logger.log("********** Iteration %i ************" % iters_so_far)
 
