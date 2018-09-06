@@ -53,7 +53,7 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     #     "/raceconfig/agent_damned_grid_practice.xml"
     # Duh
-    rendering = False
+    rendering = True
     lap_limiter = 2
     recdata = True
 
@@ -175,6 +175,8 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
         epoch = 0
         start_time = time.time()
         obss = []
+        rewss = []
+        acss = []
         epoch_episode_rewards = []
         epoch_episode_steps = []
         epoch_episode_eval_rewards = []
@@ -200,16 +202,26 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
                     episode_step += 1
 
                     # Book-keeping.
-                    # epoch_actions.append(action)
+                    epoch_actions.append(action)
                     # epoch_qs.append(q)
                     # agent.store_transition(obs, action, r, new_obs, done)
                     obss.append( obs)
+                    rewss.append( r)
+                    def clip_accel( accel):
+                        if accel < 0.0:
+                            return 0.0
+                        else:
+                            return accel
+
+                    acss.append( [ action[0],
+                        clip_accel(action[1])])
+
                     obs = new_obs
 
                     lapsed = (time.time() - start_time)
 
-                    if  lapsed >= 30.0:
-                        done = True
+                    # if  lapsed >= 30.0:
+                    #     done = True
 
                     if done:
                         # Episode done.
@@ -232,7 +244,9 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
                             obs = env.reset()
                         # obs = env.reset()
                         print( len( obss))
-                        np.save( "/home/z3r0/torcs_data/ddpg_obs.csv", np.asarray( obss))
+                        np.save( "/home/z3r0/torcs_data/ddpg_obs", np.asarray( obss))
+                        np.save( "/home/z3r0/torcs_data/ddpg_rews", np.asarray( rewss))
+                        np.save( "/home/z3r0/torcs_data/ddpg_acs", np.asarray( acss))
                         print( "TIme %.6f\n" % (lapsed))
                         print( "Sampl. Rate: %f" % ( len( obss) / lapsed))
 

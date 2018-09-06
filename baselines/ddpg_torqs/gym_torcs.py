@@ -2,7 +2,7 @@ import gym
 from gym import spaces
 import numpy as np
 # from os import path
-import baselines.gail_torqs.snakeoil3_gym as snakeoil3
+import baselines.ddpg_torqs.snakeoil3_gym as snakeoil3
 import numpy as np
 import copy
 import collections as col
@@ -375,6 +375,9 @@ class TorcsEnv( gym.Env):
             args.append( "-raceconfig")
             # args.append( "\"" + race_config_path + "\"")
             args.append( self.race_config_path)
+
+        if self.recdata:
+            args.append( "-rechum")
 
         args.append("&")
         # print( "##### DEBUG: Args in reset_torcs")
