@@ -259,7 +259,6 @@ def traj_1_generator(pi, env, horizon, stochastic):
     ac = env.action_space.sample()  # not used, just so we have the datatype
     new = True  # marks if we're on first timestep of an episode
 
-    ob = env.reset()
     cur_ep_ret = 0  # return in current episode
     cur_ep_len = 0  # len of current episode
 
@@ -269,6 +268,8 @@ def traj_1_generator(pi, env, horizon, stochastic):
     news = []
     acs = []
 
+    ob = env.reset()
+    
     while True:
         ac, vpred = pi.act(stochastic, ob)
         obs.append(ob)
