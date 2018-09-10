@@ -44,18 +44,18 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     throttle = True
     gear_change = False
     # Agent only
-    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/agent_practice.xml"
+    # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    #     "/raceconfig/agent_practice.xml"
     # Agent and one bot
     # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     #     "/raceconfig/agent_damned_practice.xml"
     # Agent and 3 bots ?
-    # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-    #     "/raceconfig/agent_damned_grid_practice.xml"
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+        "/raceconfig/agent_damned_grid_practice.xml"
     # Duh
     rendering = True
     lap_limiter = 2
-    recdata = True
+    recdata = False
 
     # env = gym.make(env_id)
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
@@ -148,7 +148,10 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
 
     # 20180827 08-42-00-658308, Defiant, Training with enemy from the start, Best scoreing model DAMN This guy is good
     # save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-03-13-10-09-537924/model_data/epoch_518.ckpt"
-    save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-04-15-18-28-480417/model_data/epoch_742.ckpt"
+    # save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-04-15-18-28-480417/model_data/epoch_742.ckpt"
+
+    # openai-ddpgtorcs-2018-09-05-12-46-24-553500
+    save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-05-12-46-24-553500/model_data/epoch_104.ckpt"
 
     step = 0
     episode = 0
@@ -249,6 +252,7 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
                         np.save( "/home/z3r0/torcs_data/ddpg_acs", np.asarray( acss))
                         print( "TIme %.6f\n" % (lapsed))
                         print( "Sampl. Rate: %f" % ( len( obss) / lapsed))
+                        print( "Episode reward %f" % ( np.sum( rewss)))
 
     ### ENd training code
 
