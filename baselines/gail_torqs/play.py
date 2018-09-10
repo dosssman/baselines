@@ -96,10 +96,10 @@ def main(args):
     gear_change = False
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
         "/raceconfig/agent_practice.xml"
-    rendering = True
+    rendering = False
 
     # TODO: How Restrict to 3 laps when evaling ?
-    lap_limiter = 4
+    lap_limiter = 2
 
     # env = gym.make(args.env_id)
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
@@ -177,7 +177,7 @@ def main(args):
                policy_fn,
                args.load_model_path,
                timesteps_per_batch=1024,
-               number_trajs=10,
+               number_trajs=1,
                stochastic_policy=args.stochastic_policy,
                save=args.save_sample
                )
@@ -259,6 +259,8 @@ def runner(env, policy_func, load_model_path, timesteps_per_batch, number_trajs,
     avg_ret = sum(ret_list)/len(ret_list)
     print("Average length:", avg_len)
     print("Average return:", avg_ret)
+    print( "Score:", np.sum( ret_list))
+
     return avg_len, avg_ret
 
 
