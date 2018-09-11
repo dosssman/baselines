@@ -67,7 +67,7 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
 
     log_dir = dir
     data_path = os.path.join( log_dir,
-        "ddpgagent_recdata_forgail_300eps_3laps/expert_data.npz")
+        "ddpg_expert_300eps_3laps/expert_data.npz")
     # data_path = os.path.join('data', 'deterministic.trpo.' + env_name + '.0.00.npz')
     dataset = load_dataset(data_path)
     # checkpoint_list = glob.glob(os.path.join('checkpoint', '*' + env_name + ".*"))
