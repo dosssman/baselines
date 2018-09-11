@@ -174,6 +174,11 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
         agent.reset()
         obs = env.reset()
 
+        save = False
+        print( "### DEBUG : Print first obs")
+        print( obs)
+        input()
+
         # Restore to trained state ?
         saver.restore( sess, save_filename)
 
@@ -279,7 +284,8 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
                     # print( "Episode reward %f" % ( np.sum( rewss)))
 
         # Save expert data
-        np.savez( "/home/z3r0/torcs_data/ddpg_expert_data.npz", **expert_data)
+        if save:
+            np.savez( "/home/z3r0/torcs_data/ddpg_expert_data.npz", **expert_data)
 
     ### ENd training code
 
