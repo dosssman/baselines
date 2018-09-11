@@ -55,7 +55,7 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
 
     # # Duh
     rendering = False
-    lap_limiter = 2
+    lap_limiter = 4
     recdata = False
     rec_episode_limit = 300
     rec_timestep_limit = -1
