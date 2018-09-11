@@ -54,7 +54,7 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     #     "/raceconfig/agent_damned_grid_practice.xml"
 
     # # Duh
-    rendering = True
+    rendering = False
     lap_limiter = 2
     recdata = False
     rec_episode_limit = 300
@@ -154,7 +154,8 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
 
     # Alone special data collect trained agent
     # save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-04-15-18-28-480417/model_data/epoch_104.ckpt"
-    save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-04-15-18-28-480417/model_data/epoch_742.ckpt"
+    save_filename = os.path.join( os.environ["HOME"],
+        "random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-04-15-18-28-480417/model_data/epoch_742.ckpt")
 
     # openai-ddpgtorcs-2018-09-05-12-46-24-553500 Alone
     # save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-05-12-46-24-553500/model_data/epoch_309.ckpt"
