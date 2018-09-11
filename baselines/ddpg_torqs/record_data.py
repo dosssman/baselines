@@ -174,10 +174,10 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
         agent.reset()
         obs = env.reset()
 
-        save = False
-        print( "### DEBUG : Print first obs")
-        print( obs)
-        input()
+        save = True
+        # print( "### DEBUG : Print first obs")
+        # print( obs)
+        # input()
 
         # Restore to trained state ?
         saver.restore( sess, save_filename)
