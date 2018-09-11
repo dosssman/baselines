@@ -85,6 +85,7 @@ def main(args):
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
         "/raceconfig/agent_practice.xml"
     rendering = False
+    noisy = True
 
     # TODO: How Restrict to 3 laps when evaling ?
     lap_limiter = 4
@@ -92,7 +93,7 @@ def main(args):
     # env = gym.make(args.env_id)
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
 		race_config_path=race_config_path, rendering=rendering,
-		lap_limiter = lap_limiter)
+		lap_limiter = lap_limiter, noisy=noisy)
 
     def policy_fn(name, ob_space, ac_space, reuse=False):
         return mlp_policy.MlpPolicy(name=name, ob_space=ob_space, ac_space=ac_space,
@@ -131,7 +132,7 @@ def main(args):
 
     # XXX Default params override
     args.expert_path = os.path.join( args.log_dir,
-        "best20180907damned200ep720tstpInterpolated/expert_data.npz")
+        "ddpgagent_recdata_forgail_300eps_3laps/expert_data.npz")
     task_name = get_task_name( args)
     args.checkpoint_dir = os.path.join( args.log_dir, "checkpoint")
     args.checkpoint_dir = os.path.join( args.checkpoint_dir, task_name)
@@ -140,7 +141,7 @@ def main(args):
     # Training time ( hopefully) and timestep constraints
     # Save samples
     args.save_sample = False
-    args.num_timesteps = 10000000
+    args.num_timesteps = 5000000
 
     if args.task == 'train':
         dataset = Mujoco_Dset(expert_path=args.expert_path, traj_limitation=args.traj_limitation)
@@ -269,7 +270,7 @@ def traj_1_generator(pi, env, horizon, stochastic):
     acs = []
 
     ob = env.reset()
-    
+
     while True:
         ac, vpred = pi.act(stochastic, ob)
         obs.append(ob)
