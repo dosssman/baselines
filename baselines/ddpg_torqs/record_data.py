@@ -255,10 +255,10 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
                     # episode_rewards_history.append(episode_reward)
                     # epoch_episode_steps.append(episode_step)
 
-                    expert_data["obs"].append( ep_obs)
-                    expert_data["acs"].append( ep_acs)
-                    expert_data["rews"].append( ep_rews)
-                    expert_data["ep_rets"].append( episode_reward)
+                    expert_data["obs"].append( np.asarray( ep_obs))
+                    expert_data["acs"].append( np.asarray( ep_acs))
+                    expert_data["rews"].append( np.asarray( ep_rews))
+                    expert_data["ep_rets"].append( np.asarray( episode_reward))
 
                     episode_reward = 0.
                     episode_step = 0
