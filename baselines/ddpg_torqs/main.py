@@ -34,6 +34,7 @@ def run(env_id, seed, noise_type, layer_norm, evaluation, **kwargs):
     vision = False
     throttle = True
     gear_change = False
+    noisy = True
     rendering = kwargs["render"]
     lap_limiter = 4
     # Alone
@@ -51,7 +52,7 @@ def run(env_id, seed, noise_type, layer_norm, evaluation, **kwargs):
     # env = gym.make(env_id)
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
 		race_config_path=race_config_path, rendering=rendering,
-		lap_limiter = lap_limiter)
+		lap_limiter = lap_limiter, noisy=noisy)
 
     # env = bench.Monitor(env, logger.get_dir() and os.path.join(logger.get_dir(), str(rank)))
 
