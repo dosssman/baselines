@@ -83,8 +83,8 @@ def main(args):
     #     "trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0" +
     #     "/trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0")
 
-    args.load_model_path = os.environ["HOME"]+ "/random/rl/openai_logs/openai-gailtorcs/"
-    args.load_model_path += "checkpoint/torcs_gail/torcs_gail_3700"
+    args.load_model_path = os.environ["HOME"]+ "/random/rl/openai_logs/defiant/openai-gailtorcs/"
+    args.load_model_path += "checkpoint/torcs_gail/torcs_gail_3000"
     print( "# DEBUG: Model path: ", (args.load_model_path + ".index"))
 
     # Not pretty but will do for now
@@ -96,10 +96,10 @@ def main(args):
     gear_change = False
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
         "/raceconfig/agent_practice.xml"
-    rendering = False
+    rendering = True
 
     # TODO: How Restrict to 3 laps when evaling ?
-    lap_limiter = 2
+    lap_limiter = 4
 
     # env = gym.make(args.env_id)
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
@@ -141,7 +141,7 @@ def main(args):
 
     # XXX Default params override
     args.expert_path = os.path.join( args.log_dir,
-        "best20180907damned200ep720tstpInterpolated/expert_data.npz")
+        "defiant/ddpg_expert_300eps_3laps/expert_data.npz")
 
     task_name = get_task_name( args)
     args.checkpoint_dir = os.path.join( args.log_dir, "checkpoint")

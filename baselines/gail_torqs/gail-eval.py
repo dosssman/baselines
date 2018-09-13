@@ -56,18 +56,18 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
                                     reuse=reuse, hid_size=policy_hidden_size, num_hid_layers=2)
     # XXX Readapt expert path
     dir = os.getenv('OPENAI_GEN_LOGDIR')
-    if dir is None:
-        dir = osp.join(tempfile.gettempdir(),
-            datetime.datetime.now().strftime("openai-gailtorcs"))
-    else:
-        dir = osp.join( dir, datetime.datetime.now().strftime("openai-gailtorcs"))
+    # if dir is None:
+    #     dir = osp.join(tempfile.gettempdir(),
+    #         datetime.datetime.now().strftime("openai-gailtorcs"))
+    # else:
+    #     dir = osp.join( dir, datetime.datetime.now().strftime("openai-gailtorcs"))
 
     assert isinstance(dir, str)
     os.makedirs(dir, exist_ok=True)
 
     log_dir = dir
     data_path = os.path.join( log_dir,
-        "ddpg_expert_300eps_3laps/expert_data.npz")
+        "defiant/openai-gailtorcs/ddpg_expert_300eps_3laps/expert_data.npz")
     # data_path = os.path.join('data', 'deterministic.trpo.' + env_name + '.0.00.npz')
     dataset = load_dataset(data_path)
     # checkpoint_list = glob.glob(os.path.join('checkpoint', '*' + env_name + ".*"))
@@ -84,7 +84,7 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         # checkpoint_dir = get_checkpoint_dir(checkpoint_list, limit, prefix=prefix)
         # checkpoint_path = tf.train.latest_checkpoint(checkpoint_dir)
         # XXX Checkpoint path
-        checkpoint_path = os.path.join( log_dir, "checkpoint/torcs_gail/torcs_gail_3700")
+        checkpoint_path = os.path.join( log_dir, "defiant/openai-gailtorcs/checkpoint/torcs_gail/torcs_gail_4000")
         print( "# DEBUG: Model path: ", (checkpoint_path + ".index"))
         # Not pretty but will do for now
         assert( os.path.isfile( checkpoint_path + ".index"))
@@ -96,8 +96,8 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         gear_change = False
         race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
             "/raceconfig/agent_practice.xml"
-        rendering = False
-        lap_limiter = 2
+        rendering = True
+        lap_limiter = 4
 
         # env = gym.make(env_id)
         env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
@@ -147,9 +147,9 @@ def plot(env_name, bc_log, gail_log, stochastic):
     dir = os.getenv('OPENAI_GEN_LOGDIR')
     if dir is None:
         dir = osp.join(tempfile.gettempdir(),
-            datetime.datetime.now().strftime("openai-gailtorcs/result"))
+            datetime.datetime.now().strftime("defiant/openai-gailtorcs/result"))
     else:
-        dir = osp.join( dir, datetime.datetime.now().strftime("openai-gailtorcs/result"))
+        dir = osp.join( dir, datetime.datetime.now().strftime("defiant/openai-gailtorcs/result"))
 
     assert isinstance(dir, str)
     os.makedirs(dir, exist_ok=True)
