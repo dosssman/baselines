@@ -67,7 +67,7 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
 
     log_dir = dir
     data_path = os.path.join( log_dir,
-        "defiant/openai-gailtorcs/ddpg_expert_300eps_3laps/expert_data.npz")
+        "defiant/openai-gailtorcs/ddpg_expert_300eps_1lap/expert_data.npz")
     # data_path = os.path.join('data', 'deterministic.trpo.' + env_name + '.0.00.npz')
     dataset = load_dataset(data_path)
     # checkpoint_list = glob.glob(os.path.join('checkpoint', '*' + env_name + ".*"))
@@ -96,8 +96,8 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         gear_change = False
         race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
             "/raceconfig/agent_practice.xml"
-        rendering = True
-        lap_limiter = 4
+        rendering = False
+        lap_limiter = 2
 
         # env = gym.make(env_id)
         env = TorcsEnv(vision=vision, throttle=True, gear_change=False,

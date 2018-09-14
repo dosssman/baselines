@@ -85,7 +85,7 @@ def main(args):
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
         "/raceconfig/agent_practice.xml"
     rendering = False
-    noisy = True
+    noisy = Truez3r0c0nn3ct54rch
 
     # TODO: How Restrict to 3 laps when evaling ?
     lap_limiter = 4
