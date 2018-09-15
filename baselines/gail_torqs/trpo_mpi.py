@@ -236,7 +236,7 @@ def learn(env, policy_func, reward_giver, expert_dataset, rank,
             fname = os.path.join(ckpt_dir, task_name)
             os.makedirs(os.path.dirname(fname), exist_ok=True)
             saver = tf.train.Saver( max_to_keep=max_iters)
-            saver.save(tf.get_default_session(), fname + "_" + str( iters_so_far ))
+            saver.save(tf.get_default_session(), fname)
 
         logger.log("********** Iteration %i ************" % iters_so_far)
 
@@ -263,14 +263,14 @@ def learn(env, policy_func, reward_giver, expert_dataset, rank,
                 *lossbefore, g = compute_lossandgrad(*args)
             lossbefore = allmean(np.array(lossbefore))
             g = allmean(g)
-            # print( "## DEBUG: G before cg", g)
+            print( "## DEBUG: G before cg", g)
             if np.allclose(g, 0):
                 logger.log("Got zero gradient. not updating")
             else:
                 with timed("cg"):
                     stepdir = cg(fisher_vector_product, g, cg_iters=cg_iters, verbose=rank == 0)
                 # TODO: How to make sure the stepdir is not infinit
-                # print( "# DEBUG: Stepdir leng ", len( stepdir))
+                print( "# DEBUG: Stepdir leng ", len( stepdir))
                 print( stepdir)
                 assert np.isfinite(stepdir).all()
                 shs = .5*stepdir.dot(fisher_vector_product(stepdir))
@@ -343,8 +343,6 @@ def learn(env, policy_func, reward_giver, expert_dataset, rank,
         logger.record_tabular("EpLenMean", np.mean(lenbuffer))
         logger.record_tabular("EpRewMean", np.mean(rewbuffer))
         logger.record_tabular("EpTrueRewMean", np.mean(true_rewbuffer))
-        logger.record_tabular("EpMaxRew", np.max( true_rewbuffer))
-        logger.record_tabular("EpMinRew", np.min( true_rewbuffer))
         logger.record_tabular("EpThisIter", len(lens))
         episodes_so_far += len(lens)
         timesteps_so_far += sum(lens)
