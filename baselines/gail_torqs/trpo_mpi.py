@@ -236,7 +236,7 @@ def learn(env, policy_func, reward_giver, expert_dataset, rank,
             fname = os.path.join(ckpt_dir, task_name)
             os.makedirs(os.path.dirname(fname), exist_ok=True)
             saver = tf.train.Saver( max_to_keep=max_iters)
-            saver.save(tf.get_default_session(), fname)
+            saver.save(tf.get_default_session(), fname + "_" + str( iters_so_far ))
 
         logger.log("********** Iteration %i ************" % iters_so_far)
 
@@ -343,6 +343,8 @@ def learn(env, policy_func, reward_giver, expert_dataset, rank,
         logger.record_tabular("EpLenMean", np.mean(lenbuffer))
         logger.record_tabular("EpRewMean", np.mean(rewbuffer))
         logger.record_tabular("EpTrueRewMean", np.mean(true_rewbuffer))
+        logger.record_tabular("EpMaxRew", np.max( true_rewbuffer))
+        logger.record_tabular("EpMinRew", np.min( true_rewbuffer))
         logger.record_tabular("EpThisIter", len(lens))
         episodes_so_far += len(lens)
         timesteps_so_far += sum(lens)

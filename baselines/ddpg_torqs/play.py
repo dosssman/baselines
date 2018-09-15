@@ -52,16 +52,14 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     # Agent and 3 bots ?
     # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     #     "/raceconfig/agent_damned_grid_practice.xml"
-
-    # # Duh
+    # Duh
     rendering = True
-    lap_limiter = 2
-    recdata = False
+    lap_limiter = 4
 
     # env = gym.make(env_id)
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
 		race_config_path=race_config_path, rendering=rendering,
-		lap_limiter = lap_limiter, recdata=recdata)
+		lap_limiter = lap_limiter)
 
     # env = bench.Monitor(env, logger.get_dir() and os.path.join(logger.get_dir(), str(rank)))
 
@@ -148,13 +146,7 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     # save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-08-25-00-18-11-372623/model_data/epoch_495.ckpt"
 
     # 20180827 08-42-00-658308, Defiant, Training with enemy from the start, Best scoreing model DAMN This guy is good
-    # save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-03-13-10-09-537924/model_data/epoch_309.ckpt"
-    save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-04-15-18-28-480417/model_data/epoch_104.ckpt"
-    # save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-04-15-18-28-480417/model_data/epoch_742.ckpt"
-
-    # openai-ddpgtorcs-2018-09-05-12-46-24-553500 Alone
-    # save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-05-12-46-24-553500/model_data/epoch_309.ckpt"
-    # save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-05-12-46-24-553500/model_data/epoch_104.ckpt"
+    save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-03-13-10-09-537924/model_data/epoch_518.ckpt"
 
     step = 0
     episode = 0
@@ -181,8 +173,6 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
         epoch = 0
         start_time = time.time()
         obss = []
-        rewss = []
-        acss = []
         epoch_episode_rewards = []
         epoch_episode_steps = []
         epoch_episode_eval_rewards = []
@@ -208,26 +198,16 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
                     episode_step += 1
 
                     # Book-keeping.
-                    epoch_actions.append(action)
+                    # epoch_actions.append(action)
                     # epoch_qs.append(q)
                     # agent.store_transition(obs, action, r, new_obs, done)
                     obss.append( obs)
-                    rewss.append( r)
-                    def clip_accel( accel):
-                        if accel < 0.0:
-                            return 0.0
-                        else:
-                            return accel
-
-                    acss.append( [ action[0],
-                        clip_accel(action[1])])
-
                     obs = new_obs
 
                     lapsed = (time.time() - start_time)
 
-                    # if  lapsed >= 30.0:
-                    #     done = True
+                    if  lapsed >= 30.0:
+                        done = True
 
                     if done:
                         # Episode done.
@@ -250,12 +230,12 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
                             obs = env.reset()
                         # obs = env.reset()
                         print( len( obss))
+<<<<<<< HEAD
+                        np.save( "/home/z3r0/torcs_data/ddpg_obs.csv", np.asarray( obss))
+=======
                         np.save( "/home/z3r0/torcs_data/ddpg_obs", np.asarray( obss))
-                        np.save( "/home/z3r0/torcs_data/ddpg_rews", np.asarray( rewss))
-                        np.save( "/home/z3r0/torcs_data/ddpg_acs", np.asarray( acss))
-                        print( "TIme %.6f\n" % (lapsed))
-                        print( "Sampl. Rate: %f" % ( len( obss) / lapsed))
-                        print( "Episode reward %f" % ( np.sum( rewss)))
+>>>>>>> torqs-ddpg
+                        print( "TIme %.6f\n" % (time.time() - start_time))
 
     ### ENd training code
 
@@ -299,8 +279,7 @@ def parse_args():
 
 if __name__ == '__main__':
     args = parse_args()
-    # DO not log
-    # if MPI.COMM_WORLD.Get_rank() == 0:
-        # logger.configure()
+    if MPI.COMM_WORLD.Get_rank() == 0:
+        logger.configure()
     # Run actual script.
     run(**args)

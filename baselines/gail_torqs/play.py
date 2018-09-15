@@ -76,6 +76,20 @@ def main(args):
     U.make_session(num_cpu=1).__enter__()
     set_global_seeds(args.seed)
 
+    # XXX Eval reparams
+    args.task = "evaluate"
+    args.load_model_path = os.path.join( args.log_dir, "checkpoint")
+    # args.load_model_path = os.path.join( args.load_model_path,
+    #     "trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0" +
+    #     "/trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0")
+
+    args.load_model_path = os.environ["HOME"]+ "/random/rl/openai_logs/defiant/openai-gailtorcs/"
+    args.load_model_path += "checkpoint/torcs_gail/torcs_gail_3000"
+    print( "# DEBUG: Model path: ", (args.load_model_path + ".index"))
+
+    # Not pretty but will do for now
+    assert( os.path.isfile( args.load_model_path + ".index"))
+
     # XXX: Hook up Gym Torcs
     vision = False
     throttle = True
@@ -112,23 +126,13 @@ def main(args):
     # args.log_dir = osp.join(args.log_dir, task_name)
     # assert isinstance(args.log_dir, str)
     # os.makedirs(args.log_dir, exist_ok=True)
-    logger.configure( args.log_dir)
-    print( "# DEBUG: Logging to %s" % dir)
+    # logger.configure( args.log_dir)
+    # print( "# DEBUG: Logging to %s" % dir)
 
-    # XXX Eval reparams
-    args.task = "evaluate"
-    args.load_model_path = os.path.join( args.log_dir, "checkpoint")
-    # args.load_model_path = os.path.join( args.load_model_path,
-    #     "trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0" +
-    #     "/trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0")
+    # args.load_model_path += ".ckpt"
 
-    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/logbakExprtDataScorefixedAndSlicedto5Hz/checkpoint/trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0/" \
-        + "trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0"
-
-    print( "# DEBUG: Model path: ", args.load_model_path)
-
-    env = bench.Monitor(env, logger.get_dir() and
-                        osp.join(logger.get_dir(), "monitor.csv"), allow_early_resets=True)
+    # env = bench.Monitor(env, logger.get_dir() and
+    #                     osp.join(logger.get_dir(), "monitor.csv"), allow_early_resets=True)
     env.seed(args.seed)
     gym.logger.setLevel(logging.WARN)
     # task_name = get_task_name(args)
@@ -137,7 +141,8 @@ def main(args):
 
     # XXX Default params override
     args.expert_path = os.path.join( args.log_dir,
-        "damned201ep200stpScoreFixedAndSlicedto5Hz/expert_data.npz")
+        "defiant/ddpg_expert_300eps_1lap/expert_data.npz")
+
     task_name = get_task_name( args)
     args.checkpoint_dir = os.path.join( args.log_dir, "checkpoint")
     args.checkpoint_dir = os.path.join( args.checkpoint_dir, task_name)
@@ -172,7 +177,7 @@ def main(args):
                policy_fn,
                args.load_model_path,
                timesteps_per_batch=1024,
-               number_trajs=10,
+               number_trajs=1,
                stochastic_policy=args.stochastic_policy,
                save=args.save_sample
                )
@@ -254,6 +259,8 @@ def runner(env, policy_func, load_model_path, timesteps_per_batch, number_trajs,
     avg_ret = sum(ret_list)/len(ret_list)
     print("Average length:", avg_len)
     print("Average return:", avg_ret)
+    print( "Score:", np.sum( ret_list))
+
     return avg_len, avg_ret
 
 
