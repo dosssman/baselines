@@ -141,7 +141,7 @@ def main(args):
     # Training time ( hopefully) and timestep constraints
     # Save samples
     args.save_sample = False
-    args.num_timesteps = 3000000
+    args.num_timesteps = 5000000
 
     if args.task == 'train':
         dataset = Mujoco_Dset(expert_path=args.expert_path, traj_limitation=args.traj_limitation)

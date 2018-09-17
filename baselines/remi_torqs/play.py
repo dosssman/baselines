@@ -14,15 +14,15 @@ import datetime, time
 import gym
 import tempfile
 
-from baselines.gail import mlp_policy
+from baselines.remi_torqs import mlp_policy
 from baselines.common import set_global_seeds, tf_util as U
 from baselines.common.misc_util import boolean_flag
 from baselines import bench
 from baselines import logger
-from baselines.gail.dataset.mujoco_dset import Mujoco_Dset
-from baselines.gail.adversary import TransitionClassifier
+from baselines.remi_torqs.dataset.mujoco_dset import Mujoco_Dset
+from baselines.remi_torqs.adversary import TransitionClassifier
 
-from baselines.gail_torqs.gym_torcs import TorcsEnv
+from baselines.remi_torqs.gym_torcs import TorcsEnv
 
 def argsparser():
     parser = argparse.ArgumentParser("Tensorflow Implementation of GAIL")
@@ -83,8 +83,8 @@ def main(args):
     #     "trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0" +
     #     "/trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0")
 
-    args.load_model_path = os.environ["HOME"]+ "/random/rl/openai_logs/defiant/openai-gailtorcs/"
-    args.load_model_path += "checkpoint/torcs_gail/torcs_gail_3000"
+    args.load_model_path = os.environ["HOME"]+ "/random/rl/openai_logs/defiant/openai-remi/"
+    args.load_model_path += "20180916_DamnedAndDDPGAlpha0_5GAILed/checkpoint/torcs_gail/torcs_gail_2300"
     print( "# DEBUG: Model path: ", (args.load_model_path + ".index"))
 
     # Not pretty but will do for now
@@ -99,7 +99,7 @@ def main(args):
     rendering = True
 
     # TODO: How Restrict to 3 laps when evaling ?
-    lap_limiter = 4
+    lap_limiter = 2
 
     # env = gym.make(args.env_id)
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
@@ -116,9 +116,9 @@ def main(args):
     dir = os.getenv('OPENAI_GEN_LOGDIR')
     if dir is None:
         dir = osp.join(tempfile.gettempdir(),
-            datetime.datetime.now().strftime("openai-gailtorcs"))
+            datetime.datetime.now().strftime("openai-remi"))
     else:
-        dir = osp.join( dir, datetime.datetime.now().strftime("openai-gailtorcs"))
+        dir = osp.join( dir, datetime.datetime.now().strftime("openai-remi"))
 
     assert isinstance(dir, str)
     os.makedirs(dir, exist_ok=True)
@@ -141,7 +141,7 @@ def main(args):
 
     # XXX Default params override
     args.expert_path = os.path.join( args.log_dir,
-        "defiant/ddpg_expert_300eps_1lap/expert_data.npz")
+        "defiant/openai-remi/data/mixed_damned_alpha_0.500.npz")
 
     task_name = get_task_name( args)
     args.checkpoint_dir = os.path.join( args.log_dir, "checkpoint")
@@ -193,7 +193,7 @@ def train(env, seed, policy_fn, reward_giver, dataset, algo,
     pretrained_weight = None
     if pretrained and (BC_max_iter > 0):
         # Pretrain with behavior cloning
-        from baselines.gail import behavior_clone
+        from baselines.remi_torqs import behavior_clone
         pretrained_weight = behavior_clone.learn(env, policy_fn, dataset,
                                                  max_iters=BC_max_iter)
 

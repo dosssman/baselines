@@ -14,13 +14,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
 
-from baselines.gail_torqs import main as run_torcs
-from baselines.gail_torqs import mlp_policy
+from baselines.remi_torqs import main as run_torcs
+from baselines.remi_torqs import mlp_policy
 from baselines.common import set_global_seeds, tf_util as U
 from baselines.common.misc_util import boolean_flag
-from baselines.gail_torqs.dataset.mujoco_dset import Mujoco_Dset
+from baselines.remi_torqs.dataset.mujoco_dset import Mujoco_Dset
 
-from baselines.gail_torqs.gym_torcs import TorcsEnv
+from baselines.remi_torqs.gym_torcs import TorcsEnv
 
 plt.style.use('ggplot')
 CONFIG = {
@@ -67,7 +67,7 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
 
     log_dir = dir
     data_path = os.path.join( log_dir,
-        "defiant/openai-gailtorcs/ddpg_expert_300eps_1lap/expert_data.npz")
+        "defiant/openai-remi/data/mixed_damned_alpha_0.500.npz")
     # data_path = os.path.join('data', 'deterministic.trpo.' + env_name + '.0.00.npz')
     dataset = load_dataset(data_path)
     # checkpoint_list = glob.glob(os.path.join('checkpoint', '*' + env_name + ".*"))
@@ -84,7 +84,7 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         # checkpoint_dir = get_checkpoint_dir(checkpoint_list, limit, prefix=prefix)
         # checkpoint_path = tf.train.latest_checkpoint(checkpoint_dir)
         # XXX Checkpoint path
-        checkpoint_path = os.path.join( log_dir, "defiant/openai-gailtorcs/checkpoint/torcs_gail/torcs_gail_4000")
+        checkpoint_path = os.path.join( log_dir, "defiant/openai-remi/20180916_DamnedAndDDPGAlpha0_5GAILed/checkpoint/torcs_gail/torcs_gail_2300")
         print( "# DEBUG: Model path: ", (checkpoint_path + ".index"))
         # Not pretty but will do for now
         assert( os.path.isfile( checkpoint_path + ".index"))
@@ -97,7 +97,7 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
             "/raceconfig/agent_practice.xml"
         rendering = False
-        lap_limiter = 2
+        lap_limiter = 4
 
         # env = gym.make(env_id)
         env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
@@ -147,9 +147,9 @@ def plot(env_name, bc_log, gail_log, stochastic):
     dir = os.getenv('OPENAI_GEN_LOGDIR')
     if dir is None:
         dir = osp.join(tempfile.gettempdir(),
-            datetime.datetime.now().strftime("defiant/openai-gailtorcs/result"))
+            datetime.datetime.now().strftime("defiant/openai-remi/result"))
     else:
-        dir = osp.join( dir, datetime.datetime.now().strftime("defiant/openai-gailtorcs/result"))
+        dir = osp.join( dir, datetime.datetime.now().strftime("defiant/openai-remi/result"))
 
     assert isinstance(dir, str)
     os.makedirs(dir, exist_ok=True)
@@ -183,7 +183,7 @@ def plot(env_name, bc_log, gail_log, stochastic):
 def main(args):
     U.make_session(num_cpu=1).__enter__()
     set_global_seeds(args.seed)
-    args.env = "Torcs GAIL"
+    args.env = "Torcs ReMi"
     print('Evaluating {}'.format(args.env))
     bc_log = evaluate_env(args.env, args.seed, args.policy_hidden_size,
                           args.stochastic_policy, False, 'BC')
