@@ -84,7 +84,10 @@ def main(args):
     #     "/trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0")
 
     args.load_model_path = os.environ["HOME"]+ "/random/rl/openai_logs/defiant/openai-remi/"
-    args.load_model_path += "20180916_DamnedAndDDPGAlpha0_5GAILed/checkpoint/torcs_gail/torcs_gail_2300"
+    # 20180915~ ?
+    # args.load_model_path += "20180916_DamnedAndDDPGAlpha0_5GAILed/checkpoint/torcs_gail/torcs_gail_2300"
+    # 20180917
+    args.load_model_path += "20180917_DamnedAndDDPGAlpha0_5_5MTimestep/checkpoint/torcs_gail/torcs_gail_950"
     print( "# DEBUG: Model path: ", (args.load_model_path + ".index"))
 
     # Not pretty but will do for now

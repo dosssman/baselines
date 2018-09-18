@@ -84,7 +84,10 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         # checkpoint_dir = get_checkpoint_dir(checkpoint_list, limit, prefix=prefix)
         # checkpoint_path = tf.train.latest_checkpoint(checkpoint_dir)
         # XXX Checkpoint path
-        checkpoint_path = os.path.join( log_dir, "defiant/openai-remi/20180916_DamnedAndDDPGAlpha0_5GAILed/checkpoint/torcs_gail/torcs_gail_2300")
+        # 20180915~ ?
+        # checkpoint_path = os.path.join( log_dir, "defiant/openai-remi/20180916_DamnedAndDDPGAlpha0_5GAILed/checkpoint/torcs_gail/torcs_gail_2300")
+        # 20180917
+        checkpoint_path = os.path.join( log_dir, "defiant/openai-remi/20180917_DamnedAndDDPGAlpha0_5_5MTimestep/checkpoint/torcs_gail/torcs_gail_950")
         print( "# DEBUG: Model path: ", (checkpoint_path + ".index"))
         # Not pretty but will do for now
         assert( os.path.isfile( checkpoint_path + ".index"))
