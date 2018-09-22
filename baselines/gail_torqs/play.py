@@ -83,8 +83,10 @@ def main(args):
     #     "trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0" +
     #     "/trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0")
 
-    args.load_model_path = os.environ["HOME"]+ "/random/rl/openai_logs/defiant/openai-gailtorcs/"
-    args.load_model_path += "checkpoint/torcs_gail/torcs_gail_3000"
+    # args.load_model_path = os.environ["HOME"]+ "/random/rl/openai_logs/defiant/openai-gailtorcs/"
+    # args.load_model_path += "checkpoint/torcs_gail/torcs_gail_3000"
+    args.load_model_path = os.environ["HOME"]+ "/random/rl/openai_logs/openai-gailtorcs/"
+    args.load_model_path += "best20180907damned200ep720tstpInterpolatedTrainLogs/checkpoint/torcs_gail/torcs_gail_3700"
     print( "# DEBUG: Model path: ", (args.load_model_path + ".index"))
 
     # Not pretty but will do for now
@@ -141,7 +143,7 @@ def main(args):
 
     # XXX Default params override
     args.expert_path = os.path.join( args.log_dir,
-        "defiant/ddpg_expert_300eps_1lap/expert_data.npz")
+        "best20180907damned200ep720tstpInterpolated/expert_data.npz")
 
     task_name = get_task_name( args)
     args.checkpoint_dir = os.path.join( args.log_dir, "checkpoint")
@@ -176,7 +178,7 @@ def main(args):
         runner(env,
                policy_fn,
                args.load_model_path,
-               timesteps_per_batch=1024,
+               timesteps_per_batch=720,
                number_trajs=1,
                stochastic_policy=args.stochastic_policy,
                save=args.save_sample
@@ -297,6 +299,7 @@ def traj_1_generator(pi, env, horizon, stochastic):
             break
         t += 1
 
+    print( "Time steps length %d" % t)
     duration = time.time() - start_time
 
     print( "### DEBUG: Duration %f" % (duration))

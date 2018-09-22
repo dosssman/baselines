@@ -170,7 +170,8 @@ def main(args):
                timesteps_per_batch=1024,
                number_trajs=10,
                stochastic_policy=args.stochastic_policy,
-               save=args.save_sample
+               save=args.save_sample,
+               timestep_limit=None
                )
     else:
         raise NotImplementedError
