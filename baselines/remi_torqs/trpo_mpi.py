@@ -101,8 +101,7 @@ def add_vtarg_and_adv(seg, gamma, lam):
         gaelam[t] = lastgaelam = delta + gamma * lam * nonterminal * lastgaelam
     seg["tdlamret"] = seg["adv"] + seg["vpred"]
 
-
-def learn(env, policy_func, reward_giver, expert_dataset, rank,
+def learn(env, policy_func, reward_giver, expert_dataset, rl_expert_dataset, rank,
           pretrained, pretrained_weight, *,
           g_step, d_step, entcoeff, save_per_iter,
           ckpt_dir, log_dir, timesteps_per_batch, task_name,
@@ -147,6 +146,7 @@ def learn(env, policy_func, reward_giver, expert_dataset, rank,
     dist = meankl
 
     all_var_list = pi.get_trainable_variables()
+
     var_list = [v for v in all_var_list if v.name.startswith("pi/pol") or v.name.startswith("pi/logstd")]
     vf_var_list = [v for v in all_var_list if v.name.startswith("pi/vff")]
     assert len(var_list) == len(vf_var_list) + 1
@@ -269,9 +269,6 @@ def learn(env, policy_func, reward_giver, expert_dataset, rank,
             else:
                 with timed("cg"):
                     stepdir = cg(fisher_vector_product, g, cg_iters=cg_iters, verbose=rank == 0)
-                # TODO: How to make sure the stepdir is not infinit
-                # print( "# DEBUG: Stepdir leng ", len( stepdir))
-                print( stepdir)
                 assert np.isfinite(stepdir).all()
                 shs = .5*stepdir.dot(fisher_vector_product(stepdir))
                 lm = np.sqrt(shs / max_kl)
@@ -320,15 +317,20 @@ def learn(env, policy_func, reward_giver, expert_dataset, rank,
         logger.log("Optimizing Discriminator...")
         logger.log(fmt_row(13, reward_giver.loss_name))
         ob_expert, ac_expert = expert_dataset.get_next_batch(len(ob))
+        ob_rl_expert, ac_rl_expert = rl_expert_dataset.get_next_batch( len( ob))
         batch_size = len(ob) // d_step
         d_losses = []  # list of tuples, each of which gives the loss for a minibatch
+        # XXX What to do to mix the RL and Expert data ? Whatamagonnadoo
         for ob_batch, ac_batch in dataset.iterbatches((ob, ac),
                                                       include_final_partial_batch=False,
                                                       batch_size=batch_size):
             ob_expert, ac_expert = expert_dataset.get_next_batch(len(ob_batch))
+            ob_rl_expert, ac_rl_expert = rl_expert_dataset.get_next_batch( len( ob_batch))
             # update running mean/std for reward_giver
             if hasattr(reward_giver, "obs_rms"): reward_giver.obs_rms.update(np.concatenate((ob_batch, ob_expert), 0))
-            *newlosses, g = reward_giver.lossandgrad(ob_batch, ac_batch, ob_expert, ac_expert)
+            # TODO Does inputing the RL Databatch with respect to the Experts databatch makes any kind of sens ?
+            # It's just the batch length but ...
+            *newlosses, g = reward_giver.lossandgrad(ob_batch, ac_batch, ob_expert, ac_expert, ob_rl_expert, ac_rl_expert)
             d_adam.update(allmean(g), d_stepsize)
             d_losses.append(newlosses)
         logger.log(fmt_row(13, np.mean(d_losses, axis=0)))

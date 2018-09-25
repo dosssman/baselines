@@ -58,7 +58,6 @@ def argsparser():
     parser.add_argument('--BC_max_iter', help='Max iteration for training BC', type=int, default=1e4)
     return parser.parse_args()
 
-
 def get_task_name(args):
     # task_name = args.algo + "_gail."
     # if args.pretrained:
@@ -70,9 +69,8 @@ def get_task_name(args):
     #     ".policy_entcoeff_" + str(args.policy_entcoeff) + ".adversary_entcoeff_" + str(args.adversary_entcoeff)
     # task_name += ".seed_" + str(args.seed)
 
-    task_name = "torcs_gail"
+    task_name = "torcs_remi"
     return task_name
-
 
 def main(args):
     U.make_session(num_cpu=1).__enter__()
@@ -132,7 +130,11 @@ def main(args):
 
     # XXX Default params override
     args.expert_path = os.path.join( args.log_dir,
-        "data/mixed_damned_alpha_0.500.npz")
+        "data/damned200ep720tstpInterpolated/expert_data.npz")
+    # RL Expert data
+    args.rl_expert_path = os.path.join( args.log_dir,
+        "data/ddpg200ep720tstpInterpolated/expert_data.npz")
+
     task_name = get_task_name( args)
     args.checkpoint_dir = os.path.join( args.log_dir, "checkpoint")
     args.checkpoint_dir = os.path.join( args.checkpoint_dir, task_name)
@@ -141,16 +143,20 @@ def main(args):
     # Training time ( hopefully) and timestep constraints
     # Save samples
     args.save_sample = False
-    args.num_timesteps = 5000000
+    args.num_timesteps = 2500000
 
     if args.task == 'train':
         dataset = Mujoco_Dset(expert_path=args.expert_path, traj_limitation=args.traj_limitation)
+        # XXX Read RL Expert's Data
+        rl_dataset = Mujoco_Dset(expert_path=args.rl_expert_path, traj_limitation=args.traj_limitation)
         reward_giver = TransitionClassifier(env, args.adversary_hidden_size, entcoeff=args.adversary_entcoeff)
+
         train(env,
               args.seed,
               policy_fn,
               reward_giver,
               dataset,
+              rl_dataset,
               args.algo,
               args.g_step,
               args.d_step,
@@ -178,14 +184,14 @@ def main(args):
     env.close()
 
 
-def train(env, seed, policy_fn, reward_giver, dataset, algo,
+def train(env, seed, policy_fn, reward_giver, dataset, rl_dataset, algo,
           g_step, d_step, policy_entcoeff, num_timesteps, save_per_iter,
           checkpoint_dir, log_dir, pretrained, BC_max_iter, task_name=None):
 
     pretrained_weight = None
     if pretrained and (BC_max_iter > 0):
         # Pretrain with behavior cloning
-        from baselines.gail import behavior_clone
+        from baselines.remi_torqs import behavior_clone
         pretrained_weight = behavior_clone.learn(env, policy_fn, dataset,
                                                  max_iters=BC_max_iter)
 
@@ -198,7 +204,7 @@ def train(env, seed, policy_fn, reward_giver, dataset, algo,
         workerseed = seed + 10000 * MPI.COMM_WORLD.Get_rank()
         set_global_seeds(workerseed)
         env.seed(workerseed)
-        trpo_mpi.learn(env, policy_fn, reward_giver, dataset, rank,
+        trpo_mpi.learn(env, policy_fn, reward_giver, dataset, rl_dataset, rank,
                        pretrained=pretrained, pretrained_weight=pretrained_weight,
                        g_step=g_step, d_step=d_step,
                        entcoeff=policy_entcoeff,

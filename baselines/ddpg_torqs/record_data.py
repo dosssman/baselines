@@ -55,10 +55,10 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
 
     # # Duh
     rendering = False
-    lap_limiter = 2
+    lap_limiter = 4
     recdata = False
-    rec_episode_limit = 300
-    rec_timestep_limit = -1
+    rec_episode_limit = 200
+    rec_timestep_limit = 720
 
     # env = gym.make(env_id)
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
@@ -175,9 +175,6 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
         obs = env.reset()
 
         save = True
-        # print( "### DEBUG : Print first obs")
-        # print( obs)
-        # input()
 
         # Restore to trained state ?
         saver.restore( sess, save_filename)
@@ -248,6 +245,9 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
 
                 # if  lapsed >= 30.0:
                 #     done = True
+
+                if t >= rec_timestep_limit:
+                    done = True
 
                 if done:
                     # Episode done.

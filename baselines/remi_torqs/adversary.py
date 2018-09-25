@@ -18,7 +18,7 @@ def logit_bernoulli_entropy(logits):
     return ent
 
 class TransitionClassifier(object):
-    def __init__(self, env, hidden_size, entcoeff=0.001, lr_rate=1e-3, scope="adversary"):
+    def __init__(self, env, hidden_size, entcoeff=0.001, lr_rate=1e-3, scope="adversary", alpha=.5):
         self.scope = scope
         self.observation_shape = env.observation_space.shape
         self.actions_shape = env.action_space.shape
@@ -29,9 +29,13 @@ class TransitionClassifier(object):
         # Build grpah
         generator_logits = self.build_graph(self.generator_obs_ph, self.generator_acs_ph, reuse=False)
         expert_logits = self.build_graph(self.expert_obs_ph, self.expert_acs_ph, reuse=True)
+        # XXX Remi Edited
+        rl_expert_logits = self.build_graph( self.rl_expert_obs_ph, self.rl_expert_acs_ph, reuse=True)
         # Build accuracy
         generator_acc = tf.reduce_mean(tf.to_float(tf.nn.sigmoid(generator_logits) < 0.5))
         expert_acc = tf.reduce_mean(tf.to_float(tf.nn.sigmoid(expert_logits) > 0.5))
+        # XXX Remi Edited
+        rl_expert_acc = tf.reduce_mean(tf.to_float(tf.nn.sigmoid(rl_expert_logits) > 0.5))
         # Build regression loss
         # let x = logits, z = targets.
         # z * -log(sigmoid(x)) + (1 - z) * -log(1 - sigmoid(x))
@@ -39,25 +43,37 @@ class TransitionClassifier(object):
         generator_loss = tf.reduce_mean(generator_loss)
         expert_loss = tf.nn.sigmoid_cross_entropy_with_logits(logits=expert_logits, labels=tf.ones_like(expert_logits))
         expert_loss = tf.reduce_mean(expert_loss)
+        # XXX Remi Edited
+        rl_expert_loss = tf.nn.sigmoid_cross_entropy_with_logits(logits=rl_expert_logits, labels=tf.ones_like(rl_expert_logits))
+        rl_expert_loss = tf.reduce_mean(rl_expert_loss)
+        mixed_loss = alpha * expert_loss + ( 1- alpha) * rl_expert_loss
+        # TODO Now somehow fuse the experts
         # Build entropy loss
         logits = tf.concat([generator_logits, expert_logits], 0)
         entropy = tf.reduce_mean(logit_bernoulli_entropy(logits))
         entropy_loss = -entcoeff*entropy
         # Loss + Accuracy terms
-        self.losses = [generator_loss, expert_loss, entropy, entropy_loss, generator_acc, expert_acc]
-        self.loss_name = ["generator_loss", "expert_loss", "entropy", "entropy_loss", "generator_acc", "expert_acc"]
-        self.total_loss = generator_loss + expert_loss + entropy_loss
+        self.losses = [generator_loss, expert_loss, rl_expert_loss, mixed_loss, entropy, entropy_loss, generator_acc, expert_acc]
+        self.loss_name = ["generator_loss", "expert_loss", "rl_expert_loss",
+            "mixed_loss", "entropy", "entropy_loss", "generator_acc", "expert_acc"]
+        # self.total_loss = generator_loss + expert_loss + entropy_loss
+        self.total_loss = generator_loss + mixed_loss + entropy_loss
         # Build Reward for policy
         self.reward_op = -tf.log(1-tf.nn.sigmoid(generator_logits)+1e-8)
         var_list = self.get_trainable_variables()
-        self.lossandgrad = U.function([self.generator_obs_ph, self.generator_acs_ph, self.expert_obs_ph, self.expert_acs_ph],
+        self.lossandgrad = U.function([self.generator_obs_ph, self.generator_acs_ph, self.expert_obs_ph, self.expert_acs_ph,
+                                    self.rl_expert_obs_ph, self.rl_expert_acs_ph],
                                       self.losses + [U.flatgrad(self.total_loss, var_list)])
+
 
     def build_ph(self):
         self.generator_obs_ph = tf.placeholder(tf.float32, (None, ) + self.observation_shape, name="observations_ph")
         self.generator_acs_ph = tf.placeholder(tf.float32, (None, ) + self.actions_shape, name="actions_ph")
         self.expert_obs_ph = tf.placeholder(tf.float32, (None, ) + self.observation_shape, name="expert_observations_ph")
         self.expert_acs_ph = tf.placeholder(tf.float32, (None, ) + self.actions_shape, name="expert_actions_ph")
+        # XXX Remi Edited
+        self.rl_expert_obs_ph = tf.placeholder(tf.float32, (None, ) + self.observation_shape, name="rl_expert_observations_ph")
+        self.rl_expert_acs_ph = tf.placeholder(tf.float32, (None, ) + self.actions_shape, name="rl_expert_actions_ph")
 
     def build_graph(self, obs_ph, acs_ph, reuse=False):
         with tf.variable_scope(self.scope):
@@ -82,6 +98,6 @@ class TransitionClassifier(object):
             obs = np.expand_dims(obs, 0)
         if len(acs.shape) == 1:
             acs = np.expand_dims(acs, 0)
-        feed_dict = {self.generator_obs_ph: obs, self.generator_acs_ph: acs}
+        feed_dict = {self.generator_obs_ph: obs, self.generator_acs_ph: acs }
         reward = sess.run(self.reward_op, feed_dict)
         return reward
