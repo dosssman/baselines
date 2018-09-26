@@ -335,6 +335,9 @@ def learn(env, policy_func, reward_giver, expert_dataset, rl_expert_dataset, ran
             d_losses.append(newlosses)
         logger.log(fmt_row(13, np.mean(d_losses, axis=0)))
 
+        for k, loss_name in enumerate( reward_giver.loss_name):
+            logger.record_tabular( "Loss/" + loss_name, np.mean(d_losses, axis=0)[k])
+
         lrlocal = (seg["ep_lens"], seg["ep_rets"], seg["ep_true_rets"])  # local values
         listoflrpairs = MPI.COMM_WORLD.allgather(lrlocal)  # list of tuples
         lens, rews, true_rets = map(flatten_lists, zip(*listoflrpairs))

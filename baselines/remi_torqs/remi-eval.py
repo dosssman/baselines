@@ -66,14 +66,18 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
     os.makedirs(dir, exist_ok=True)
 
     log_dir = dir
-    data_path = os.path.join( log_dir,
-        "defiant/openai-remi/data/mixed_damned_alpha_0.500.npz")
+    expert_data = os.path.join( log_dir,
+        "openai-remi/data/damned200ep720tstpInterpolated/expert_data.npz")
+    rl_expert_data = os.path.join( log_dir,
+        "openai-remi/data/ddpg200ep720tstpInterpolated/expert_data.npz")
     # data_path = os.path.join('data', 'deterministic.trpo.' + env_name + '.0.00.npz')
-    dataset = load_dataset(data_path)
+    dataset = load_dataset(expert_data)
+    rl_dataset = load_dataset( rl_expert_data)
     # checkpoint_list = glob.glob(os.path.join('checkpoint', '*' + env_name + ".*"))
     log = {
         'traj_limitation': [],
         'upper_bound': [],
+        "rl_upper_bound": [],
         'avg_ret': [],
         'avg_len': [],
         'normalized_ret': []
@@ -81,13 +85,14 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
     for i, limit in enumerate(CONFIG['traj_limitation']):
         # Do one evaluation
         upper_bound = sum(dataset.rets[:limit])/limit
+        rl_upper_bound = sum(rl_dataset.rets[:limit])/limit
         # checkpoint_dir = get_checkpoint_dir(checkpoint_list, limit, prefix=prefix)
         # checkpoint_path = tf.train.latest_checkpoint(checkpoint_dir)
         # XXX Checkpoint path
         # 20180915~ ?
         # checkpoint_path = os.path.join( log_dir, "defiant/openai-remi/20180916_DamnedAndDDPGAlpha0_5GAILed/checkpoint/torcs_gail/torcs_gail_2300")
         # 20180917
-        checkpoint_path = os.path.join( log_dir, "defiant/openai-remi/20180917_DamnedAndDDPGAlpha0_5_5MTimestep/checkpoint/torcs_gail/torcs_gail_950")
+        checkpoint_path = os.path.join( log_dir, "openai-remi/mixedLossAlpha0_5_20180926/checkpoint/torcs_remi/torcs_remi_650")
         print( "# DEBUG: Model path: ", (checkpoint_path + ".index"))
         # Not pretty but will do for now
         assert( os.path.isfile( checkpoint_path + ".index"))
@@ -118,28 +123,32 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
                                              stochastic_policy=stochastic,
                                              reuse=((i != 0) or reuse))
         normalized_ret = avg_ret/upper_bound
-        print('Upper bound: {}, evaluation returns: {}, normalized scores: {}'.format(
-            upper_bound, avg_ret, normalized_ret))
+        print('Upper bound: {}, RL Upper bound: {}, evaluation returns: {}, normalized scores: {}'.format(
+            upper_bound, rl_upper_bound, avg_ret, normalized_ret))
         log['traj_limitation'].append(limit)
         log['upper_bound'].append(upper_bound)
+        log["rl_upper_bound"].append( rl_upper_bound)
         log['avg_ret'].append(avg_ret)
         log['avg_len'].append(avg_len)
         log['normalized_ret'].append(normalized_ret)
+
         env.close()
     return log
 
 
 def plot(env_name, bc_log, gail_log, stochastic):
     upper_bound = bc_log['upper_bound']
+    rl_upper_bound = bc_log["rl_upper_bound"]
     bc_avg_ret = bc_log['avg_ret']
     gail_avg_ret = gail_log['avg_ret']
     plt.plot(CONFIG['traj_limitation'], upper_bound)
+    plt.plot(CONFIG['traj_limitation'], rl_upper_bound)
     plt.plot(CONFIG['traj_limitation'], bc_avg_ret)
     plt.plot(CONFIG['traj_limitation'], gail_avg_ret)
     plt.xlabel('Number of expert trajectories')
     plt.ylabel('Accumulated reward')
     plt.title('{} unnormalized scores'.format(env_name))
-    plt.legend(['expert', 'bc-imitator', 'gail-imitator'], loc='lower right')
+    plt.legend(['expert', "rl_expert", 'bc-imitator', 'gail-imitator'], loc='lower right')
     plt.grid(b=True, which='major', color='gray', linestyle='--')
     if stochastic:
         title_name = '{}-unnormalized-stochastic-scores.png'.format(env_name)
@@ -150,9 +159,9 @@ def plot(env_name, bc_log, gail_log, stochastic):
     dir = os.getenv('OPENAI_GEN_LOGDIR')
     if dir is None:
         dir = osp.join(tempfile.gettempdir(),
-            datetime.datetime.now().strftime("defiant/openai-remi/result"))
+            datetime.datetime.now().strftime("openai-remi/result"))
     else:
-        dir = osp.join( dir, datetime.datetime.now().strftime("defiant/openai-remi/result"))
+        dir = osp.join( dir, datetime.datetime.now().strftime("openai-remi/result"))
 
     assert isinstance(dir, str)
     os.makedirs(dir, exist_ok=True)
