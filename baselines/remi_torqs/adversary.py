@@ -18,7 +18,7 @@ def logit_bernoulli_entropy(logits):
     return ent
 
 class TransitionClassifier(object):
-    def __init__(self, env, hidden_size, entcoeff=0.001, lr_rate=1e-3, scope="adversary", alpha=.7):
+    def __init__(self, env, hidden_size, entcoeff=0.001, lr_rate=1e-3, scope="adversary", alpha=1.0):
         self.scope = scope
         self.observation_shape = env.observation_space.shape
         self.actions_shape = env.action_space.shape
