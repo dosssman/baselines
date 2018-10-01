@@ -66,8 +66,11 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
     os.makedirs(dir, exist_ok=True)
 
     log_dir = dir
+    # data_path = os.path.join( log_dir,
+    #     "openai-gailtorcs/best20180907damned200ep720tstpInterpolated/expert_data.npz")
+
     data_path = os.path.join( log_dir,
-        "openai-gailtorcs/best20180907damned200ep720tstpInterpolated/expert_data.npz")
+        "data/ddpg200ep720tstpInterpolated/expert_data.npz")
     # data_path = os.path.join('data', 'deterministic.trpo.' + env_name + '.0.00.npz')
     dataset = load_dataset(data_path)
     # checkpoint_list = glob.glob(os.path.join('checkpoint', '*' + env_name + ".*"))
@@ -85,9 +88,9 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         # checkpoint_path = tf.train.latest_checkpoint(checkpoint_dir)
         # XXX Checkpoint path
         # DDPG Imitated
-        # checkpoint_path = os.path.join( log_dir, "defiant/openai-gailtorcs/checkpoint/torcs_gail/torcs_gail_4000")
+        checkpoint_path = os.path.join( log_dir, "defiant/openai-gailtorcs/ddpg_expert_300eps_3laps_TrainingLog/checkpoint/torcs_gail/torcs_gail_3500")
         # Damned Imitated
-        checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/best20180907damned200ep720tstpInterpolatedTrainLogs/checkpoint/torcs_gail/torcs_gail_3700")
+        # checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/best20180907damned200ep720tstpInterpolatedTrainLogs/checkpoint/torcs_gail/torcs_gail_4600")
         print( "# DEBUG: Model path: ", (checkpoint_path + ".index"))
         # Not pretty but will do for now
         assert( os.path.isfile( checkpoint_path + ".index"))
@@ -114,7 +117,7 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         avg_len, avg_ret = run_torcs.runner(env,
                                              policy_fn,
                                              checkpoint_path,
-                                             timesteps_per_batch=720,
+                                             timesteps_per_batch=10000,
                                              number_trajs=10,
                                              stochastic_policy=stochastic,
                                              reuse=((i != 0) or reuse))
