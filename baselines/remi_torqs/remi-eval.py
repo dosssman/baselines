@@ -91,8 +91,22 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         # XXX Checkpoint path
         # 20180915~ ?
         # checkpoint_path = os.path.join( log_dir, "defiant/openai-remi/20180916_DamnedAndDDPGAlpha0_5GAILed/checkpoint/torcs_gail/torcs_gail_2300")
+
         # 20180917
-        checkpoint_path = os.path.join( log_dir, "openai-remi/mixedLossAlpha0_5_20180926/checkpoint/torcs_remi/torcs_remi_650")
+        # checkpoint_path = os.path.join( log_dir, "openai-remi/mixedLossAlpha0_5_20180926/checkpoint/torcs_remi/torcs_remi_2450")
+
+        # 20180917 Full RL through ReMi
+        checkpoint_path = os.path.join( log_dir, "openai-remi/mixedLossAlpha0_0_20180928/checkpoint/torcs_remi/torcs_remi_2350")
+
+        # 20180917 Full Expert through ReMi
+        # checkpoint_path = os.path.join( log_dir, "openai-remi/mixedLossAlpha1_0_20180928/checkpoint/torcs_remi/torcs_remi_2350")
+
+        # Alpha .3
+        # checkpoint_path = os.path.join( log_dir, "openai-remi/mixedLossAlpha0_3_20180927/checkpoint/torcs_remi/torcs_remi_2350")
+
+        # Alpha .7
+        # checkpoint_path = os.path.join( log_dir, "openai-remi/mixedLossAlpha0_7_20180927/checkpoint/torcs_remi/torcs_remi_2350")
+
         print( "# DEBUG: Model path: ", (checkpoint_path + ".index"))
         # Not pretty but will do for now
         assert( os.path.isfile( checkpoint_path + ".index"))
@@ -139,16 +153,17 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
 def plot(env_name, bc_log, gail_log, stochastic):
     upper_bound = bc_log['upper_bound']
     rl_upper_bound = bc_log["rl_upper_bound"]
-    bc_avg_ret = bc_log['avg_ret']
+    # bc_avg_ret = bc_log['avg_ret']
     gail_avg_ret = gail_log['avg_ret']
     plt.plot(CONFIG['traj_limitation'], upper_bound)
     plt.plot(CONFIG['traj_limitation'], rl_upper_bound)
-    plt.plot(CONFIG['traj_limitation'], bc_avg_ret)
+    # plt.plot(CONFIG['traj_limitation'], bc_avg_ret)
     plt.plot(CONFIG['traj_limitation'], gail_avg_ret)
     plt.xlabel('Number of expert trajectories')
     plt.ylabel('Accumulated reward')
     plt.title('{} unnormalized scores'.format(env_name))
-    plt.legend(['expert', "rl_expert", 'bc-imitator', 'gail-imitator'], loc='lower right')
+    # plt.legend(['expert', "rl_expert", 'bc-imitator', 'gail-imitator'], loc='lower right')
+    plt.legend(['expert', "rl_expert", 'remi-imitator'], loc='lower right')
     plt.grid(b=True, which='major', color='gray', linestyle='--')
     if stochastic:
         title_name = '{}-unnormalized-stochastic-scores.png'.format(env_name)

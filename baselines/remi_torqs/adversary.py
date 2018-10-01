@@ -49,7 +49,7 @@ class TransitionClassifier(object):
         mixed_loss = alpha * expert_loss + ( 1- alpha) * rl_expert_loss
         # TODO Now somehow fuse the experts
         # Build entropy loss
-        logits = tf.concat([generator_logits, expert_logits], 0)
+        logits = tf.concat([generator_logits, expert_logits, rl_expert_logits], 0)
         entropy = tf.reduce_mean(logit_bernoulli_entropy(logits))
         entropy_loss = -entcoeff*entropy
         # Loss + Accuracy terms
