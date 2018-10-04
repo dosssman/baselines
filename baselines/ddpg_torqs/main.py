@@ -35,12 +35,15 @@ def run(env_id, seed, noise_type, layer_norm, evaluation, **kwargs):
     throttle = True
     gear_change = False
     noisy = True
-    rendering = kwargs["render"]
+    rendering = True
     lap_limiter = 4
     # Alone
-    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/agent_practice.xml"
+    # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    #     "/raceconfig/agent_practice.xml"
+    # With 5 Fixed
 
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+        "/raceconfig/agent_5fixed.xml"
     # With 1 Damned
     # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     #     "/raceconfig/agent_damned_practice.xml"

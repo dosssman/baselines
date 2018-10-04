@@ -71,8 +71,8 @@
       <attstr name="module" val="fixed"/>
     </section>
     <section name="6">
-      <attnum name="idx" val="1"/>
-      <attstr name="module" val="human"/>
+      <attnum name="idx" val="0"/>
+      <attstr name="module" val="scr_server"/>
     </section>
   </section>
 
