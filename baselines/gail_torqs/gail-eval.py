@@ -56,18 +56,21 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
                                     reuse=reuse, hid_size=policy_hidden_size, num_hid_layers=2)
     # XXX Readapt expert path
     dir = os.getenv('OPENAI_GEN_LOGDIR')
-    if dir is None:
-        dir = osp.join(tempfile.gettempdir(),
-            datetime.datetime.now().strftime("openai-gailtorcs"))
-    else:
-        dir = osp.join( dir, datetime.datetime.now().strftime("openai-gailtorcs"))
+    # if dir is None:
+    #     dir = osp.join(tempfile.gettempdir(),
+    #         datetime.datetime.now().strftime("openai-gailtorcs"))
+    # else:
+    #     dir = osp.join( dir, datetime.datetime.now().strftime("openai-gailtorcs"))
 
     assert isinstance(dir, str)
     os.makedirs(dir, exist_ok=True)
 
     log_dir = dir
+    # data_path = os.path.join( log_dir,
+    #     "openai-gailtorcs/best20180907damned200ep720tstpInterpolated/expert_data.npz")
+
     data_path = os.path.join( log_dir,
-        "damned201ep200stpScoreFixedAndSlicedto5Hz/expert_data.npz")
+        "data/ddpg200ep720tstpInterpolated/expert_data.npz")
     # data_path = os.path.join('data', 'deterministic.trpo.' + env_name + '.0.00.npz')
     dataset = load_dataset(data_path)
     # checkpoint_list = glob.glob(os.path.join('checkpoint', '*' + env_name + ".*"))
@@ -84,11 +87,14 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         # checkpoint_dir = get_checkpoint_dir(checkpoint_list, limit, prefix=prefix)
         # checkpoint_path = tf.train.latest_checkpoint(checkpoint_dir)
         # XXX Checkpoint path
-        # checkpoint_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/checkpoint/" + \
-        #     "trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0/" + \
-        #     "trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0"
-        checkpoint_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/logbakExprtDataScorefixedAndSlicedto5Hz/checkpoint/trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0/" \
-            + "trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0"
+        # DDPG Imitated
+        checkpoint_path = os.path.join( log_dir, "defiant/openai-gailtorcs/ddpg_expert_300eps_3laps_TrainingLog/checkpoint/torcs_gail/torcs_gail_3500")
+        # Damned Imitated
+        # checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/best20180907damned200ep720tstpInterpolatedTrainLogs/checkpoint/torcs_gail/torcs_gail_4600")
+        print( "# DEBUG: Model path: ", (checkpoint_path + ".index"))
+        # Not pretty but will do for now
+        assert( os.path.isfile( checkpoint_path + ".index"))
+
         # env = gym.make(env_name + '-v1')
         # XXX: Custom env declaration
         vision = False
@@ -97,7 +103,8 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
             "/raceconfig/agent_practice.xml"
         rendering = False
-        lap_limiter = 2
+        lap_limiter = 4
+        timestep_limit = 720
 
         # env = gym.make(env_id)
         env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
@@ -110,7 +117,7 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         avg_len, avg_ret = run_torcs.runner(env,
                                              policy_fn,
                                              checkpoint_path,
-                                             timesteps_per_batch=1024,
+                                             timesteps_per_batch=10000,
                                              number_trajs=10,
                                              stochastic_policy=stochastic,
                                              reuse=((i != 0) or reuse))

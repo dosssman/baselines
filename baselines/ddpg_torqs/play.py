@@ -44,8 +44,13 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     throttle = True
     gear_change = False
     # Agent only
+    # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    #     "/raceconfig/agent_practice.xml"
+
+    # 6P
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/agent_practice.xml"
+        "/raceconfig/2fixed_agent_3fixed.xml"
+
     # Agent and one bot
     # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     #     "/raceconfig/agent_damned_practice.xml"
@@ -55,7 +60,7 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
 
     # # Duh
     rendering = True
-    lap_limiter = 2
+    lap_limiter = 4
     recdata = False
 
     # env = gym.make(env_id)
@@ -149,12 +154,18 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
 
     # 20180827 08-42-00-658308, Defiant, Training with enemy from the start, Best scoreing model DAMN This guy is good
     # save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-03-13-10-09-537924/model_data/epoch_309.ckpt"
-    save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-04-15-18-28-480417/model_data/epoch_104.ckpt"
+    # save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-04-15-18-28-480417/model_data/epoch_104.ckpt"
     # save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-04-15-18-28-480417/model_data/epoch_742.ckpt"
 
     # openai-ddpgtorcs-2018-09-05-12-46-24-553500 Alone
     # save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-05-12-46-24-553500/model_data/epoch_309.ckpt"
     # save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-05-12-46-24-553500/model_data/epoch_104.ckpt"
+
+    # DDPG vs 5 Fixed First run, alittle bit short
+    # save_filename = "/home/z3r0/random/rl/openai_logs/ddpgtorcs_agent_5fixed-2018-10-04-21-29-20/model_data/epoch_164.ckpt"
+
+    # DDPG vs 5 Fixed First run, alittle bit short
+    save_filename = "/home/z3r0/random/rl/openai_logs/ddpgtorcs_agent_5fixed_2-2018-10-05-13-14-29/model_data/epoch_749.ckpt"
 
     step = 0
     episode = 0
@@ -196,7 +207,7 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
                 while not done:
                     # Predict next action.
                     # TODO: Noise on or off ?
-                    action, q = agent.pi(obs, apply_noise=False, compute_Q=True)
+                    action, q = agent.pi(obs, apply_noise=True, compute_Q=False)
 
                     assert action.shape == env.action_space.shape
 
@@ -250,9 +261,11 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
                             obs = env.reset()
                         # obs = env.reset()
                         print( len( obss))
-                        np.save( "/home/z3r0/torcs_data/ddpg_obs", np.asarray( obss))
-                        np.save( "/home/z3r0/torcs_data/ddpg_rews", np.asarray( rewss))
-                        np.save( "/home/z3r0/torcs_data/ddpg_acs", np.asarray( acss))
+                        save_data = False
+                        if( save_data):
+                            np.save( "/home/z3r0/torcs_data/ddpg_obs", np.asarray( obss))
+                            np.save( "/home/z3r0/torcs_data/ddpg_rews", np.asarray( rewss))
+                            np.save( "/home/z3r0/torcs_data/ddpg_acs", np.asarray( acss))
                         print( "TIme %.6f\n" % (lapsed))
                         print( "Sampl. Rate: %f" % ( len( obss) / lapsed))
                         print( "Episode reward %f" % ( np.sum( rewss)))
@@ -280,8 +293,8 @@ def parse_args():
     parser.add_argument('--gamma', type=float, default=0.99)
     parser.add_argument('--reward-scale', type=float, default=1.)
     parser.add_argument('--clip-norm', type=float, default=None)
-    parser.add_argument('--nb-epochs', type=int, default=1)  # with default settings, perform 1M steps total
-    parser.add_argument('--nb-epoch-cycles', type=int, default=1)
+    parser.add_argument('--nb-epochs', type=int, default=5)  # with default settings, perform 1M steps total
+    parser.add_argument('--nb-epoch-cycles', type=int, default=5)
     parser.add_argument('--nb-train-steps', type=int, default=10000000000)  # per epoch cycle and MPI worker
     parser.add_argument('--nb-eval-steps', type=int, default=100)  # per epoch cycle and MPI worker
     parser.add_argument('--nb-rollout-steps', type=int, default=10000000000)  # per epoch cycle and MPI worker
