@@ -82,8 +82,14 @@ def main(args):
     vision = False
     throttle = True
     gear_change = False
+    # Agent only
+    # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    #     "/raceconfig/agent_practice.xml"
+
+    # 2Damned_Agent_2Damned_1Fixed
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/agent_practice.xml"
+        "/raceconfig/2damned_agent_2damned_1fixed.xml"
+
     rendering = False
     noisy = True
 
@@ -131,8 +137,13 @@ def main(args):
     # args.log_dir = osp.join(args.log_dir, task_name)
 
     # XXX Default params override
+    # args.expert_path = os.path.join( args.log_dir,
+    #     "ddpg_expert_300eps_3laps/expert_data.npz")
+
+    # 2Damned_Agent_2Damned_1Fixed
     args.expert_path = os.path.join( args.log_dir,
-        "damned100eps1lapFULL/expert_data.npz")
+        "data/DamDamDossDamFixFixRecordData_26eps/expert_data.npz")
+
     task_name = get_task_name( args)
     args.checkpoint_dir = os.path.join( args.log_dir, "checkpoint")
     args.checkpoint_dir = os.path.join( args.checkpoint_dir, task_name)
