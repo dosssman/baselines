@@ -56,9 +56,9 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     # # Duh
     rendering = False
     lap_limiter = 2
-    recdata = False
-    rec_episode_limit = 300
-    rec_timestep_limit = -1
+    recdata = True
+    rec_episode_limit = 1
+    rec_timestep_limit = 720
 
     # env = gym.make(env_id)
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
@@ -231,16 +231,17 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
                 # epoch_qs.append(q)
                 # agent.store_transition(obs, action, r, new_obs, done)
                 ep_obs.append( obs)
+                ep_acs.append(action)
                 ep_rews.append( r)
 
-                def clip_accel( accel):
-                    if accel < 0.0:
-                        return 0.0
-                    else:
-                        return accel
-
-                ep_acs.append( [ action[0],
-                    clip_accel(action[1])])
+                # def clip_accel( accel):
+                #     if accel < 0.0:
+                #         return 0.0
+                #     else:
+                #         return accel
+                #
+                # ep_acs.append( [ action[0],
+                #     clip_accel(action[1])])
 
                 obs = new_obs
 
@@ -276,9 +277,9 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
                         obs = env.reset()
                     # obs = env.reset()
                     # print( len( obss))
-                    # np.save( "/home/z3r0/torcs_data/ddpg_obs", np.asarray( obss))
-                    # np.save( "/home/z3r0/torcs_data/ddpg_rews", np.asarray( rewss))
-                    # np.save( "/home/z3r0/torcs_data/ddpg_acs", np.asarray( acss))
+                    np.save( "/home/z3r0/torcs_data/ddpg_obs", np.asarray( expert_data["obs"][0]))
+                    np.save( "/home/z3r0/torcs_data/ddpg_rews", np.asarray( expert_data["rews"][0]))
+                    np.save( "/home/z3r0/torcs_data/ddpg_acs", np.asarray( expert_data["acs"][0]))
                     print( "Episode %d : TIme %.6f\n" % (episodes, lapsed))
                     # print( "Sampl. Rate: %f" % ( len( obss) / lapsed))
                     # print( "Episode reward %f" % ( np.sum( rewss)))
