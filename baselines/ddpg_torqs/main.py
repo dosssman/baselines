@@ -45,8 +45,12 @@ def run(env_id, seed, noise_type, layer_norm, evaluation, **kwargs):
     #     "/raceconfig/agent_5fixed.xml"
 
     # 6P
+    # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    #     "/raceconfig/2fixed_agent_3fixed.xml"
+
+    # 4P Damned SCR Damned Fixed
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/2fixed_agent_3fixed.xml"
+        "/raceconfig/1damned_agent_1damned_1fixed.xml"
     # With 1 Damned
     # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     #     "/raceconfig/agent_damned_practice.xml"
