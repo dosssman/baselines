@@ -48,15 +48,20 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     #     "/raceconfig/agent_practice.xml"
 
     # 6P
-    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/2fixed_agent_3fixed.xml"
+    # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    #     "/raceconfig/2fixed_agent_3fixed.xml"
 
     # Agent and one bot
     # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     #     "/raceconfig/agent_damned_practice.xml"
+
     # Agent and 3 bots ?
     # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     #     "/raceconfig/agent_damned_grid_practice.xml"
+
+    # Dam Agent Dam Fix
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+        "/raceconfig/1damned_agent_1damned_1fixed.xml"
 
     # # Duh
     rendering = True
@@ -165,7 +170,10 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     # save_filename = "/home/z3r0/random/rl/openai_logs/ddpgtorcs_agent_5fixed-2018-10-04-21-29-20/model_data/epoch_164.ckpt"
 
     # DDPG vs 5 Fixed First run, alittle bit short
-    save_filename = "/home/z3r0/random/rl/openai_logs/ddpgtorcs_agent_5fixed_2-2018-10-05-13-14-29/model_data/epoch_749.ckpt"
+    # save_filename = "/home/z3r0/random/rl/openai_logs/ddpgtorcs_agent_5fixed_2-2018-10-05-13-14-29/model_data/epoch_749.ckpt"
+
+    # DDPG Dam Agent Dam Fixed Bot
+    save_filename = "/home/z3r0/random/rl/openai_logs/ddpgtorcs_dam_agent_dam_fix-2018-10-10-09-19-13/model_data/epoch_481.ckpt"
 
     step = 0
     episode = 0
@@ -202,12 +210,13 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
         epoch_actions = []
         epoch_qs = []
         epoch_episodes = 0
+        nb_epochs = 5
         for epoch in range(nb_epochs):
             for cycle in range(nb_epoch_cycles):
                 while not done:
                     # Predict next action.
                     # TODO: Noise on or off ?
-                    action, q = agent.pi(obs, apply_noise=True, compute_Q=False)
+                    action, q = agent.pi(obs, apply_noise=True, compute_Q=True)
 
                     assert action.shape == env.action_space.shape
 
