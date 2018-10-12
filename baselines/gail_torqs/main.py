@@ -87,8 +87,12 @@ def main(args):
     #     "/raceconfig/agent_practice.xml"
 
     # 2Damned_Agent_2Damned_1Fixed
+    # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    #     "/raceconfig/2damned_agent_2damned_1fixed.xml"
+
+    # DamDamAgentFix
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/2damned_agent_2damned_1fixed.xml"
+        "/raceconfig/2damned_agent_1fixed_record.xml"
 
     rendering = False
     noisy = True
@@ -141,8 +145,12 @@ def main(args):
     #     "ddpg_expert_300eps_3laps/expert_data.npz")
 
     # 2Damned_Agent_2Damned_1Fixed
+    # args.expert_path = os.path.join( args.log_dir,
+    #     "data/DamDamDossDamFixFixRecordData_26eps/expert_data.npz")
+
+    # DamDossDamFix_35eps
     args.expert_path = os.path.join( args.log_dir,
-        "data/DamDamDossDamFixFixRecordData_26eps/expert_data.npz")
+        "data/DamDossDamFix_35eps/expert_data.npz")
 
     task_name = get_task_name( args)
     args.checkpoint_dir = os.path.join( args.log_dir, "checkpoint")
