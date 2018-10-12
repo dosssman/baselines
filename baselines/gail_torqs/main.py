@@ -150,7 +150,7 @@ def main(args):
 
     # DamDossDamFix_35eps
     args.expert_path = os.path.join( args.log_dir,
-        "data/DamDossDamFix_35eps/expert_data.npz")
+        "data/2DamDossFix_35eps/expert_data.npz")
 
     task_name = get_task_name( args)
     args.checkpoint_dir = os.path.join( args.log_dir, "checkpoint")
