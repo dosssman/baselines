@@ -49,8 +49,8 @@ def run(env_id, seed, noise_type, layer_norm, evaluation, **kwargs):
     #     "/raceconfig/2fixed_agent_3fixed.xml"
 
     # 4P Damned SCR Damned Fixed
-    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/1damned_agent_1damned_1fixed.xml"
+    # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    #     "/raceconfig/1damned_agent_1damned_1fixed.xml"
     # With 1 Damned
     # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     #     "/raceconfig/agent_damned_practice.xml"
@@ -58,6 +58,10 @@ def run(env_id, seed, noise_type, layer_norm, evaluation, **kwargs):
     # With Damned, Inferno and Berniw
     # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     #     "/raceconfig/agent_damned_grid_practice.xml"
+
+    # Agent and sparsely setup Fixed Bots
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+        "/raceconfig/agent_10fixed_sparsed.xml"
 
     # env = gym.make(env_id)
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
@@ -150,7 +154,7 @@ def parse_args():
     parser.add_argument('--gamma', type=float, default=0.99)
     parser.add_argument('--reward-scale', type=float, default=1.)
     parser.add_argument('--clip-norm', type=float, default=None)
-    parser.add_argument('--nb-epochs', type=int, default=1000)  # with default settings, perform 1M steps total
+    parser.add_argument('--nb-epochs', type=int, default=750)  # with default settings, perform 1M steps total
     parser.add_argument('--nb-epoch-cycles', type=int, default=50)
     parser.add_argument('--nb-train-steps', type=int, default=720)  # per epoch cycle and MPI worker
     parser.add_argument('--nb-eval-steps', type=int, default=100)  # per epoch cycle and MPI worker
