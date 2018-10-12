@@ -87,7 +87,6 @@ def traj_segment_generator(pi, env, reward_giver, horizon, stochastic):
 
             if( len( ep_rets) % 10 == 0):
                 ob = env.reset( relaunch=True)
-                print( "#### DEBUG TRPO: Reset after 10 episode haha")
             else:
                 ob = env.reset()
         t += 1
