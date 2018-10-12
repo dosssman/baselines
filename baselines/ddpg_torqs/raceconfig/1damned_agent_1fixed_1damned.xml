@@ -59,12 +59,12 @@
       <attstr name="module" val="scr_server"/>
     </section>
     <section name="3">
-      <attnum name="idx" val="1"/>
-      <attstr name="module" val="damned"/>
-    </section>
-    <section name="4">
       <attnum name="idx" val="0"/>
       <attstr name="module" val="fixed"/>
+    </section>
+    <section name="4">
+      <attnum name="idx" val="1"/>
+      <attstr name="module" val="damned"/>
     </section>
   </section>
 
