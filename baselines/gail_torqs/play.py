@@ -86,7 +86,7 @@ def main(args):
     # args.load_model_path = os.environ["HOME"]+ "/random/rl/openai_logs/defiant/openai-gailtorcs/"
     # args.load_model_path += "checkpoint/torcs_gail/torcs_gail_3000"
     args.load_model_path = os.environ["HOME"]+ "/random/rl/openai_logs/openai-gailtorcs/"
-    args.load_model_path += "best20180907damned200ep720tstpInterpolatedTrainLogs/checkpoint/torcs_gail/torcs_gail_3700"
+    args.load_model_path += "2DamDossFix_35eps_GAILed/checkpoint/torcs_gail/torcs_gail"
     print( "# DEBUG: Model path: ", (args.load_model_path + ".index"))
 
     # Not pretty but will do for now
@@ -96,8 +96,15 @@ def main(args):
     vision = False
     throttle = True
     gear_change = False
+
+    # Agent Alone
+    # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    #     "/raceconfig/agent_practice.xml"
+
+    # 2DamAgentFixed
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/agent_practice.xml"
+        "/raceconfig/2damned_agent_1fixed_record.xml"
+
     rendering = True
 
     # TODO: How Restrict to 3 laps when evaling ?

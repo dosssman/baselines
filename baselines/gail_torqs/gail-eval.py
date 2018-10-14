@@ -70,7 +70,7 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
     #     "openai-gailtorcs/best20180907damned200ep720tstpInterpolated/expert_data.npz")
 
     data_path = os.path.join( log_dir,
-        "data/ddpg200ep720tstpInterpolated/expert_data.npz")
+        "data/2DamDossFix_35eps/expert_data.npz")
     # data_path = os.path.join('data', 'deterministic.trpo.' + env_name + '.0.00.npz')
     dataset = load_dataset(data_path)
     # checkpoint_list = glob.glob(os.path.join('checkpoint', '*' + env_name + ".*"))
@@ -88,7 +88,7 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         # checkpoint_path = tf.train.latest_checkpoint(checkpoint_dir)
         # XXX Checkpoint path
         # DDPG Imitated
-        checkpoint_path = os.path.join( log_dir, "defiant/openai-gailtorcs/ddpg_expert_300eps_3laps_TrainingLog/checkpoint/torcs_gail/torcs_gail_3500")
+        checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/2DamDossFix_35eps_GAILed/checkpoint/torcs_gail/torcs_gail")
         # Damned Imitated
         # checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/best20180907damned200ep720tstpInterpolatedTrainLogs/checkpoint/torcs_gail/torcs_gail_4600")
         print( "# DEBUG: Model path: ", (checkpoint_path + ".index"))
@@ -100,8 +100,14 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         vision = False
         throttle = True
         gear_change = False
+        # Agent alone
+        # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+        #     "/raceconfig/agent_practice.xml"
+
+        # DamDamAgentFix
         race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-            "/raceconfig/agent_practice.xml"
+            "/raceconfig/2damned_agent_1fixed_record.xml"
+
         rendering = False
         lap_limiter = 4
         timestep_limit = 720
