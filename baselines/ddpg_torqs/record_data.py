@@ -44,8 +44,8 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     throttle = True
     gear_change = False
     # Agent only
-    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/agent_practice.xml"
+    # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    #     "/raceconfig/agent_practice.xml"
     # Agent and one bot
     # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     #     "/raceconfig/agent_damned_practice.xml"
@@ -53,12 +53,16 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     #     "/raceconfig/agent_damned_grid_practice.xml"
 
+    # Agent vs 10 Fixed Sparely
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+        "/raceconfig/agent_10fixed_sparsed.xml"
+
     # # Duh
     rendering = False
     lap_limiter = 2
-    recdata = True
-    rec_episode_limit = 1
-    rec_timestep_limit = 720
+    recdata = False
+    rec_episode_limit = 200
+    rec_timestep_limit = 300
 
     # env = gym.make(env_id)
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
@@ -154,8 +158,12 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
 
     # Alone special data collect trained agent
     # save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-04-15-18-28-480417/model_data/epoch_104.ckpt"
+    # save_filename = os.path.join( os.environ["HOME"],
+    #     "random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-04-15-18-28-480417/model_data/epoch_742.ckpt")
+
+    # DDPG Agent vs 10 Fixed Sparsely
     save_filename = os.path.join( os.environ["HOME"],
-        "random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-04-15-18-28-480417/model_data/epoch_742.ckpt")
+        "random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-10-12-21-21-29-099513/model_data/epoch_350.ckpt")
 
     # openai-ddpgtorcs-2018-09-05-12-46-24-553500 Alone
     # save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-05-12-46-24-553500/model_data/epoch_309.ckpt"
@@ -277,12 +285,12 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
                         obs = env.reset()
                     # obs = env.reset()
                     # print( len( obss))
-                    np.save( "/home/z3r0/torcs_data/ddpg_obs", np.asarray( expert_data["obs"][0]))
-                    np.save( "/home/z3r0/torcs_data/ddpg_rews", np.asarray( expert_data["rews"][0]))
-                    np.save( "/home/z3r0/torcs_data/ddpg_acs", np.asarray( expert_data["acs"][0]))
+                    # np.save( "/home/z3r0/torcs_data/ddpg_obs", np.asarray( expert_data["obs"][0]))
+                    # np.save( "/home/z3r0/torcs_data/ddpg_rews", np.asarray( expert_data["rews"][0]))
+                    # np.save( "/home/z3r0/torcs_data/ddpg_acs", np.asarray( expert_data["acs"][0]))
                     print( "Episode %d : TIme %.6f\n" % (episodes, lapsed))
                     # print( "Sampl. Rate: %f" % ( len( obss) / lapsed))
-                    # print( "Episode reward %f" % ( np.sum( rewss)))
+                    # print( "Episode reward %f" % ( np.sum( expert_data["rews"])))
 
         # Save expert data
         if save:
