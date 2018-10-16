@@ -80,8 +80,13 @@ def main(args):
     vision = False
     throttle = True
     gear_change = False
+    # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    #     "/raceconfig/agent_practice.xml"
+
+    # Agent10Fixed_Sparse
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/agent_practice.xml"
+        "/raceconfig/agent_10fixed_sparsed.xml"
+
     rendering = False
     noisy = True
 
@@ -130,10 +135,10 @@ def main(args):
 
     # XXX Default params override
     args.expert_path = os.path.join( args.log_dir,
-        "data/damned200ep720tstpInterpolated/expert_data.npz")
+        "data/Doss10Fixed_110eps/expert_data.npz")
     # RL Expert data
     args.rl_expert_path = os.path.join( args.log_dir,
-        "data/ddpg200ep720tstpInterpolated/expert_data.npz")
+        "data/DDPG_10Fixed_Sparse_Epoch350_200eps/expert_data.npz")
 
     task_name = get_task_name( args)
     args.checkpoint_dir = os.path.join( args.log_dir, "checkpoint")
@@ -143,7 +148,7 @@ def main(args):
     # Training time ( hopefully) and timestep constraints
     # Save samples
     args.save_sample = False
-    args.num_timesteps = 2500000
+    args.num_timesteps = 1250000
 
     if args.task == 'train':
         dataset = Mujoco_Dset(expert_path=args.expert_path, traj_limitation=args.traj_limitation)
