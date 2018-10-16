@@ -60,8 +60,12 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     #     "/raceconfig/agent_damned_grid_practice.xml"
 
     # Dam Agent Dam Fix
+    # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    #     "/raceconfig/1damned_agent_1damned_1fixed.xml"
+
+    # Agent vs 10 Fixed Sparely
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/1damned_agent_1damned_1fixed.xml"
+        "/raceconfig/agent_10fixed_sparsed.xml"
 
     # # Duh
     rendering = True
@@ -173,7 +177,10 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     # save_filename = "/home/z3r0/random/rl/openai_logs/ddpgtorcs_agent_5fixed_2-2018-10-05-13-14-29/model_data/epoch_749.ckpt"
 
     # DDPG Dam Agent Dam Fixed Bot
-    save_filename = "/home/z3r0/random/rl/openai_logs/ddpgtorcs_dam_agent_dam_fix-2018-10-10-09-19-13/model_data/epoch_481.ckpt"
+    # save_filename = "/home/z3r0/random/rl/openai_logs/ddpgtorcs_dam_agent_dam_fix-2018-10-10-09-19-13/model_data/epoch_481.ckpt"
+
+    # DDPG Agent vs 10 Fixed Sparely
+    save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-10-12-21-21-29-099513/model_data/epoch_350.ckpt"
 
     step = 0
     episode = 0
