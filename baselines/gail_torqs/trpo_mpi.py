@@ -347,6 +347,8 @@ def learn(env, policy_func, reward_giver, expert_dataset, rank,
         logger.record_tabular("EpLenMean", np.mean(lenbuffer))
         logger.record_tabular("EpRewMean", np.mean(rewbuffer))
         logger.record_tabular("EpTrueRewMean", np.mean(true_rewbuffer))
+        logger.record_tabular("EpMaxRew", np.max( true_rewbuffer))
+        logger.record_tabular("EpMinRew", np.min( true_rewbuffer))
         logger.record_tabular("EpThisIter", len(lens))
         episodes_so_far += len(lens)
         timesteps_so_far += sum(lens)
