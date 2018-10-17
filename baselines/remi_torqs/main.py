@@ -135,7 +135,7 @@ def main(args):
 
     # XXX Default params override
     args.expert_path = os.path.join( args.log_dir,
-        "data/Doss10Fixed_110eps/expert_data.npz")
+        "data/Doss10Fixed_130eps/expert_data.npz")
     # RL Expert data
     args.rl_expert_path = os.path.join( args.log_dir,
         "data/DDPG_10Fixed_Sparse_Epoch350_200eps/expert_data.npz")

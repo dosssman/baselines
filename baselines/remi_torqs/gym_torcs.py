@@ -2,7 +2,7 @@ import gym
 from gym import spaces
 import numpy as np
 # from os import path
-import baselines.ddpg_torqs.snakeoil3_gym as snakeoil3
+import baselines.remi_torqs.snakeoil3_gym as snakeoil3
 import numpy as np
 import copy
 import collections as col
@@ -25,7 +25,7 @@ class TorcsEnv( gym.Env):
     # Customized to accept more params
     def __init__(self, vision=False, throttle=False, gear_change=False,
         race_config_path=None,race_speed=1.0, rendering=True, damage=False,
-        lap_limiter=2, recdata=False, noisy=False):
+        lap_limiter=2, recdata=False, noisy=False, timestep_limit=-1):
         #print("Init")
         self.vision = vision
         self.throttle = throttle
@@ -35,6 +35,7 @@ class TorcsEnv( gym.Env):
         self.damage = damage
         self.recdata = recdata
         self.noisy = noisy
+        self.timestep_limit = timestep_limit
         # The episode will end when the lap_limiter is reached
         # To put it simply if you want env to stap after 3 laps, set this to 4
         # Make sure to run torcs itself for more than 3 laps too, otherwise,
@@ -239,10 +240,13 @@ class TorcsEnv( gym.Env):
 
         # Termination judgement #########################
         episode_terminate = False
-        if track.min() < 0:  # Episode is terminated if the car is out of track
-            reward = - 1
+        if self.timestep_limit > 0 and self.time_step >= self.timestep_limit:
             episode_terminate = True
             client.R.d['meta'] = True
+        # if track.min() < 0:  # Episode is terminated if the car is out of track
+        #     reward = - 1
+        #     episode_terminate = True
+        #     client.R.d['meta'] = True
 
         if self.terminal_judge_start < self.time_step: # Episode terminates if the progress of agent is small
             if progress < self.termination_limit_progress:
