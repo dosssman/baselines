@@ -128,7 +128,7 @@ def main(args):
     #     "/trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0")
 
     # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10Fixed_110eps_GAILed/checkpoint/torcs_gail/torcs_gail"
-    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10Fixed_130eps_GAILed_LooseEnv2/checkpoint/torcs_gail/torcs_gail_20"
+    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10Fixed_130eps_GAILed_MildlyStrict/checkpoint/torcs_gail/torcs_gail_18"
 
     print( "# DEBUG: Model path: ", args.load_model_path)
 
