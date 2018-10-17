@@ -235,12 +235,12 @@ def learn(env, policy_func, reward_giver, expert_dataset, rank,
         elif max_iters and iters_so_far >= max_iters:
             break
 
-        # Save model
+         # Save model
         if rank == 0 and iters_so_far % save_per_iter == 0 and ckpt_dir is not None:
             fname = os.path.join(ckpt_dir, task_name)
             os.makedirs(os.path.dirname(fname), exist_ok=True)
-            saver = tf.train.Saver( max_to_keep=100000000)
-            saver.save(tf.get_default_session(), fname)
+            saver = tf.train.Saver( max_to_keep=max_iters)
+            saver.save(tf.get_default_session(), fname + "_" + str( iters_so_far ))
 
         logger.log("********** Iteration %i ************" % iters_so_far)
 

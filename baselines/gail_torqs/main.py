@@ -99,11 +99,12 @@ def main(args):
         "/raceconfig/agent_10fixed_sparsed.xml"
 
     rendering = False
-    noisy = True
+    noisy = False
 
     # TODO: How Restrict to 3 laps when evaling ?
-    lap_limiter = 1
-
+    lap_limiter = 2
+    timestep_limit = 400
+    
     # env = gym.make(args.env_id)
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
 		race_config_path=race_config_path, rendering=rendering,

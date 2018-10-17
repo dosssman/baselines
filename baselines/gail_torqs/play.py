@@ -76,39 +76,21 @@ def main(args):
     U.make_session(num_cpu=1).__enter__()
     set_global_seeds(args.seed)
 
-    # XXX Eval reparams
-    args.task = "evaluate"
-    args.load_model_path = os.path.join( args.log_dir, "checkpoint")
-    # args.load_model_path = os.path.join( args.load_model_path,
-    #     "trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0" +
-    #     "/trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0")
-
-    # args.load_model_path = os.environ["HOME"]+ "/random/rl/openai_logs/defiant/openai-gailtorcs/"
-    # args.load_model_path += "checkpoint/torcs_gail/torcs_gail_3000"
-    args.load_model_path = os.environ["HOME"]+ "/random/rl/openai_logs/openai-gailtorcs/"
-    args.load_model_path += "2DamDossFix_35eps_GAILed/checkpoint/torcs_gail/torcs_gail"
-    print( "# DEBUG: Model path: ", (args.load_model_path + ".index"))
-
-    # Not pretty but will do for now
-    assert( os.path.isfile( args.load_model_path + ".index"))
-
     # XXX: Hook up Gym Torcs
     vision = False
     throttle = True
     gear_change = False
-
-    # Agent Alone
     # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     #     "/raceconfig/agent_practice.xml"
 
-    # 2DamAgentFixed
+    # Agent10Fixed_Sparse
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/2damned_agent_1fixed_record.xml"
+        "/raceconfig/agent_10fixed_sparsed.xml"
 
     rendering = True
 
     # TODO: How Restrict to 3 laps when evaling ?
-    lap_limiter = 4
+    lap_limiter = 2
 
     # env = gym.make(args.env_id)
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
@@ -135,13 +117,22 @@ def main(args):
     # args.log_dir = osp.join(args.log_dir, task_name)
     # assert isinstance(args.log_dir, str)
     # os.makedirs(args.log_dir, exist_ok=True)
-    # logger.configure( args.log_dir)
-    # print( "# DEBUG: Logging to %s" % dir)
+    logger.configure( args.log_dir)
+    print( "# DEBUG: Logging to %s" % dir)
 
-    # args.load_model_path += ".ckpt"
+    # XXX Eval reparams
+    args.task = "evaluate"
+    args.load_model_path = os.path.join( args.log_dir, "checkpoint")
+    # args.load_model_path = os.path.join( args.load_model_path,
+    #     "trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0" +
+    #     "/trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0")
 
-    # env = bench.Monitor(env, logger.get_dir() and
-    #                     osp.join(logger.get_dir(), "monitor.csv"), allow_early_resets=True)
+    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10Fixed_110eps_GAILed/checkpoint/torcs_gail/torcs_gail"
+
+    print( "# DEBUG: Model path: ", args.load_model_path)
+
+    env = bench.Monitor(env, logger.get_dir() and
+                        osp.join(logger.get_dir(), "monitor.csv"), allow_early_resets=True)
     env.seed(args.seed)
     gym.logger.setLevel(logging.WARN)
     # task_name = get_task_name(args)
@@ -150,8 +141,7 @@ def main(args):
 
     # XXX Default params override
     args.expert_path = os.path.join( args.log_dir,
-        "best20180907damned200ep720tstpInterpolated/expert_data.npz")
-
+        "data/Doss10Fixed_110eps/expert_data.npz")
     task_name = get_task_name( args)
     args.checkpoint_dir = os.path.join( args.log_dir, "checkpoint")
     args.checkpoint_dir = os.path.join( args.checkpoint_dir, task_name)
@@ -185,8 +175,8 @@ def main(args):
         runner(env,
                policy_fn,
                args.load_model_path,
-               timesteps_per_batch=720,
-               number_trajs=1,
+               timesteps_per_batch=1024,
+               number_trajs=10,
                stochastic_policy=args.stochastic_policy,
                save=args.save_sample
                )
@@ -268,8 +258,6 @@ def runner(env, policy_func, load_model_path, timesteps_per_batch, number_trajs,
     avg_ret = sum(ret_list)/len(ret_list)
     print("Average length:", avg_len)
     print("Average return:", avg_ret)
-    print( "Score:", np.sum( ret_list))
-
     return avg_len, avg_ret
 
 
@@ -306,7 +294,6 @@ def traj_1_generator(pi, env, horizon, stochastic):
             break
         t += 1
 
-    print( "Time steps length %d" % t)
     duration = time.time() - start_time
 
     print( "### DEBUG: Duration %f" % (duration))
