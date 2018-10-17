@@ -234,7 +234,7 @@ class TorcsEnv( gym.Env):
 
         # collision detection
         if obs['damage'] - obs_pre['damage'] > 0:
-            reward = - 1000
+            reward = - 200
             # episode_terminate = True
             # client.R.d['meta'] = True
 
@@ -244,7 +244,7 @@ class TorcsEnv( gym.Env):
             episode_terminate = True
             client.R.d['meta'] = True
         # if track.min() < 0:  # Episode is terminated if the car is out of track
-        #     reward = - 1
+            reward = - 50
         #     episode_terminate = True
         #     client.R.d['meta'] = True
 
