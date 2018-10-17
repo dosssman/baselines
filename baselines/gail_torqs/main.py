@@ -104,11 +104,11 @@ def main(args):
     # TODO: How Restrict to 3 laps when evaling ?
     lap_limiter = 2
     timestep_limit = 400
-    
+
     # env = gym.make(args.env_id)
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
 		race_config_path=race_config_path, rendering=rendering,
-		lap_limiter = lap_limiter, noisy=noisy)
+		lap_limiter = lap_limiter, noisy=noisy, timestep_limit=timestep_limit)
 
     def policy_fn(name, ob_space, ac_space, reuse=False):
         return mlp_policy.MlpPolicy(name=name, ob_space=ob_space, ac_space=ac_space,
@@ -136,8 +136,8 @@ def main(args):
     # print( "# DEBUG: LOgger out formats", logger.output_formats)
     # input()
 
-    env = bench.Monitor(env, logger.get_dir() and
-                        osp.join(logger.get_dir(), "monitor.csv"))
+    # env = bench.Monitor(env, logger.get_dir() and
+    #                     osp.join(logger.get_dir(), "monitor.csv"))
     env.seed(args.seed)
     gym.logger.setLevel(logging.WARN)
     logger.set_level( logger.DEBUG)
@@ -155,7 +155,7 @@ def main(args):
 
     # DamDossDamFix_35eps
     args.expert_path = os.path.join( args.log_dir,
-        "data/Doss10Fixed_110eps/expert_data.npz")
+        "data/Doss10Fixed_130eps/expert_data.npz")
 
     task_name = get_task_name( args)
     args.checkpoint_dir = os.path.join( args.log_dir, "checkpoint")
