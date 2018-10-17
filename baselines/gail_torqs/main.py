@@ -35,7 +35,7 @@ def argsparser():
     # Task
     parser.add_argument('--task', type=str, choices=['train', 'evaluate', 'sample'], default='train')
     # for evaluatation
-    boolean_flag(parser, 'stochastic_policy', default=True, help='use stochastic/deterministic policy to evaluate')
+    boolean_flag(parser, 'stochastic_policy', default=False, help='use stochastic/deterministic policy to evaluate')
     boolean_flag(parser, 'save_sample', default=False, help='save the trajectories or not')
     #  Mujoco Dataset Configuration
     parser.add_argument('--traj_limitation', type=int, default=-1)
@@ -155,7 +155,7 @@ def main(args):
 
     # DamDossDamFix_35eps
     args.expert_path = os.path.join( args.log_dir,
-        "data/Doss10Fixed_130eps/expert_data.npz")
+        "data/Doss10Fixed_130eps_NoSlice/expert_data.npz")
 
     task_name = get_task_name( args)
     args.checkpoint_dir = os.path.join( args.log_dir, "checkpoint")
