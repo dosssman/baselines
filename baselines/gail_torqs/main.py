@@ -103,7 +103,7 @@ def main(args):
 
     # TODO: How Restrict to 3 laps when evaling ?
     lap_limiter = 2
-    timestep_limit = 400
+    timestep_limit = 320
 
     # env = gym.make(args.env_id)
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
