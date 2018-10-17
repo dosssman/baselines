@@ -234,7 +234,7 @@ class TorcsEnv( gym.Env):
 
         # collision detection
         if obs['damage'] - obs_pre['damage'] > 0:
-            reward = - 1
+            # reward = - 200
             episode_terminate = True
             client.R.d['meta'] = True
 
@@ -243,10 +243,10 @@ class TorcsEnv( gym.Env):
         if self.timestep_limit > 0 and self.time_step >= self.timestep_limit:
             episode_terminate = True
             client.R.d['meta'] = True
-        # if track.min() < 0:  # Episode is terminated if the car is out of track
-        #     reward = - 1
-        #     episode_terminate = True
-        #     client.R.d['meta'] = True
+        if track.all() < 0:  # Episode is terminated if the car is out of track
+            # reward = - 50
+            episode_terminate = True
+            client.R.d['meta'] = True
 
         if self.terminal_judge_start < self.time_step: # Episode terminates if the progress of agent is small
             if progress < self.termination_limit_progress:

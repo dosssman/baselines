@@ -91,12 +91,13 @@ def main(args):
     noisy = True
 
     # TODO: How Restrict to 3 laps when evaling ?
-    lap_limiter = 4
+    lap_limiter = 2
+    timestep_limit = 320
 
     # env = gym.make(args.env_id)
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
 		race_config_path=race_config_path, rendering=rendering,
-		lap_limiter = lap_limiter, noisy=noisy)
+		lap_limiter = lap_limiter, noisy=noisy, timestep_limit=timestep_limit)
 
     def policy_fn(name, ob_space, ac_space, reuse=False):
         return mlp_policy.MlpPolicy(name=name, ob_space=ob_space, ac_space=ac_space,
@@ -217,7 +218,7 @@ def train(env, seed, policy_fn, reward_giver, dataset, rl_dataset, algo,
                        ckpt_dir=checkpoint_dir, log_dir=log_dir,
                        save_per_iter=save_per_iter,
                        timesteps_per_batch=1024,
-                       max_kl=0.01, cg_iters=10, cg_damping=0.1,
+                       max_kl=0.03, cg_iters=10, cg_damping=0.1,
                        gamma=0.995, lam=0.97,
                        vf_iters=5, vf_stepsize=1e-3,
                        task_name=task_name)
