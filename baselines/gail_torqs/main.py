@@ -47,7 +47,7 @@ def argsparser():
     parser.add_argument('--adversary_hidden_size', type=int, default=100)
     # Algorithms Configuration
     parser.add_argument('--algo', type=str, choices=['trpo', 'ppo'], default='trpo')
-    parser.add_argument('--max_kl', type=float, default=0.01)
+    parser.add_argument('--max_kl', type=float, default=0.05)
     parser.add_argument('--policy_entcoeff', help='entropy coefficiency of policy', type=float, default=0)
     parser.add_argument('--adversary_entcoeff', help='entropy coefficiency of discriminator', type=float, default=1e-3)
     # Traing Configuration
@@ -155,7 +155,7 @@ def main(args):
 
     # DamDossDamFix_35eps
     args.expert_path = os.path.join( args.log_dir,
-        "data/Doss10Fixed_130eps_NoSlice/expert_data.npz")
+        "data/Doss10Fixed_130eps/expert_data.npz")
 
     task_name = get_task_name( args)
     args.checkpoint_dir = os.path.join( args.log_dir, "checkpoint")
@@ -230,8 +230,8 @@ def train(env, seed, policy_fn, reward_giver, dataset, algo,
                        max_timesteps=num_timesteps,
                        ckpt_dir=checkpoint_dir, log_dir=log_dir,
                        save_per_iter=save_per_iter,
-                       timesteps_per_batch=10000,
-                       max_kl=0.01, cg_iters=10, cg_damping=0.1,
+                       timesteps_per_batch=1024,
+                       max_kl=0.05, cg_iters=10, cg_damping=0.1,
                        gamma=0.995, lam=0.97,
                        vf_iters=5, vf_stepsize=1e-3,
                        task_name=task_name)
