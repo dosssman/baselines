@@ -127,7 +127,8 @@ def main(args):
     #     "trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0" +
     #     "/trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0")
 
-    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10Fixed_110eps_GAILed/checkpoint/torcs_gail/torcs_gail"
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10Fixed_110eps_GAILed/checkpoint/torcs_gail/torcs_gail"
+    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10Fixed_130eps_GAILed_LooseEnv2/checkpoint/torcs_gail/torcs_gail_20"
 
     print( "# DEBUG: Model path: ", args.load_model_path)
 
@@ -141,7 +142,7 @@ def main(args):
 
     # XXX Default params override
     args.expert_path = os.path.join( args.log_dir,
-        "data/Doss10Fixed_110eps/expert_data.npz")
+        "data/Doss10Fixed_130eps/expert_data.npz")
     task_name = get_task_name( args)
     args.checkpoint_dir = os.path.join( args.log_dir, "checkpoint")
     args.checkpoint_dir = os.path.join( args.checkpoint_dir, task_name)
