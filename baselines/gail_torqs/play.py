@@ -85,17 +85,18 @@ def main(args):
 
     # Agent10Fixed_Sparse
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/agent_10fixed_sparsed.xml"
+        "/raceconfig/agent_10fixed_sparsed_G2_2.xml"
 
     rendering = True
+    noisy = False
 
-    # TODO: How Restrict to 3 laps when evaling ?
+    # TODO: How Rest    rict to 3 laps when evaling ?
     lap_limiter = 2
 
     # env = gym.make(args.env_id)
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
 		race_config_path=race_config_path, rendering=rendering,
-		lap_limiter = lap_limiter)
+		lap_limiter = lap_limiter, noisy=noisy)
 
     def policy_fn(name, ob_space, ac_space, reuse=False):
         return mlp_policy.MlpPolicy(name=name, ob_space=ob_space, ac_space=ac_space,
@@ -128,7 +129,9 @@ def main(args):
     #     "/trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0")
 
     # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10Fixed_110eps_GAILed/checkpoint/torcs_gail/torcs_gail"
-    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10Fixed_130eps_NoSlice_GAILed_MildlyStrict_TimestepPerBatchto1024_MaxKL_0.05/checkpoint/torcs_gail/torcs_gail_642"
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10Fixed_130eps_NoSlice_GAILed_MildlyStrict_TimestepPerBatchto1024_MaxKL_0.05/checkpoint/torcs_gail/torcs_gail_642"
+
+    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10Fixed_130eps_GAILed_MildlyStrict_MaxKL_0.01/checkpoint/torcs_gail/torcs_gail_755"
 
     print( "# DEBUG: Model path: ", args.load_model_path)
 
