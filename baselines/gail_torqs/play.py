@@ -117,8 +117,8 @@ def main(args):
     # args.log_dir = osp.join(args.log_dir, task_name)
     # assert isinstance(args.log_dir, str)
     # os.makedirs(args.log_dir, exist_ok=True)
-    logger.configure( args.log_dir)
-    print( "# DEBUG: Logging to %s" % dir)
+    # logger.configure( args.log_dir)
+    # print( "# DEBUG: Logging to %s" % dir)
 
     # XXX Eval reparams
     args.task = "evaluate"
@@ -128,14 +128,14 @@ def main(args):
     #     "/trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0")
 
     # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10Fixed_110eps_GAILed/checkpoint/torcs_gail/torcs_gail"
-    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10Fixed_130eps_GAILed_MildlyStrict/checkpoint/torcs_gail/torcs_gail_18"
+    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10Fixed_130eps_NoSlice_GAILed_MildlyStrict_TimestepPerBatchto1024_MaxKL_0.05/checkpoint/torcs_gail/torcs_gail_642"
 
     print( "# DEBUG: Model path: ", args.load_model_path)
 
-    env = bench.Monitor(env, logger.get_dir() and
-                        osp.join(logger.get_dir(), "monitor.csv"), allow_early_resets=True)
+    # env = bench.Monitor(env, logger.get_dir() and
+    #                     osp.join(logger.get_dir(), "monitor.csv"), allow_early_resets=True)
     env.seed(args.seed)
-    gym.logger.setLevel(logging.WARN)
+    # gym.logger.setLevel(logging.WARN)
     # task_name = get_task_name(args)
     # args.checkpoint_dir = osp.join(args.checkpoint_dir, task_name)
     # args.log_dir = osp.join(args.log_dir, task_name)
