@@ -231,7 +231,7 @@ def train(env, seed, policy_fn, reward_giver, dataset, algo,
                        ckpt_dir=checkpoint_dir, log_dir=log_dir,
                        save_per_iter=save_per_iter,
                        timesteps_per_batch=1024,
-                       max_kl=0.05, cg_iters=10, cg_damping=0.1,
+                       max_kl=0.01, cg_iters=10, cg_damping=0.1,
                        gamma=0.995, lam=0.97,
                        vf_iters=5, vf_stepsize=1e-3,
                        task_name=task_name)
