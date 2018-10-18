@@ -101,7 +101,10 @@ def main(args):
     # args.load_model_path = os.path.join( args.load_model_path, "mixedLossAlpha0_7_20180927/checkpoint/torcs_remi/torcs_remi_2350")
 
     # DDPG + Doss 130 Mix 0.5
-    args.load_model_path = os.path.join( args.load_model_path, "Doss_10Fixed_DDPG_Mix_0.5/checkpoint/torcs_remi/torcs_remi_300")
+    # args.load_model_path = os.path.join( args.load_model_path, "Doss_10Fixed_DDPG_Mix_0.5/checkpoint/torcs_remi/torcs_remi_300")
+
+    # DDPG + Doss 130 eps Mix 0.5
+    args.load_model_path = os.path.join( args.load_model_path, "Doss_DDPG_Mix_0_5_Run2/checkpoint/torcs_remi/torcs_remi_573")
 
     print( "# DEBUG: Model path: ", (args.load_model_path + ".index"))
 
@@ -113,8 +116,9 @@ def main(args):
     throttle = True
     gear_change = False
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/agent_10fixed_sparsed.xml"
+        "/raceconfig/agent_10fixed_ruudskogen.xml"
     rendering = True
+    noisy = False
 
     # TODO: How Restrict to 3 laps when evaling ?
     lap_limiter = 2
@@ -122,7 +126,7 @@ def main(args):
     # env = gym.make(args.env_id)
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
 		race_config_path=race_config_path, rendering=rendering,
-		lap_limiter = lap_limiter)
+		lap_limiter = lap_limiter, noisy = noisy)
 
     def policy_fn(name, ob_space, ac_space, reuse=False):
         return mlp_policy.MlpPolicy(name=name, ob_space=ob_space, ac_space=ac_space,
@@ -152,7 +156,7 @@ def main(args):
     # env = bench.Monitor(env, logger.get_dir() and
     #                     osp.join(logger.get_dir(), "monitor.csv"), allow_early_resets=True)
     env.seed(args.seed)
-    gym.logger.setLevel(logging.WARN)
+    # gym.logger.setLevel(logging.WARN)
     # task_name = get_task_name(args)
     # args.checkpoint_dir = osp.join(args.checkpoint_dir, task_name)
     # args.log_dir = osp.join(args.log_dir, task_name)
