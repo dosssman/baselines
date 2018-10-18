@@ -98,7 +98,10 @@ def main(args):
     # args.load_model_path = os.path.join( args.load_model_path, "mixedLossAlpha0_3_20180927/checkpoint/torcs_remi/torcs_remi_2350")
 
     # Alpha .7
-    args.load_model_path = os.path.join( args.load_model_path, "mixedLossAlpha0_7_20180927/checkpoint/torcs_remi/torcs_remi_2350")
+    # args.load_model_path = os.path.join( args.load_model_path, "mixedLossAlpha0_7_20180927/checkpoint/torcs_remi/torcs_remi_2350")
+
+    # DDPG + Doss 130 Mix 0.5
+    args.load_model_path = os.path.join( args.load_model_path, "Doss_10Fixed_DDPG_Mix_0.5/checkpoint/torcs_remi/torcs_remi_300")
 
     print( "# DEBUG: Model path: ", (args.load_model_path + ".index"))
 
@@ -110,7 +113,7 @@ def main(args):
     throttle = True
     gear_change = False
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/agent_practice.xml"
+        "/raceconfig/agent_10fixed_sparsed.xml"
     rendering = True
 
     # TODO: How Restrict to 3 laps when evaling ?
@@ -156,7 +159,7 @@ def main(args):
 
     # XXX Default params override
     args.expert_path = os.path.join( args.log_dir,
-        "defiant/openai-remi/data/mixed_damned_alpha_0.500.npz")
+        "openai-remi/data/DDPG_10Fixed_Sparse_Epoch350_200eps/expert_data.npz")
 
     task_name = get_task_name( args)
     args.checkpoint_dir = os.path.join( args.log_dir, "checkpoint")
