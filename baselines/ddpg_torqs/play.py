@@ -65,17 +65,18 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
 
     # Agent vs 10 Fixed Sparely
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/agent_10fixed_sparsed.xml"
+        "/raceconfig/agent_10fixed_sparsed_2.xml"
 
     # # Duh
     rendering = True
     lap_limiter = 4
     recdata = False
+    noisy = False
 
     # env = gym.make(env_id)
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
 		race_config_path=race_config_path, rendering=rendering,
-		lap_limiter = lap_limiter, recdata=recdata)
+		lap_limiter = lap_limiter, recdata=recdata, noisy=True)
 
     # env = bench.Monitor(env, logger.get_dir() and os.path.join(logger.get_dir(), str(rank)))
 
@@ -181,6 +182,7 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
 
     # DDPG Agent vs 10 Fixed Sparely
     save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-10-12-21-21-29-099513/model_data/epoch_374.ckpt"
+    # save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-10-12-21-21-29-099513/model_data/epoch_379.ckpt"
 
     step = 0
     episode = 0
@@ -223,7 +225,7 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
                 while not done:
                     # Predict next action.
                     # TODO: Noise on or off ?
-                    action, q = agent.pi(obs, apply_noise=True, compute_Q=True)
+                    action, q = agent.pi(obs, apply_noise=False, compute_Q=False)
 
                     assert action.shape == env.action_space.shape
 
