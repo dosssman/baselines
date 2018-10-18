@@ -51,7 +51,7 @@ def argsparser():
     parser.add_argument('--policy_entcoeff', help='entropy coefficiency of policy', type=float, default=0)
     parser.add_argument('--adversary_entcoeff', help='entropy coefficiency of discriminator', type=float, default=1e-3)
     # Traing Configuration
-    parser.add_argument('--save_per_iter', help='save model every xx iterations', type=int, default=50)
+    parser.add_argument('--save_per_iter', help='save model every xx iterations', type=int, default=1)
     parser.add_argument('--num_timesteps', help='number of timesteps per episode', type=int, default=5e6)
     # Behavior Cloning
     boolean_flag(parser, 'pretrained', default=False, help='Use BC to pretrain')
