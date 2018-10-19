@@ -66,10 +66,20 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
     os.makedirs(dir, exist_ok=True)
 
     log_dir = dir
+    # expert_data = os.path.join( log_dir,
+    #     "openai-remi/data/damned200ep720tstpInterpolated/expert_data.npz")
+
+    # Doss + DDPG Ten Fixed
     expert_data = os.path.join( log_dir,
-        "openai-remi/data/damned200ep720tstpInterpolated/expert_data.npz")
+        "openai-remi/data/Doss10Fixed_130eps/expert_data.npz")
+
+    # rl_expert_data = os.path.join( log_dir,
+    #     "openai-remi/data/ddpg200ep720tstpInterpolated/expert_data.npz")
+
+    # Doss + DDPG 10 Fixed
     rl_expert_data = os.path.join( log_dir,
-        "openai-remi/data/ddpg200ep720tstpInterpolated/expert_data.npz")
+        "openai-remi/data/DDPG_10Fixed_Sparse_Epoch350_200eps/expert_data.npz")
+
     # data_path = os.path.join('data', 'deterministic.trpo.' + env_name + '.0.00.npz')
     dataset = load_dataset(expert_data)
     rl_dataset = load_dataset( rl_expert_data)
@@ -96,7 +106,7 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         # checkpoint_path = os.path.join( log_dir, "openai-remi/mixedLossAlpha0_5_20180926/checkpoint/torcs_remi/torcs_remi_2450")
 
         # 20180917 Full RL through ReMi
-        checkpoint_path = os.path.join( log_dir, "openai-remi/mixedLossAlpha0_0_20180928/checkpoint/torcs_remi/torcs_remi_2350")
+        # checkpoint_path = os.path.join( log_dir, "openai-remi/mixedLossAlpha0_0_20180928/checkpoint/torcs_remi/torcs_remi_2350")
 
         # 20180917 Full Expert through ReMi
         # checkpoint_path = os.path.join( log_dir, "openai-remi/mixedLossAlpha1_0_20180928/checkpoint/torcs_remi/torcs_remi_2350")
@@ -106,6 +116,9 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
 
         # Alpha .7
         # checkpoint_path = os.path.join( log_dir, "openai-remi/mixedLossAlpha0_7_20180927/checkpoint/torcs_remi/torcs_remi_2350")
+
+        # Doss + DDPG on 10 Fixed Bots
+        checkpoint_path = os.path.join( log_dir, "openai-remi/Doss_DDPG_Mix_0_5_Run2/checkpoint/torcs_remi/torcs_remi_573")
 
         print( "# DEBUG: Model path: ", (checkpoint_path + ".index"))
         # Not pretty but will do for now
@@ -117,14 +130,15 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         throttle = True
         gear_change = False
         race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-            "/raceconfig/agent_practice.xml"
+            "/raceconfig/agent_10fixed_sparsed.xml"
         rendering = False
-        lap_limiter = 4
+        lap_limiter = 2
+        noisy = True
 
         # env = gym.make(env_id)
         env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
     		race_config_path=race_config_path, rendering=rendering,
-    		lap_limiter = lap_limiter)
+    		lap_limiter = lap_limiter, noisy=noisy)
 
         env.seed(seed)
         print('Trajectory limitation: {}, Load checkpoint: {}, '.format(limit, checkpoint_path))
