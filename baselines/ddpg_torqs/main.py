@@ -37,6 +37,7 @@ def run(env_id, seed, noise_type, layer_norm, evaluation, **kwargs):
     noisy = True
     rendering = False
     lap_limiter = 4
+    noisy=True
     # Alone
     # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     #     "/raceconfig/agent_practice.xml"
