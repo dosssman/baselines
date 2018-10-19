@@ -70,7 +70,7 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
     #     "openai-gailtorcs/best20180907damned200ep720tstpInterpolated/expert_data.npz")
 
     data_path = os.path.join( log_dir,
-        "openai-gailtorcs/data/Doss10Fixed_110eps/expert_data.npz")
+        "openai-gailtorcs/data/Doss10Fixed_130eps/expert_data.npz")
     # data_path = os.path.join('data', 'deterministic.trpo.' + env_name + '.0.00.npz')
     dataset = load_dataset(data_path)
     # checkpoint_list = glob.glob(os.path.join('checkpoint', '*' + env_name + ".*"))
@@ -88,9 +88,13 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         # checkpoint_path = tf.train.latest_checkpoint(checkpoint_dir)
         # XXX Checkpoint path
         # DDPG Imitated
-        checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/Doss10Fixed_110eps_GAILed/checkpoint/torcs_gail/torcs_gail")
+        # checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/Doss10Fixed_130eps_GAILed_MildlyStrict_MaxKL_0.01/checkpoint/torcs_gail/torcs_gail_950")
         # Damned Imitated
-        # checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/best20180907damned200ep720tstpInterpolatedTrainLogs/checkpoint/torcs_gail/torcs_gail_4600")
+        # checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/best20180907damned200ep720tstpInterpolatedTrainLogs/checkpoint/torcs_gail/torcs_gail_460")
+
+        # Doss 130 Episodes
+        checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/Doss10Fixed_130eps_GAILed_MildlyStrict_MaxKL_0.01/checkpoint/torcs_gail/torcs_gail_816")
+
         print( "# DEBUG: Model path: ", (checkpoint_path + ".index"))
         # Not pretty but will do for now
         assert( os.path.isfile( checkpoint_path + ".index"))
@@ -123,7 +127,7 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         avg_len, avg_ret = run_torcs.runner(env,
                                              policy_fn,
                                              checkpoint_path,
-                                             timesteps_per_batch=10000,
+                                             timesteps_per_batch=1024,
                                              number_trajs=10,
                                              stochastic_policy=stochastic,
                                              reuse=((i != 0) or reuse))
