@@ -102,7 +102,7 @@
 -->
 
     <!-- Initdist for first driver-->
-    <attnum name="initdist_1" val="200"/>
+    <attnum name="initdist_1" val="100"/>
     <attnum name="initdist_2" val="300"/>
     <attnum name="initdist_3" val="400"/>
     <attnum name="initdist_4" val="500"/>
