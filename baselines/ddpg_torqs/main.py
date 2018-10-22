@@ -61,7 +61,7 @@ def run(env_id, seed, noise_type, layer_norm, evaluation, **kwargs):
 
     # Agent and sparsely setup Fixed Bots
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/agent_10fixed_sparsed.xml"
+        "/raceconfig/agent_10fixed_sparsed_4.xml"
 
     # env = gym.make(env_id)
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,

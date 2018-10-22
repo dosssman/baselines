@@ -65,7 +65,7 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
 
     # Agent vs 10 Fixed Sparely
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/agent_10fixed_sparsed_2.xml"
+        "/raceconfig/agent_10fixed_sparsed.xml"
 
     # # Duh
     rendering = True
@@ -181,8 +181,9 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     # save_filename = "/home/z3r0/random/rl/openai_logs/ddpgtorcs_dam_agent_dam_fix-2018-10-10-09-19-13/model_data/epoch_481.ckpt"
 
     # DDPG Agent vs 10 Fixed Sparely
-    save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-10-12-21-21-29-099513/model_data/epoch_374.ckpt"
+    # save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-10-12-21-21-29-099513/model_data/epoch_374.ckpt"
     # save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-10-12-21-21-29-099513/model_data/epoch_379.ckpt"
+    save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-10-20-13-31-22-919667/model_data/epoch_748.ckpt"
 
     step = 0
     episode = 0
