@@ -96,7 +96,7 @@ def main(args):
 
     # Agent10Fixed_Sparse
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/agent_10fixed_sparsed.xml"
+        "/raceconfig/agent_10fixed_sparsed_4.xml"
 
     rendering = False
     noisy = False
@@ -155,7 +155,7 @@ def main(args):
 
     # DamDossDamFix_35eps
     args.expert_path = os.path.join( args.log_dir,
-        "data/Doss10Fixed_130eps/expert_data.npz")
+        "data/DossCtrl10Fixed_76eps/expert_data.npz")
 
     task_name = get_task_name( args)
     args.checkpoint_dir = os.path.join( args.log_dir, "checkpoint")
