@@ -18,7 +18,11 @@ from baselines import bench
 from baselines import logger
 from baselines.gail.dataset.mujoco_dset import Mujoco_Dset
 from baselines.gail.adversary import TransitionClassifier
+import os
+import os.path as osp
+import datetime
 
+from baselines.gail.gym_torcs import TorcsEnv
 
 def argsparser():
     parser = argparse.ArgumentParser("Tensorflow Implementation of GAIL")
@@ -50,7 +54,7 @@ def argsparser():
     parser.add_argument('--save_per_iter', help='save model every xx iterations', type=int, default=100)
     parser.add_argument('--num_timesteps', help='number of timesteps per episode', type=int, default=5e6)
     # Behavior Cloning
-    boolean_flag(parser, 'pretrained', default=False, help='Use BC to pretrain')
+    boolean_flag(parser, 'pretrained', default=True, help='Use BC to pretrain')
     parser.add_argument('--BC_max_iter', help='Max iteration for training BC', type=int, default=1e4)
     return parser.parse_args()
 
@@ -137,26 +141,36 @@ def main(args):
     # args.log_dir = osp.join(args.log_dir, task_name)
     # assert isinstance(args.log_dir, str)
     # os.makedirs(args.log_dir, exist_ok=True)
+    # logger.configure( dir=args.log_dir, format_strs="stdout,log,csv,tensorboard")
     logger.configure( dir=args.log_dir, format_strs="stdout,log,csv,tensorboard")
     print( "# DEBUG: Logging to %s" % logger.get_dir())
+
+    # ORder is importat
+    # DamDossDamFix_35eps
+    args.expert_path = os.path.join( args.log_dir,
+        "data/DossCtrl10Fixed_170eps/expert_data.npz")
 
     def policy_fn(name, ob_space, ac_space, reuse=False):
         return mlp_policy.MlpPolicy(name=name, ob_space=ob_space, ac_space=ac_space,
                                     reuse=reuse, hid_size=args.policy_hidden_size, num_hid_layers=2)
-    env = bench.Monitor(env, logger.get_dir() and
-                        osp.join(logger.get_dir(), "monitor.json"))
+    # env = bench.Monitor(env, logger.get_dir() and
+    #                     osp.join(logger.get_dir(), "monitor.json"))
     env.seed(args.seed)
     gym.logger.setLevel(logging.WARN)
     task_name = get_task_name(args)
-    args.checkpoint_dir = osp.join(args.checkpoint_dir, task_name)
+    # args.checkpoint_dir = osp.join(args.checkpoint_dir, task_name)
+
+    args.checkpoint_dir = os.path.join( args.log_dir, "checkpoint")
+    args.checkpoint_dir = os.path.join( args.checkpoint_dir, task_name)
+    assert isinstance(args.checkpoint_dir, str)
+    os.makedirs(args.checkpoint_dir, exist_ok=True)
+
     args.log_dir = osp.join(args.log_dir, task_name)
 
-    # DamDossDamFix_35eps
-    args.expert_path = os.path.join( args.log_dir,
-        "data/DossCtrl10Fixed_170eps/expert_data.npz")
+    # print( "# DEBUG: Logging to %s" % args.expert_path )
     args.num_timesteps = 1250000
     args.save_per_iter = 1
-    
+
     if args.task == 'train':
         dataset = Mujoco_Dset(expert_path=args.expert_path, traj_limitation=args.traj_limitation)
         reward_giver = TransitionClassifier(env, args.adversary_hidden_size, entcoeff=args.adversary_entcoeff)
@@ -239,6 +253,8 @@ def runner(env, policy_func, load_model_path, timesteps_per_batch, number_trajs,
     # Prepare for rollouts
     # ----------------------------------------
     U.load_state(load_model_path)
+    # U.load_variables(load_model_path, variables=pi.get_variables(),
+    #     sess=tf.get_default_session())
 
     obs_list = []
     acs_list = []

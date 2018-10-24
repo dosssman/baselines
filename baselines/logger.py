@@ -8,6 +8,10 @@ import datetime
 import tempfile
 from collections import defaultdict
 
+LOG_OUTPUT_FORMATS     = ['stdout', 'log', 'csv', 'tensorboard', "json"]
+LOG_OUTPUT_FORMATS_MPI = ['log']
+# Also valid: json, tensorboard
+
 DEBUG = 10
 INFO = 20
 WARN = 30
@@ -346,6 +350,11 @@ class Logger(object):
                 fmt.writeseq(map(str, args))
 
 def configure(dir=None, format_strs=None):
+    # print( format_strs)
+    # input()
+    # DOss overide
+    format_strs = "stdout,log,csv,tensorboard"
+
     if dir is None:
         dir = os.getenv('OPENAI_LOGDIR')
     if dir is None:
@@ -364,15 +373,34 @@ def configure(dir=None, format_strs=None):
     if rank > 0:
         log_suffix = "-rank%03i" % rank
 
+    #Orginal
+    # if format_strs is None:
+    #     if rank == 0:
+    #         format_strs = os.getenv('OPENAI_LOG_FORMAT', 'stdout,log,csv').split(',')
+    #     else:
+    #         format_strs = os.getenv('OPENAI_LOG_FORMAT_MPI', 'log').split(',')
+    # format_strs = filter(None, format_strs)
+    # for f in format_strs:
+    #     print( f)
+    # input()
+    # output_formats = [make_output_format(f, dir, log_suffix) for f in format_strs]
+    #
+    # Logger.CURRENT = Logger(dir=dir, output_formats=output_formats)
+
+    # Doss mix
     if format_strs is None:
-        if rank == 0:
-            format_strs = os.getenv('OPENAI_LOG_FORMAT', 'stdout,log,csv').split(',')
-        else:
-            format_strs = os.getenv('OPENAI_LOG_FORMAT_MPI', 'log').split(',')
-    format_strs = filter(None, format_strs)
+        strs, strs_mpi = os.getenv('OPENAI_LOG_FORMAT'), os.getenv('OPENAI_LOG_FORMAT_MPI')
+        format_strs = strs_mpi if rank>0 else strs
+
+    if format_strs is not None:
+        format_strs = format_strs.split(',')
+    else:
+        format_strs = LOG_OUTPUT_FORMATS_MPI if rank>0 else LOG_OUTPUT_FORMATS
+
     output_formats = [make_output_format(f, dir, log_suffix) for f in format_strs]
 
     Logger.CURRENT = Logger(dir=dir, output_formats=output_formats)
+
     log('Logging to %s'%dir)
 
 def _configure_default_logger():

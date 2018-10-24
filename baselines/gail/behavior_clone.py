@@ -73,7 +73,9 @@ def learn(env, policy_func, dataset, optim_batch_size=128, max_iters=1e4,
         savedir_fname = tempfile.TemporaryDirectory().name
     else:
         savedir_fname = osp.join(ckpt_dir, task_name)
-    U.save_state(savedir_fname, var_list=pi.get_variables())
+    # U.save_state(savedir_fname, var_list=pi.get_variables())
+    U.save_variables(savedir_fname, variables=pi.get_variables(),
+        sess=tf.get_default_session())
     return savedir_fname
 
 

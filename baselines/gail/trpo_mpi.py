@@ -218,7 +218,9 @@ def learn(env, policy_func, reward_giver, expert_dataset, rank,
     ep_stats = stats(["True_rewards", "Rewards", "Episode_length"])
     # if provide pretrained weight
     if pretrained_weight is not None:
-        U.load_state(pretrained_weight, var_list=pi.get_variables())
+        # U.load_state(pretrained_weight, var_list=pi.get_variables())
+        U.load_variables(pretrained_weight, variables=pi.get_variables(),
+            sess=tf.get_default_session())
 
     while True:
         if callback: callback(locals(), globals())
@@ -230,11 +232,14 @@ def learn(env, policy_func, reward_giver, expert_dataset, rank,
             break
 
         # Save model
+        print( "Log dir %s" % log_dir)
+        print( "Ckp Dir %s" % ckpt_dir)
+
         if rank == 0 and iters_so_far % save_per_iter == 0 and ckpt_dir is not None:
             fname = os.path.join(ckpt_dir, task_name)
             os.makedirs(os.path.dirname(fname), exist_ok=True)
-            saver = tf.train.Saver()
-            saver.save(tf.get_default_session(), fname)
+            saver = tf.train.Saver( max_to_keep=1000000)
+            saver.save(tf.get_default_session(), "%s_%s" %( fname, iters_so_far))
 
         logger.log("********** Iteration %i ************" % iters_so_far)
 
@@ -336,6 +341,8 @@ def learn(env, policy_func, reward_giver, expert_dataset, rank,
 
         logger.record_tabular("EpLenMean", np.mean(lenbuffer))
         logger.record_tabular("EpRewMean", np.mean(rewbuffer))
+        logger.record_tabular("EpMaxRew", np.max( true_rewbuffer))
+        logger.record_tabular("EpMinRew", np.min( true_rewbuffer))
         logger.record_tabular("EpTrueRewMean", np.mean(true_rewbuffer))
         logger.record_tabular("EpThisIter", len(lens))
         episodes_so_far += len(lens)
