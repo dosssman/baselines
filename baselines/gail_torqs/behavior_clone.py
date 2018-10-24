@@ -51,8 +51,7 @@ def learn(env, policy_func, dataset, optim_batch_size=128, max_iters=1e4,
     val_per_iter = int(max_iters/10)
     ob_space = env.observation_space
     ac_space = env.action_space
-    # pi = policy_func("pi", ob_space, ac_space)  # Construct network for new policy
-    pi = TorcsActor( ob_space, ac_space)
+    pi = policy_func("pi", ob_space, ac_space)  # Construct network for new policy
     # placeholder
     ob = U.get_placeholder_cached(name="ob")
     ac = pi.pdtype.sample_placeholder([None])
