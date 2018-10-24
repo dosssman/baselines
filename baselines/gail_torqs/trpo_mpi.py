@@ -125,9 +125,6 @@ def learn(env, policy_func, reward_giver, expert_dataset, rank,
     # ----------------------------------------
     ob_space = env.observation_space
     ac_space = env.action_space
-    print( pretrained_weight != None)
-    input()
-    reuse = True
 
     pi = policy_func("pi", ob_space, ac_space, reuse=(pretrained_weight != None))
     oldpi = policy_func("oldpi", ob_space, ac_space)
