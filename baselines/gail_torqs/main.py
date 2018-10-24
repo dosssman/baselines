@@ -207,13 +207,17 @@ def train(env, seed, policy_fn, reward_giver, dataset, algo,
           g_step, d_step, policy_entcoeff, num_timesteps, save_per_iter,
           checkpoint_dir, log_dir, pretrained, BC_max_iter, task_name=None):
 
-    pretrained_weight = None
-    if pretrained and (BC_max_iter > 0):
-        # Pretrain with behavior cloning
-        from baselines.gail import behavior_clone
-        pretrained_weight = behavior_clone.learn(env, policy_fn, dataset,
-                                                 max_iters=BC_max_iter)
+    # pretrained_weight = None
+    # if pretrained and (BC_max_iter > 0):
+    #     # Pretrain with behavior cloning
+    #     from baselines.gail import behavior_clone
+    #     pretrained_weight = behavior_clone.learn(env, policy_fn, dataset,
+    #                                              max_iters=BC_max_iter)
 
+    pretrained = True
+    pretained_weight = os.path.join( args.log_dir,
+        "DossCtrl10Fixed_170eps_BCed/checkpoint/BC.Torcs.traj_limitation_-1.seed_0")
+        
     if algo == 'trpo':
         from baselines.gail_torqs import trpo_mpi
         # Set up for MPI seed
