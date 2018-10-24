@@ -81,7 +81,7 @@ def learn(env, policy_func, dataset, optim_batch_size=128, max_iters=1e4,
     # XXX Just save everything already
     # U.save_state(savedir_fname)
     os.makedirs(os.path.dirname(savedir_fname), exist_ok=True)
-    saver = tf.train.Saver(max_to_keep=1e8)
+    saver = tf.train.Saver()
     saver.save(tf.get_default_session(), savedir_fname)
 
     return savedir_fname
