@@ -16,6 +16,8 @@ class MlpPolicy(object):
     recurrent = False
 
     def __init__(self, name, reuse=False, *args, **kwargs):
+        print( reuse)
+        
         with tf.variable_scope(name):
             if reuse:
                 tf.get_variable_scope().reuse_variables()

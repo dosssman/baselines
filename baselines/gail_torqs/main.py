@@ -110,7 +110,13 @@ def main(args):
 		race_config_path=race_config_path, rendering=rendering,
 		lap_limiter = lap_limiter, noisy=noisy, timestep_limit=timestep_limit)
 
-    def policy_fn(name, ob_space, ac_space, reuse=False):
+    # Pretrained config
+
+    pretrained = True
+    pretrained_weight = os.path.join( args.log_dir,
+        "DossCtrl10Fixed_170eps_BCed/checkpoint/BC.Torcs.traj_limitation_-1.seed_0")
+
+    def policy_fn(name, ob_space, ac_space, reuse=(pretrained_weight != None)):
         return mlp_policy.MlpPolicy(name=name, ob_space=ob_space, ac_space=ac_space,
                                     reuse=reuse, hid_size=args.policy_hidden_size, num_hid_layers=2)
 
@@ -213,10 +219,6 @@ def train(env, seed, policy_fn, reward_giver, dataset, algo,
     #     from baselines.gail import behavior_clone
     #     pretrained_weight = behavior_clone.learn(env, policy_fn, dataset,
     #                                              max_iters=BC_max_iter)
-
-    pretrained = True
-    pretrained_weight = os.path.join( args.log_dir,
-        "DossCtrl10Fixed_170eps_BCed/checkpoint/BC.Torcs.traj_limitation_-1.seed_0")
 
     if algo == 'trpo':
         from baselines.gail_torqs import trpo_mpi
