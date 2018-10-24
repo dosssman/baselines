@@ -189,7 +189,8 @@ def main(args):
               args.save_per_iter,
               args.checkpoint_dir,
               args.log_dir,
-              args.pretrained,
+              pretrained,
+              pretrained_weight,
               args.BC_max_iter,
               task_name
               )
@@ -211,7 +212,8 @@ def main(args):
 
 def train(env, seed, policy_fn, reward_giver, dataset, algo,
           g_step, d_step, policy_entcoeff, num_timesteps, save_per_iter,
-          checkpoint_dir, log_dir, pretrained, BC_max_iter, task_name=None):
+          checkpoint_dir, log_dir, pretrained, pretrained_weight,
+          BC_max_iter, task_name=None):
 
     # pretrained_weight = None
     # if pretrained and (BC_max_iter > 0):
