@@ -215,9 +215,9 @@ def train(env, seed, policy_fn, reward_giver, dataset, algo,
     #                                              max_iters=BC_max_iter)
 
     pretrained = True
-    pretained_weight = os.path.join( args.log_dir,
+    pretrained_weight = os.path.join( args.log_dir,
         "DossCtrl10Fixed_170eps_BCed/checkpoint/BC.Torcs.traj_limitation_-1.seed_0")
-        
+
     if algo == 'trpo':
         from baselines.gail_torqs import trpo_mpi
         # Set up for MPI seed
