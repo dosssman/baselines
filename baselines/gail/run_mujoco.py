@@ -22,7 +22,7 @@ from baselines.gail.adversary import TransitionClassifier
 
 def argsparser():
     parser = argparse.ArgumentParser("Tensorflow Implementation of GAIL")
-    parser.add_argument('--env_id', help='environment ID', default='Hopper-v2')
+    parser.add_argument('--env_id', help='environment ID', default='Torcs')
     parser.add_argument('--seed', help='RNG seed', type=int, default=0)
     parser.add_argument('--expert_path', type=str, default='data/deterministic.trpo.Hopper.0.00.npz')
     parser.add_argument('--checkpoint_dir', help='the directory to save model', default='checkpoint')
@@ -31,7 +31,7 @@ def argsparser():
     # Task
     parser.add_argument('--task', type=str, choices=['train', 'evaluate', 'sample'], default='train')
     # for evaluatation
-    boolean_flag(parser, 'stochastic_policy', default=False, help='use stochastic/deterministic policy to evaluate')
+    boolean_flag(parser, 'stochastic_policy', default=True, help='use stochastic/deterministic policy to evaluate')
     boolean_flag(parser, 'save_sample', default=False, help='save the trajectories or not')
     #  Mujoco Dataset Configuration
     parser.add_argument('--traj_limitation', type=int, default=-1)
@@ -56,22 +56,89 @@ def argsparser():
 
 
 def get_task_name(args):
-    task_name = args.algo + "_gail."
-    if args.pretrained:
-        task_name += "with_pretrained."
-    if args.traj_limitation != np.inf:
-        task_name += "transition_limitation_%d." % args.traj_limitation
-    task_name += args.env_id.split("-")[0]
-    task_name = task_name + ".g_step_" + str(args.g_step) + ".d_step_" + str(args.d_step) + \
-        ".policy_entcoeff_" + str(args.policy_entcoeff) + ".adversary_entcoeff_" + str(args.adversary_entcoeff)
-    task_name += ".seed_" + str(args.seed)
+    # task_name = args.algo + "_gail."
+    # if args.pretrained:
+    #     task_name += "with_pretrained."
+    # if args.traj_limitation != np.inf:
+    #     task_name += "transition_limitation_%d." % args.traj_limitation
+    # task_name += args.env_id.split("-")[0]
+    # task_name = task_name + ".g_step_" + str(args.g_step) + ".d_step_" + str(args.d_step) + \
+    #     ".policy_entcoeff_" + str(args.policy_entcoeff) + ".adversary_entcoeff_" + str(args.adversary_entcoeff)
+    # task_name += ".seed_" + str(args.seed)
+    # return task_name
+
+    # From GAIL_TORQS
+
+    # task_name = args.algo + "_gail."
+    # if args.pretrained:
+    #     task_name += "with_pretrained."
+    # if args.traj_limitation != np.inf:
+    #     task_name += "transition_limitation_%d." % args.traj_limitation
+    # task_name += args.env_id.split("-")[0]
+    # task_name = task_name + ".g_step_" + str(args.g_step) + ".d_step_" + str(args.d_step) + \
+    #     ".policy_entcoeff_" + str(args.policy_entcoeff) + ".adversary_entcoeff_" + str(args.adversary_entcoeff)
+    # task_name += ".seed_" + str(args.seed)
+
+    task_name = "torcs_gail"
     return task_name
 
 
 def main(args):
     U.make_session(num_cpu=1).__enter__()
     set_global_seeds(args.seed)
-    env = gym.make(args.env_id)
+    # env = gym.make(args.env_id)
+
+    # XXX: Hook up Gym Torcs
+    vision = False
+    throttle = True
+    gear_change = False
+    # Agent only
+    # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    #     "/raceconfig/agent_practice.xml"
+
+    # 2Damned_Agent_2Damned_1Fixed
+    # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    #     "/raceconfig/2damned_agent_2damned_1fixed.xml"
+
+    # DamDamAgentFix
+    # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    #     "/raceconfig/2damned_agent_1fixed_record.xml"
+
+    # Agent10Fixed_Sparse
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+        "/raceconfig/agent_10fixed_sparsed_4.xml"
+
+    rendering = False
+    noisy = False
+
+    # TODO: How Restrict to 3 laps when evaling ?
+    lap_limiter = 2
+    timestep_limit = 320
+
+    # env = gym.make(args.env_id)
+    env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
+		race_config_path=race_config_path, rendering=rendering,
+		lap_limiter = lap_limiter, noisy=noisy, timestep_limit=timestep_limit)
+
+    # XXX: Intuitive log folder, probably save weihts there too & params overide
+    args.task = "train"
+    task_name = get_task_name( args)
+
+    dir = os.getenv('OPENAI_GEN_LOGDIR')
+    if dir is None:
+        dir = osp.join(tempfile.gettempdir(),
+            datetime.datetime.now().strftime("openai-gailtorcs"))
+    else:
+        dir = osp.join( dir, datetime.datetime.now().strftime("openai-gailtorcs"))
+
+    assert isinstance(dir, str)
+    os.makedirs(dir, exist_ok=True)
+    args.log_dir = dir
+    # args.log_dir = osp.join(args.log_dir, task_name)
+    # assert isinstance(args.log_dir, str)
+    # os.makedirs(args.log_dir, exist_ok=True)
+    logger.configure( dir=args.log_dir, format_strs="stdout,log,csv,tensorboard")
+    print( "# DEBUG: Logging to %s" % logger.get_dir())
 
     def policy_fn(name, ob_space, ac_space, reuse=False):
         return mlp_policy.MlpPolicy(name=name, ob_space=ob_space, ac_space=ac_space,
@@ -84,6 +151,12 @@ def main(args):
     args.checkpoint_dir = osp.join(args.checkpoint_dir, task_name)
     args.log_dir = osp.join(args.log_dir, task_name)
 
+    # DamDossDamFix_35eps
+    args.expert_path = os.path.join( args.log_dir,
+        "data/DossCtrl10Fixed_170eps/expert_data.npz")
+    args.num_timesteps = 1250000
+    args.save_per_iter = 1
+    
     if args.task == 'train':
         dataset = Mujoco_Dset(expert_path=args.expert_path, traj_limitation=args.traj_limitation)
         reward_giver = TransitionClassifier(env, args.adversary_hidden_size, entcoeff=args.adversary_entcoeff)
