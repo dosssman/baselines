@@ -85,12 +85,12 @@ def main(args):
 
     # Agent10Fixed_Sparse
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/agent_10fixed_sparsed_G2_2.xml"
+        "/raceconfig/agent_10fixed_sparsed_4.xml"
 
     rendering = True
     noisy = False
 
-    # TODO: How Rest    rict to 3 laps when evaling ?
+    # TODO: How Restrict to 3 laps when evaling ?
     lap_limiter = 2
 
     # env = gym.make(args.env_id)
@@ -131,7 +131,7 @@ def main(args):
     # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10Fixed_110eps_GAILed/checkpoint/torcs_gail/torcs_gail"
     # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10Fixed_130eps_NoSlice_GAILed_MildlyStrict_TimestepPerBatchto1024_MaxKL_0.05/checkpoint/torcs_gail/torcs_gail_642"
 
-    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10Fixed_130eps_GAILed_MildlyStrict_MaxKL_0.01/checkpoint/torcs_gail/torcs_gail_755"
+    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/DossCtrl10Fixed_100eps_GAILed_MaxRew3e4PLus/checkpoint/torcs_gail/torcs_gail_771"
 
     print( "# DEBUG: Model path: ", args.load_model_path)
 

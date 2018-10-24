@@ -232,12 +232,6 @@ class TorcsEnv( gym.Env):
         progress = sp*np.cos(obs['angle'])
         reward = progress
 
-        # collision detection
-        if obs['damage'] - obs_pre['damage'] > 0:
-            # reward = - 200
-            episode_terminate = True
-            client.R.d['meta'] = True
-
         # Termination judgement #########################
         episode_terminate = False
         if self.timestep_limit > 0 and self.time_step >= self.timestep_limit:
@@ -245,6 +239,12 @@ class TorcsEnv( gym.Env):
             client.R.d['meta'] = True
         if track.all() < 0:  # Episode is terminated if the car is out of track
             # reward = - 50
+            episode_terminate = True
+            client.R.d['meta'] = True
+
+        # collision detection
+        if obs['damage'] - obs_pre['damage'] > 0:
+            # reward = - 200
             episode_terminate = True
             client.R.d['meta'] = True
 

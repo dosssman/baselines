@@ -43,70 +43,6 @@ def argsparser():
     parser.add_argument('--BC_max_iter', help='Max iteration for training BC', type=int, default=1e5)
     return parser.parse_args()
 
-# XXX TRASH
-class TorcsActor( object):
-    def __init__( self, ob_space, ac_space, name="actor", layer_norm=True,
-        reuse=False, gaussian_fixed_var=False):
-        self.name = name
-        with tf.variable_scope(name):
-            if reuse:
-                tf.get_variable_scope().reuse_variables()
-        self.layer_norm = layer_norm
-        self.nb_actions = ac_space.shape[0]
-        self.scope = tf.get_variable_scope().name
-        self.pdtype = pdtype = make_pdtype(ac_space)
-
-        with( tf.variable_scope( self.name)) as scope:
-            if reuse:
-                scope.reuse_variables()
-
-            # x = tf.placeholder( dtype=tf.float32, shape=(65,1), name="inputs")
-            sequence_length = None
-            ob = U.get_placeholder(name="ob", dtype=tf.float32, shape=[sequence_length] + list(ob_space.shape))
-
-            last_out = tf.layers.dense( ob, 64, name="input")
-            if self.layer_norm:
-                last_out = tc.layers.layer_norm(last_out, center=True, scale=True)
-            last_out = tf.nn.relu(last_out, name="h1")
-
-            last_out = tf.layers.dense(last_out, 64)
-            if self.layer_norm:
-                last_out = tc.layers.layer_norm(last_out, center=True, scale=True)
-            last_out = tf.nn.relu(last_out, name="h2")
-
-            last_out = tf.layers.dense(last_out, self.nb_actions, kernel_initializer=tf.random_uniform_initializer(minval=-3e-3, maxval=3e-3))
-            last_out = tf.nn.tanh(last_out, name="output")
-
-        # MLP Policy similarity hack
-        if gaussian_fixed_var and isinstance(ac_space, gym.spaces.Box):
-            mean = aktr_dense(last_out, pdtype.param_shape()[0]//2, "polfinal", U.normc_initializer(0.01))
-            logstd = tf.get_variable(name="logstd", shape=[1, pdtype.param_shape()[0]//2], initializer=tf.zeros_initializer())
-            pdparam = tf.concat([mean, mean * 0.0 + logstd], axis=1)
-        else:
-            pdparam = aktr_dense(last_out, pdtype.param_shape()[0], "polfinal", U.normc_initializer(0.01))
-
-        self.pd = pdtype.pdfromflat(pdparam)
-
-        # change for BC
-        stochastic = U.get_placeholder(name="stochastic", dtype=tf.bool, shape=())
-        ac = U.switch(stochastic, self.pd.sample(), self.pd.mode())
-        self.ac = ac
-        self._act = U.function([stochastic, ob], [ac, self.vpred])
-        # return x
-
-    def act(self, stochastic, ob):
-        ac1, vpred1 = self._act(stochastic, ob[None])
-        return ac1[0], vpred1[0]
-
-    def get_variables(self):
-        return tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, self.scope)
-
-    def get_trainable_variables(self):
-        return tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, self.scope)
-
-    def get_initial_state(self):
-        return []
-
 def learn(env, policy_func, dataset, optim_batch_size=128, max_iters=1e4,
           adam_epsilon=1e-5, optim_stepsize=3e-4,
           ckpt_dir=None, log_dir=None, task_name=None,
@@ -144,7 +80,11 @@ def learn(env, policy_func, dataset, optim_batch_size=128, max_iters=1e4,
         savedir_fname = osp.join(ckpt_dir, task_name)
     # U.save_state(savedir_fname, var_list=pi.get_variables())
     # XXX Just save everything already
-    U.save_state(savedir_fname)
+    # U.save_state(savedir_fname)
+    os.makedirs(os.path.dirname(savedir_fname), exist_ok=True)
+    saver = tf.train.Saver(max_to_keep=1e8)
+    saver.save(tf.get_default_session(), savedir_fname)
+
     return savedir_fname
 
 
@@ -166,11 +106,11 @@ def main(args):
     throttle = True
     gear_change = False
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/agent_practice.xml"
+        "/raceconfig/agent_10fixed_sparsed_4.xml"
     rendering = False
 
     # TODO: How Restrict to 3 laps when evaling ?
-    lap_limiter = 4
+    lap_limiter = 3
 
     # env = gym.make(args.env_id)
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
@@ -204,7 +144,7 @@ def main(args):
     task_name = get_task_name(args)
     # XXX Default params override
     args.expert_path = os.path.join( args.log_dir,
-        "damned_200ep_1000step/expert_data.npz")
+        "data/DossCtrl10Fixed_170eps/expert_data.npz")
     task_name = get_task_name( args)
     args.checkpoint_dir = os.path.join( args.log_dir, "checkpoint")
     args.checkpoint_dir = os.path.join( args.checkpoint_dir, task_name)

@@ -70,7 +70,7 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
     #     "openai-gailtorcs/best20180907damned200ep720tstpInterpolated/expert_data.npz")
 
     data_path = os.path.join( log_dir,
-        "openai-gailtorcs/data/Doss10Fixed_130eps/expert_data.npz")
+        "openai-gailtorcs/data/DossCtrl10Fixed_100eps/expert_data.npz")
     # data_path = os.path.join('data', 'deterministic.trpo.' + env_name + '.0.00.npz')
     dataset = load_dataset(data_path)
     # checkpoint_list = glob.glob(os.path.join('checkpoint', '*' + env_name + ".*"))
@@ -93,7 +93,10 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         # checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/best20180907damned200ep720tstpInterpolatedTrainLogs/checkpoint/torcs_gail/torcs_gail_460")
 
         # Doss 130 Episodes
-        checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/Doss10Fixed_130eps_GAILed_MildlyStrict_MaxKL_0.01/checkpoint/torcs_gail/torcs_gail_816")
+        # checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/Doss10Fixed_130eps_GAILed_MildlyStrict_MaxKL_0.01/checkpoint/torcs_gail/torcs_gail_816")
+
+        # Doss Ctrl 100 Episode most promising so far 2018-10-24
+        checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/DossCtrl10Fixed_100eps_GAILed_MaxRew3e4PLus/checkpoint/torcs_gail/torcs_gail_849")
 
         print( "# DEBUG: Model path: ", (checkpoint_path + ".index"))
         # Not pretty but will do for now
@@ -110,7 +113,7 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
 
         # DamDamAgentFix
         race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-            "/raceconfig/agent_10fixed_sparsed.xml"
+            "/raceconfig/agent_10fixed_sparsed_4.xml"
 
         rendering = False
         lap_limiter = 2
