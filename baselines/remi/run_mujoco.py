@@ -180,7 +180,7 @@ def main(args):
         dataset = Mujoco_Dset(expert_path=args.expert_path, traj_limitation=args.traj_limitation)
         rl_dataset = Mujoco_Dset(expert_path=args.rl_expert_path, traj_limitation=args.traj_limitation)
         reward_giver = TransitionClassifier(env, args.adversary_hidden_size,
-            entcoeff=args.adversary_entcoeff, alpha=.5)
+            entcoeff=args.adversary_entcoeff, alpha=.2)
         train(env,
               args.seed,
               policy_fn,
@@ -249,7 +249,7 @@ def train(env, seed, policy_fn, reward_giver, dataset, rl_dataset,  algo,
         raise NotImplementedError
 
     env.close()
-    
+
 def runner(env, policy_func, load_model_path, timesteps_per_batch, number_trajs,
            stochastic_policy, save=False, reuse=False):
 
