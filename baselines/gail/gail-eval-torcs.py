@@ -24,7 +24,7 @@ from baselines.gail.gym_torcs import TorcsEnv
 
 plt.style.use('ggplot')
 CONFIG = {
-    'traj_limitation': [1, 5, 10, 50],
+    'traj_limitation': [1, 5, 10, 50, 100, 200],
 }
 
 
@@ -86,8 +86,8 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         upper_bound = sum(dataset.rets[:limit])/limit
         # checkpoint_dir = get_checkpoint_dir(checkpoint_list, limit, prefix=prefix)
         # checkpoint_path = tf.train.latest_checkpoint(checkpoint_dir)
+
         # XXX Checkpoint path
-        # DDPG Imitated
         # checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/Doss10Fixed_130eps_GAILed_MildlyStrict_MaxKL_0.01/checkpoint/torcs_gail/torcs_gail_950")
         # Damned Imitated
         # checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/best20180907damned200ep720tstpInterpolatedTrainLogs/checkpoint/torcs_gail/torcs_gail_460")
@@ -96,7 +96,7 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         # checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/Doss10Fixed_130eps_GAILed_MildlyStrict_MaxKL_0.01/checkpoint/torcs_gail/torcs_gail_816")
 
         # Doss Ctrl 100 Episode most promising so far 2018-10-24
-        checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed/checkpoint/torcs_gail/torcs_gail_984")
+        checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed/checkpoint/torcs_gail/torcs_gail_1040")
 
         print( "# DEBUG: Model path: ", (checkpoint_path + ".index"))
         # Not pretty but will do for now
@@ -115,7 +115,7 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
             "/raceconfig/agent_10fixed_sparsed_4.xml"
 
-        rendering = False
+        rendering = True
         lap_limiter = 2
         timestep_limit = 320
 

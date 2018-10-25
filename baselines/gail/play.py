@@ -3,13 +3,16 @@ Disclaimer: this code is highly based on trpo_mpi at @openai/baselines and @open
 '''
 
 import argparse
+import os
 import os.path as osp
 import logging
 from mpi4py import MPI
 from tqdm import tqdm
 
 import numpy as np
+import datetime, time
 import gym
+import tempfile
 
 from baselines.gail import mlp_policy
 from baselines.common import set_global_seeds, tf_util as U
@@ -18,15 +21,13 @@ from baselines import bench
 from baselines import logger
 from baselines.gail.dataset.mujoco_dset import Mujoco_Dset
 from baselines.gail.adversary import TransitionClassifier
-import os
-import os.path as osp
-import datetime
+import tensorflow as tf
 
 from baselines.gail.gym_torcs import TorcsEnv
 
 def argsparser():
     parser = argparse.ArgumentParser("Tensorflow Implementation of GAIL")
-    parser.add_argument('--env_id', help='environment ID', default='Torcs')
+    parser.add_argument('--env_id', help='environment ID', default='Hopper-v2')
     parser.add_argument('--seed', help='RNG seed', type=int, default=0)
     parser.add_argument('--expert_path', type=str, default='data/deterministic.trpo.Hopper.0.00.npz')
     parser.add_argument('--checkpoint_dir', help='the directory to save model', default='checkpoint')
@@ -54,78 +55,55 @@ def argsparser():
     parser.add_argument('--save_per_iter', help='save model every xx iterations', type=int, default=100)
     parser.add_argument('--num_timesteps', help='number of timesteps per episode', type=int, default=5e6)
     # Behavior Cloning
-    boolean_flag(parser, 'pretrained', default=True, help='Use BC to pretrain')
+    boolean_flag(parser, 'pretrained', default=False, help='Use BC to pretrain')
     parser.add_argument('--BC_max_iter', help='Max iteration for training BC', type=int, default=1e4)
     return parser.parse_args()
 
 
 def get_task_name(args):
-    # task_name = args.algo + "_gail."
-    # if args.pretrained:
-    #     task_name += "with_pretrained."
-    # if args.traj_limitation != np.inf:
-    #     task_name += "transition_limitation_%d." % args.traj_limitation
-    # task_name += args.env_id.split("-")[0]
-    # task_name = task_name + ".g_step_" + str(args.g_step) + ".d_step_" + str(args.d_step) + \
-    #     ".policy_entcoeff_" + str(args.policy_entcoeff) + ".adversary_entcoeff_" + str(args.adversary_entcoeff)
-    # task_name += ".seed_" + str(args.seed)
-    # return task_name
-
-    # From GAIL_TORQS
-
-    # task_name = args.algo + "_gail."
-    # if args.pretrained:
-    #     task_name += "with_pretrained."
-    # if args.traj_limitation != np.inf:
-    #     task_name += "transition_limitation_%d." % args.traj_limitation
-    # task_name += args.env_id.split("-")[0]
-    # task_name = task_name + ".g_step_" + str(args.g_step) + ".d_step_" + str(args.d_step) + \
-    #     ".policy_entcoeff_" + str(args.policy_entcoeff) + ".adversary_entcoeff_" + str(args.adversary_entcoeff)
-    # task_name += ".seed_" + str(args.seed)
-
-    task_name = "torcs_gail"
+    task_name = args.algo + "_gail."
+    if args.pretrained:
+        task_name += "with_pretrained."
+    if args.traj_limitation != np.inf:
+        task_name += "transition_limitation_%d." % args.traj_limitation
+    task_name += args.env_id.split("-")[0]
+    task_name = task_name + ".g_step_" + str(args.g_step) + ".d_step_" + str(args.d_step) + \
+        ".policy_entcoeff_" + str(args.policy_entcoeff) + ".adversary_entcoeff_" + str(args.adversary_entcoeff)
+    task_name += ".seed_" + str(args.seed)
     return task_name
 
 
 def main(args):
     U.make_session(num_cpu=1).__enter__()
     set_global_seeds(args.seed)
-    # env = gym.make(args.env_id)
 
     # XXX: Hook up Gym Torcs
     vision = False
     throttle = True
     gear_change = False
-    # Agent only
     # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     #     "/raceconfig/agent_practice.xml"
-
-    # 2Damned_Agent_2Damned_1Fixed
-    # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-    #     "/raceconfig/2damned_agent_2damned_1fixed.xml"
-
-    # DamDamAgentFix
-    # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-    #     "/raceconfig/2damned_agent_1fixed_record.xml"
 
     # Agent10Fixed_Sparse
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
         "/raceconfig/agent_10fixed_sparsed_4.xml"
 
-    rendering = False
+    rendering = True
     noisy = False
 
     # TODO: How Restrict to 3 laps when evaling ?
     lap_limiter = 2
-    timestep_limit = 320
 
     # env = gym.make(args.env_id)
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
 		race_config_path=race_config_path, rendering=rendering,
-		lap_limiter = lap_limiter, noisy=noisy, timestep_limit=timestep_limit)
+		lap_limiter = lap_limiter, noisy=noisy)
+
+    def policy_fn(name, ob_space, ac_space, reuse=False):
+        return mlp_policy.MlpPolicy(name=name, ob_space=ob_space, ac_space=ac_space,
+            reuse=reuse, hid_size=args.policy_hidden_size, num_hid_layers=2)
 
     # XXX: Intuitive log folder, probably save weihts there too & params overide
-    args.task = "train"
     task_name = get_task_name( args)
 
     dir = os.getenv('OPENAI_GEN_LOGDIR')
@@ -141,38 +119,44 @@ def main(args):
     # args.log_dir = osp.join(args.log_dir, task_name)
     # assert isinstance(args.log_dir, str)
     # os.makedirs(args.log_dir, exist_ok=True)
-    # logger.configure( dir=args.log_dir, format_strs="stdout,log,csv,tensorboard")
-    logger.configure( dir=args.log_dir, format_strs="stdout,log,csv,tensorboard")
-    print( "# DEBUG: Logging to %s" % logger.get_dir())
+    # logger.configure( args.log_dir)
+    # print( "# DEBUG: Logging to %s" % dir)
 
-    # ORder is importat
-    # args.expert_path = os.path.join( args.log_dir,
-    #     "data/DossCtrl10Fixed_170eps/expert_data.npz")
+    # XXX Eval reparams
+    args.task = "evaluate"
+    args.load_model_path = os.path.join( args.log_dir, "checkpoint")
+    # args.load_model_path = os.path.join( args.load_model_path,
+    #     "trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0" +
+    #     "/trpo_gail.transition_limitation_-1.Hopper.g_step_3.d_step_1.policy_entcoeff_0.adversary_entcoeff_0.001.seed_0")
 
-    # Damned 200eps
-    args.expert_path = os.path.join( args.log_dir,
-        "data/DossCtrl10Fixed_170eps_NoSlice/expert_data.npz")
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10Fixed_110eps_GAILed/checkpoint/torcs_gail/torcs_gail"
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10Fixed_130eps_NoSlice_GAILed_MildlyStrict_TimestepPerBatchto1024_MaxKL_0.05/checkpoint/torcs_gail/torcs_gail_642"
 
-    def policy_fn(name, ob_space, ac_space, reuse=False):
-        return mlp_policy.MlpPolicy(name=name, ob_space=ob_space, ac_space=ac_space,
-                                    reuse=reuse, hid_size=args.policy_hidden_size, num_hid_layers=2)
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/DossCtrl10Fixed_100eps_GAILed_MaxRew3e4PLus/checkpoint/torcs_gail/torcs_gail_771"
+
+    # Doss Ctrl 100 Episode most promising so far 2018-10-24
+    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed/checkpoint/torcs_gail/torcs_gail_1040"
+    print( "# DEBUG: Model path: ", args.load_model_path)
+
     # env = bench.Monitor(env, logger.get_dir() and
-    #                     osp.join(logger.get_dir(), "monitor.json"))
+    #                     osp.join(logger.get_dir(), "monitor.csv"), allow_early_resets=True)
     env.seed(args.seed)
-    gym.logger.setLevel(logging.WARN)
-    task_name = get_task_name(args)
+    # gym.logger.setLevel(logging.WARN)
+    # task_name = get_task_name(args)
     # args.checkpoint_dir = osp.join(args.checkpoint_dir, task_name)
+    # args.log_dir = osp.join(args.log_dir, task_name)
 
+    # XXX Default params override
+    args.expert_path = os.path.join( args.log_dir,
+        "data/DossCtrl10Fixed_170eps/expert_data.npz")
+    task_name = get_task_name( args)
     args.checkpoint_dir = os.path.join( args.log_dir, "checkpoint")
     args.checkpoint_dir = os.path.join( args.checkpoint_dir, task_name)
     assert isinstance(args.checkpoint_dir, str)
     os.makedirs(args.checkpoint_dir, exist_ok=True)
-
-    args.log_dir = osp.join(args.log_dir, task_name)
-
-    # print( "# DEBUG: Logging to %s" % args.expert_path )
-    args.num_timesteps = 1250000
-    args.save_per_iter = 1
+    # Training time ( hopefully) and timestep constraints
+    # Save samples
+    args.save_sample = False
 
     if args.task == 'train':
         dataset = Mujoco_Dset(expert_path=args.expert_path, traj_limitation=args.traj_limitation)
@@ -243,7 +227,7 @@ def train(env, seed, policy_fn, reward_giver, dataset, algo,
     else:
         raise NotImplementedError
 
-    env.close()
+
 def runner(env, policy_func, load_model_path, timesteps_per_batch, number_trajs,
            stochastic_policy, save=False, reuse=False):
 
@@ -256,6 +240,9 @@ def runner(env, policy_func, load_model_path, timesteps_per_batch, number_trajs,
     # Prepare for rollouts
     # ----------------------------------------
     U.load_state(load_model_path)
+
+    print( "Model Path: %s" % load_model_path)
+
     # U.load_variables(load_model_path, variables=pi.get_variables(),
     #     sess=tf.get_default_session())
 
@@ -275,7 +262,8 @@ def runner(env, policy_func, load_model_path, timesteps_per_batch, number_trajs,
     else:
         print('deterministic policy:')
     if save:
-        filename = load_model_path.split('/')[-1] + '.' + env.spec.id
+        # Don't need env.spec.id, also not declared in GymTorcsEnv specs
+        filename = load_model_path.split('/')[-1] + '.' # + env.spec.id
         np.savez(filename, obs=np.array(obs_list), acs=np.array(acs_list),
                  lens=np.array(len_list), rets=np.array(ret_list))
     avg_len = sum(len_list)/len(len_list)
@@ -301,10 +289,11 @@ def traj_1_generator(pi, env, horizon, stochastic):
     rews = []
     news = []
     acs = []
+    start_time = time.time()
 
     while True:
         ac, vpred = pi.act(stochastic, ob)
-        # print( "Timestep %d - Steer: %.3f - Accel: %.3f" % (t, ac[0], ac[1]))
+        print( "Timestep %d - Steer: %.3f - Accel: %.3f" % (t, ac[0], ac[1]))
         obs.append(ob)
         news.append(new)
         acs.append(ac)
@@ -317,6 +306,12 @@ def traj_1_generator(pi, env, horizon, stochastic):
         if new or t >= horizon:
             break
         t += 1
+
+    duration = time.time() - start_time
+
+    print( "### DEBUG: Duration %f" % (duration))
+    print( "### DEBUG: Episode length %d" % cur_ep_len)
+    print( "### DEBUG: Sampling rate %f" % ( cur_ep_len / duration))
 
     obs = np.array(obs)
     rews = np.array(rews)
