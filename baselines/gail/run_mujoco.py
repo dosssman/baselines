@@ -146,9 +146,12 @@ def main(args):
     print( "# DEBUG: Logging to %s" % logger.get_dir())
 
     # ORder is importat
-    # DamDossDamFix_35eps
+    # args.expert_path = os.path.join( args.log_dir,
+    #     "data/DossCtrl10Fixed_170eps/expert_data.npz")
+
+    # Damned 200eps
     args.expert_path = os.path.join( args.log_dir,
-        "data/DossCtrl10Fixed_170eps/expert_data.npz")
+        "data/Damned10Fixed_200eps/expert_data.npz")
 
     def policy_fn(name, ob_space, ac_space, reuse=False):
         return mlp_policy.MlpPolicy(name=name, ob_space=ob_space, ac_space=ac_space,
