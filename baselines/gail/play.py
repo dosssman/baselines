@@ -135,7 +135,10 @@ def main(args):
     # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/DossCtrl10Fixed_100eps_GAILed_MaxRew3e4PLus/checkpoint/torcs_gail/torcs_gail_771"
 
     # Doss Ctrl 100 Episode most promising so far 2018-10-24
-    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed/checkpoint/torcs_gail/torcs_gail_1040"
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed/checkpoint/torcs_gail/torcs_gail_1040"
+
+    # DossCtrl10Fixed_170eps_BC_GAILed_NoSlice
+    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice/checkpoint/torcs_gail/torcs_gail_145"
     print( "# DEBUG: Model path: ", args.load_model_path)
 
     # env = bench.Monitor(env, logger.get_dir() and
