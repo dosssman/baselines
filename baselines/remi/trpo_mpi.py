@@ -323,15 +323,19 @@ def learn(env, policy_func, reward_giver, expert_dataset, rl_expert_dataset, ran
         logger.log("Optimizing Discriminator...")
         logger.log(fmt_row(13, reward_giver.loss_name))
         ob_expert, ac_expert = expert_dataset.get_next_batch(len(ob))
+        # XXX REMI edited
+        ob_rl_expert, ac_rl_expert = rl_expert_dataset.get_next_batch( len( ob))
         batch_size = len(ob) // d_step
         d_losses = []  # list of tuples, each of which gives the loss for a minibatch
         for ob_batch, ac_batch in dataset.iterbatches((ob, ac),
                                                       include_final_partial_batch=False,
                                                       batch_size=batch_size):
             ob_expert, ac_expert = expert_dataset.get_next_batch(len(ob_batch))
+            ob_rl_expert, ac_rl_expert = rl_expert_dataset.get_next_batch( len( ob_batch))
             # update running mean/std for reward_giver
             if hasattr(reward_giver, "obs_rms"): reward_giver.obs_rms.update(np.concatenate((ob_batch, ob_expert), 0))
-            *newlosses, g = reward_giver.lossandgrad(ob_batch, ac_batch, ob_expert, ac_expert)
+            # *newlosses, g = reward_giver.lossandgrad(ob_batch, ac_batch, ob_expert, ac_expert)
+            *newlosses, g = reward_giver.lossandgrad(ob_batch, ac_batch, ob_expert, ac_expert, ob_rl_expert, ac_rl_expert)
             d_adam.update(allmean(g), d_stepsize)
             d_losses.append(newlosses)
         logger.log(fmt_row(13, np.mean(d_losses, axis=0)))

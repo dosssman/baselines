@@ -83,7 +83,7 @@ class TransitionClassifier(object):
          # XXX Remi Edited
         self.rl_expert_obs_ph = tf.placeholder(tf.float32, (None, ) + self.observation_shape, name="rl_expert_observations_ph")
         self.rl_expert_acs_ph = tf.placeholder(tf.float32, (None, ) + self.actions_shape, name="rl_expert_actions_ph")
-        
+
     def build_graph(self, obs_ph, acs_ph, reuse=False):
         with tf.variable_scope(self.scope):
             if reuse:
