@@ -44,39 +44,22 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     throttle = True
     gear_change = False
     # Agent only
-    # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-    #     "/raceconfig/agent_practice.xml"
-
-    # 6P
-    # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-    #     "/raceconfig/2fixed_agent_3fixed.xml"
-
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+        "/raceconfig/agent_10fixed_sparsed_4.xml"
     # Agent and one bot
     # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     #     "/raceconfig/agent_damned_practice.xml"
-
     # Agent and 3 bots ?
     # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     #     "/raceconfig/agent_damned_grid_practice.xml"
-
-    # Dam Agent Dam Fix
-    # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-    #     "/raceconfig/1damned_agent_1damned_1fixed.xml"
-
-    # Agent vs 10 Fixed Sparely
-    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/agent_10fixed_sparsed_4.xml"
-
-    # # Duh
+    # Duh
     rendering = True
     lap_limiter = 4
-    recdata = False
-    noisy = False
 
     # env = gym.make(env_id)
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
 		race_config_path=race_config_path, rendering=rendering,
-		lap_limiter = lap_limiter, recdata=recdata, noisy=True)
+		lap_limiter = lap_limiter)
 
     # env = bench.Monitor(env, logger.get_dir() and os.path.join(logger.get_dir(), str(rank)))
 
@@ -163,28 +146,10 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     # save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-08-25-00-18-11-372623/model_data/epoch_495.ckpt"
 
     # 20180827 08-42-00-658308, Defiant, Training with enemy from the start, Best scoreing model DAMN This guy is good
-    # save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-03-13-10-09-537924/model_data/epoch_309.ckpt"
-    # save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-04-15-18-28-480417/model_data/epoch_104.ckpt"
-    # save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-04-15-18-28-480417/model_data/epoch_742.ckpt"
+    save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-03-13-10-09-537924/model_data/epoch_518.ckpt"
 
-    # openai-ddpgtorcs-2018-09-05-12-46-24-553500 Alone
-    # save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-05-12-46-24-553500/model_data/epoch_309.ckpt"
-    # save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-05-12-46-24-553500/model_data/epoch_104.ckpt"
-
-    # DDPG vs 5 Fixed First run, alittle bit short
-    # save_filename = "/home/z3r0/random/rl/openai_logs/ddpgtorcs_agent_5fixed-2018-10-04-21-29-20/model_data/epoch_164.ckpt"
-
-    # DDPG vs 5 Fixed First run, alittle bit short
-    # save_filename = "/home/z3r0/random/rl/openai_logs/ddpgtorcs_agent_5fixed_2-2018-10-05-13-14-29/model_data/epoch_749.ckpt"
-
-    # DDPG Dam Agent Dam Fixed Bot
-    # save_filename = "/home/z3r0/random/rl/openai_logs/ddpgtorcs_dam_agent_dam_fix-2018-10-10-09-19-13/model_data/epoch_481.ckpt"
-
-    # DDPG Agent vs 10 Fixed Sparely
-    # save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-10-12-21-21-29-099513/model_data/epoch_374.ckpt"
-    # save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-10-12-21-21-29-099513/model_data/epoch_379.ckpt"
-    # save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-10-20-13-31-22-919667/model_data/epoch_748.ckpt"
-    save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-10-23-22-59-04-658510/model_data/epoch_486.ckpt"
+    # openai-ddpgtorcs-2018-10-23-22-59-04-658510
+    save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-10-23-22-59-04-658510/model_data/epoch_101.ckpt"
 
     step = 0
     episode = 0
@@ -211,8 +176,6 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
         epoch = 0
         start_time = time.time()
         obss = []
-        rewss = []
-        acss = []
         epoch_episode_rewards = []
         epoch_episode_steps = []
         epoch_episode_eval_rewards = []
@@ -221,13 +184,12 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
         epoch_actions = []
         epoch_qs = []
         epoch_episodes = 0
-        nb_epochs = 5
         for epoch in range(nb_epochs):
             for cycle in range(nb_epoch_cycles):
                 while not done:
                     # Predict next action.
                     # TODO: Noise on or off ?
-                    action, q = agent.pi(obs, apply_noise=False, compute_Q=False)
+                    action, q = agent.pi(obs, apply_noise=False, compute_Q=True)
 
                     assert action.shape == env.action_space.shape
 
@@ -239,26 +201,16 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
                     episode_step += 1
 
                     # Book-keeping.
-                    epoch_actions.append(action)
+                    # epoch_actions.append(action)
                     # epoch_qs.append(q)
                     # agent.store_transition(obs, action, r, new_obs, done)
                     obss.append( obs)
-                    rewss.append( r)
-                    def clip_accel( accel):
-                        if accel < 0.0:
-                            return 0.0
-                        else:
-                            return accel
-
-                    acss.append( [ action[0],
-                        clip_accel(action[1])])
-
                     obs = new_obs
 
                     lapsed = (time.time() - start_time)
 
-                    # if  lapsed >= 30.0:
-                    #     done = True
+                    if  lapsed >= 30.0:
+                        done = True
 
                     if done:
                         # Episode done.
@@ -281,14 +233,8 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
                             obs = env.reset()
                         # obs = env.reset()
                         print( len( obss))
-                        save_data = False
-                        if( save_data):
-                            np.save( "/home/z3r0/torcs_data/ddpg_obs", np.asarray( obss))
-                            np.save( "/home/z3r0/torcs_data/ddpg_rews", np.asarray( rewss))
-                            np.save( "/home/z3r0/torcs_data/ddpg_acs", np.asarray( acss))
-                        print( "TIme %.6f\n" % (lapsed))
-                        print( "Sampl. Rate: %f" % ( len( obss) / lapsed))
-                        print( "Episode reward %f" % ( np.sum( rewss)))
+                        np.save( "/home/z3r0/torcs_data/ddpg_obs", np.asarray( obss))
+                        print( "TIme %.6f\n" % (time.time() - start_time))
 
     ### ENd training code
 
@@ -313,8 +259,8 @@ def parse_args():
     parser.add_argument('--gamma', type=float, default=0.99)
     parser.add_argument('--reward-scale', type=float, default=1.)
     parser.add_argument('--clip-norm', type=float, default=None)
-    parser.add_argument('--nb-epochs', type=int, default=5)  # with default settings, perform 1M steps total
-    parser.add_argument('--nb-epoch-cycles', type=int, default=5)
+    parser.add_argument('--nb-epochs', type=int, default=1)  # with default settings, perform 1M steps total
+    parser.add_argument('--nb-epoch-cycles', type=int, default=1)
     parser.add_argument('--nb-train-steps', type=int, default=10000000000)  # per epoch cycle and MPI worker
     parser.add_argument('--nb-eval-steps', type=int, default=100)  # per epoch cycle and MPI worker
     parser.add_argument('--nb-rollout-steps', type=int, default=10000000000)  # per epoch cycle and MPI worker
@@ -332,8 +278,7 @@ def parse_args():
 
 if __name__ == '__main__':
     args = parse_args()
-    # DO not log
-    # if MPI.COMM_WORLD.Get_rank() == 0:
-        # logger.configure()
+    if MPI.COMM_WORLD.Get_rank() == 0:
+        logger.configure()
     # Run actual script.
     run(**args)

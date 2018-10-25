@@ -34,23 +34,12 @@ def run(env_id, seed, noise_type, layer_norm, evaluation, **kwargs):
     vision = False
     throttle = True
     gear_change = False
-    noisy = False
-    rendering = False
+    rendering = kwargs["render"]
     lap_limiter = 4
     # Alone
-    # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-    #     "/raceconfig/agent_practice.xml"
-    # With 5 Fixed
-    # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-    #     "/raceconfig/agent_5fixed.xml"
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+        "/raceconfig/agent_10fixed_sparsed_4.xml"
 
-    # 6P
-    # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-    #     "/raceconfig/2fixed_agent_3fixed.xml"
-
-    # 4P Damned SCR Damned Fixed
-    # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-    #     "/raceconfig/1damned_agent_1damned_1fixed.xml"
     # With 1 Damned
     # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     #     "/raceconfig/agent_damned_practice.xml"
@@ -59,14 +48,10 @@ def run(env_id, seed, noise_type, layer_norm, evaluation, **kwargs):
     # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     #     "/raceconfig/agent_damned_grid_practice.xml"
 
-    # Agent and sparsely setup Fixed Bots
-    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/agent_10fixed_sparsed_4.xml"
-
     # env = gym.make(env_id)
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
 		race_config_path=race_config_path, rendering=rendering,
-		lap_limiter = lap_limiter, noisy=noisy)
+		lap_limiter = lap_limiter)
 
     # env = bench.Monitor(env, logger.get_dir() and os.path.join(logger.get_dir(), str(rank)))
 
@@ -129,6 +114,7 @@ def run(env_id, seed, noise_type, layer_norm, evaluation, **kwargs):
         start_time = time.time()
     training.train(env=env, eval_env=eval_env, param_noise=param_noise,
         action_noise=action_noise, actor=actor, critic=critic, memory=memory, **kwargs)
+
     env.close()
     if eval_env is not None:
         eval_env.close()
@@ -159,7 +145,6 @@ def parse_args():
     parser.add_argument('--nb-train-steps', type=int, default=50)  # per epoch cycle and MPI worker
     parser.add_argument('--nb-eval-steps', type=int, default=100)  # per epoch cycle and MPI worker
     parser.add_argument('--nb-rollout-steps', type=int, default=100)  # per epoch cycle and MPI worker
-    # parser.add_argument('--noise-type', type=str, default='adaptive-param_0.2')  # choices are adaptive-param_xx, ou_xx, normal_xx, none
     parser.add_argument('--noise-type', type=str, default='adaptive-param_0.2')  # choices are adaptive-param_xx, ou_xx, normal_xx, none
     parser.add_argument('--num-timesteps', type=int, default=None)
     boolean_flag(parser, 'evaluation', default=True)
