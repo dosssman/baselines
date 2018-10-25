@@ -99,6 +99,7 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed/checkpoint/torcs_gail/torcs_gail_1040")
         checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice/checkpoint/torcs_gail/torcs_gail_286")
         checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice/checkpoint/torcs_gail/torcs_gail_530")
+        checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice/checkpoint/torcs_gail/torcs_gail_715")
 
         print( "# DEBUG: Model path: ", (checkpoint_path + ".index"))
         # Not pretty but will do for now
