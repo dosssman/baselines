@@ -146,10 +146,11 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     # save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-08-25-00-18-11-372623/model_data/epoch_495.ckpt"
 
     # 20180827 08-42-00-658308, Defiant, Training with enemy from the start, Best scoreing model DAMN This guy is good
-    save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-03-13-10-09-537924/model_data/epoch_518.ckpt"
+    # save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-03-13-10-09-537924/model_data/epoch_518.ckpt"
 
-    # openai-ddpgtorcs-2018-10-23-22-59-04-658510
-    save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-10-23-22-59-04-658510/model_data/epoch_101.ckpt"
+    # openai-ddpgtorcs-2018-10-25-21-57-22-599915
+    # save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-10-25-21-57-22-599915/model_data/epoch_219.ckpt"
+    # save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-10-25-21-57-22-599915/model_data/epoch_330.ckpt"
 
     step = 0
     episode = 0
