@@ -248,7 +248,8 @@ def train(env, seed, policy_fn, reward_giver, dataset, rl_dataset,  algo,
     else:
         raise NotImplementedError
 
-
+    env.close()
+    
 def runner(env, policy_func, load_model_path, timesteps_per_batch, number_trajs,
            stochastic_policy, save=False, reuse=False):
 
