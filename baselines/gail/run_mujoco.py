@@ -112,6 +112,10 @@ def main(args):
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
         "/raceconfig/agent_10fixed_sparsed_4.xml"
 
+    # Agent10Fixed_Track 2 Var 1
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+        "/raceconfig/agent_10fixed_sparsed_track_2_var_1.xml"
+
     rendering = False
     noisy = False
 
@@ -152,6 +156,9 @@ def main(args):
     # Retraining ?
     args.load_model_path = os.path.join( args.log_dir,
         "DossCtrl10Fixed_170eps_BC_GAILed_NoSlice/checkpoint/torcs_gail/torcs_gail_1050")
+
+    args.load_model_path = os.path.join( args.log_dir,
+        "DossCtrl10Fixed_170eps_BC_GAILed_NoSlice_Contd/checkpoint/torcs_gail/torcs_gail_292")
 
     # Damned 200eps
     args.expert_path = os.path.join( args.log_dir,
