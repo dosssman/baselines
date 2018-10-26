@@ -174,6 +174,9 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     # save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-10-25-21-57-22-599915/model_data/epoch_580.ckpt" # Gets out of track
     save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-10-25-21-57-22-599915/model_data/epoch_560.ckpt" # We got the one
 
+    # Overtrained Agent round 2
+    # save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-10-26-17-33-42-777289/model_data/epoch_112.ckpt" # We got the one # Bad because env too lax
+
     step = 0
     episode = 0
     eval_episode_rewards_history = deque(maxlen=100)
