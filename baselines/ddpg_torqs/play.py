@@ -51,13 +51,10 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
         "/raceconfig/agent_10fixed_sparsed_1.xml"
 
-    # Agent 10 Fixed Second track First Variation
-    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/agent_10fixed_sparsed_track_2_var_1.xml" # Badoss
 
     # Agent 10 Fixed Second track First Variation
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/agent_10fixed_sparsed_street_1_var_1.xml"
+    "/raceconfig/agent_10fixed_sparsed_street_1_var_1.xml"
 
     # Agent 10 Fixed aalborg track First Variation
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
@@ -92,6 +89,9 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     "/raceconfig/agent_10fixed_sparsed_aspeedway_var_1.xml" # Quite simple yes
 
+    # Agent 10 Fixed Second track First Variation
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    "/raceconfig/agent_10fixed_sparsed_track_2_var_1.xml" # Badoss
 
 
     # Agent 10 Fixed Forza track First Var
@@ -215,6 +215,7 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
 
     # Overtrained Agent round 2
     save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-10-26-21-47-31-000396/model_data/epoch_75.ckpt" # We got the one # Bad because env too lax
+    save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-10-26-21-47-31-000396/model_data/epoch_94.ckpt" # We got the one # Bad because env too lax
 
     step = 0
     episode = 0
