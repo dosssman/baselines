@@ -16,9 +16,9 @@ from mpi4py import MPI
 def train(env, nb_epochs, nb_epoch_cycles, render_eval, reward_scale, render, param_noise, actor, critic,
     normalize_returns, normalize_observations, critic_l2_reg, actor_lr, critic_lr, action_noise,
     popart, gamma, clip_norm, nb_train_steps, nb_rollout_steps, nb_eval_steps, batch_size, memory,
-    tau=0.01, eval_env=None, param_noise_adaption_interval=50):
+    tau=0.01, eval_env=None, param_noise_adaption_interval=50, pretrained_model=None):
     rank = MPI.COMM_WORLD.Get_rank()
-    
+
     assert (np.abs(env.action_space.low) == env.action_space.high).all()  # we assume symmetric actions.
     max_action = env.action_space.high
     logger.info('scaling actions by {} before executing in env'.format(max_action))
@@ -36,7 +36,6 @@ def train(env, nb_epochs, nb_epoch_cycles, render_eval, reward_scale, render, pa
     else:
         saver = None
 
-
     # Save dirs for weights
     save_folder = osp.join( logger.get_dir(),
         "model_data")
@@ -50,12 +49,20 @@ def train(env, nb_epochs, nb_epoch_cycles, render_eval, reward_scale, render, pa
     with U.single_threaded_session() as sess:
         # Prepare everything.
         agent.initialize(sess)
+
+        # dosssman enabled pretraining model support
+        if pretrained_model is not None:
+            print( "#Debug: Detected pretrained model path: %s" % pretrained_model)
+            U.load_state( pretrained_model)
+
         sess.graph.finalize()
 
         agent.reset()
         obs = env.reset()
+
         if eval_env is not None:
             eval_obs = eval_env.reset()
+
         done = False
         episode_reward = 0.
         episode_step = 0

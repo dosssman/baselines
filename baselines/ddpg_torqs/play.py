@@ -43,15 +43,26 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     vision = False
     throttle = True
     gear_change = False
-    # Agent only
+    # Agent 10 Fixed First Track Second Variation
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/agent_10fixed_sparsed_4.xml"
-    # Agent and one bot
+        "/raceconfig/agent_10fixed_sparsed_2.xml"
+
+    # Agent 10 Fixed First Track First variation
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+        "/raceconfig/agent_10fixed_sparsed_1.xml"
+
+    # Agent 10 Fixed Second track First Variation
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+        "/raceconfig/agent_10fixed_sparsed_track_2_var_1.xml" # Badoss
+
+    # Agent 10 Fixed Forza track First Var
     # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-    #     "/raceconfig/agent_damned_practice.xml"
-    # Agent and 3 bots ?
+    #     "/raceconfig/agent_10fixed_sparsed_forza_var_1.xml" # Badoss
+
+    # Agent 10 Fixed Forza track Var 2
     # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-    #     "/raceconfig/agent_damned_grid_practice.xml"
+    #     "/raceconfig/agent_10fixed_sparsed_forza_var_2.xml" # Badoss
+    
     # Duh
     rendering = True
     lap_limiter = 4
@@ -290,7 +301,7 @@ def parse_args():
 
 if __name__ == '__main__':
     args = parse_args()
-    if MPI.COMM_WORLD.Get_rank() == 0:
-        logger.configure()
+    # if MPI.COMM_WORLD.Get_rank() == 0:
+    #     logger.configure()
     # Run actual script.
     run(**args)
