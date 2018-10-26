@@ -92,6 +92,10 @@ def main(args):
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
         "/raceconfig/agent_10fixed_sparsed_aspeedway_var_1.xml"
 
+    # Agent 10 Fixed Second track First Variation
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    "/raceconfig/agent_10fixed_sparsed_track_2_var_1.xml" # Badoss
+
     rendering = True
     noisy = False
 
