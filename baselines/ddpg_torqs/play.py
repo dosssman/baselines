@@ -62,7 +62,7 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     # Agent 10 Fixed Forza track Var 2
     # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     #     "/raceconfig/agent_10fixed_sparsed_forza_var_2.xml" # Badoss
-    
+
     # Duh
     rendering = True
     lap_limiter = 4
