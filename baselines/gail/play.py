@@ -88,7 +88,7 @@ def main(args):
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
         "/raceconfig/agent_10fixed_sparsed_4.xml"
 
-    rendering = True
+    rendering = False
     noisy = False
 
     # TODO: How Restrict to 3 laps when evaling ?
@@ -142,6 +142,7 @@ def main(args):
     args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice/checkpoint/torcs_gail/torcs_gail_193"
     args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice/checkpoint/torcs_gail/torcs_gail_286"
     args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice/checkpoint/torcs_gail/torcs_gail_530"
+    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice/checkpoint/torcs_gail/torcs_gail_1050"
 
     print( "# DEBUG: Model path: ", args.load_model_path)
 
@@ -300,7 +301,7 @@ def traj_1_generator(pi, env, horizon, stochastic):
 
     while True:
         ac, vpred = pi.act(stochastic, ob)
-        print( "Timestep %d - Steer: %.3f - Accel: %.3f" % (t, ac[0], ac[1]))
+        # print( "Timestep %d - Steer: %.3f - Accel: %.3f" % (t, ac[0], ac[1]))
         obs.append(ob)
         news.append(new)
         acs.append(ac)

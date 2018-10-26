@@ -114,7 +114,7 @@ def learn(env, policy_func, reward_giver, expert_dataset, rank,
           max_kl, cg_iters, cg_damping=1e-2,
           vf_stepsize=3e-4, d_stepsize=3e-4, vf_iters=3,
           max_timesteps=0, max_episodes=0, max_iters=0,
-          callback=None
+          callback=None, load_model_path=None
           ):
 
     nworkers = MPI.COMM_WORLD.Get_size()
@@ -129,6 +129,11 @@ def learn(env, policy_func, reward_giver, expert_dataset, rank,
     atarg = tf.placeholder(dtype=tf.float32, shape=[None])  # Target advantage function (if applicable)
     ret = tf.placeholder(dtype=tf.float32, shape=[None])  # Empirical return
 
+    # Enable support for reteraining
+    if load_model_path != None:
+        print( "Load path detected: %s" % load_model_path)
+        U.load_state( load_model_path)
+    
     ob = U.get_placeholder_cached(name="ob")
     ac = pi.pdtype.sample_placeholder([None])
 

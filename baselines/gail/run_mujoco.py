@@ -149,6 +149,10 @@ def main(args):
     # args.expert_path = os.path.join( args.log_dir,
     #     "data/DossCtrl10Fixed_170eps/expert_data.npz")
 
+    # Retraining ?
+    args.load_model_path = os.path.join( args.log_dir,
+        "DossCtrl10Fixed_170eps_BC_GAILed_NoSlice/checkpoint/torcs_gail/torcs_gail_1050")
+
     # Damned 200eps
     args.expert_path = os.path.join( args.log_dir,
         "data/DossCtrl10Fixed_170eps_NoSlice/expert_data.npz")
@@ -192,7 +196,8 @@ def main(args):
               args.log_dir,
               args.pretrained,
               args.BC_max_iter,
-              task_name
+              task_name,
+              load_model_path=args.load_model_path
               )
     elif args.task == 'evaluate':
         runner(env,
@@ -210,7 +215,8 @@ def main(args):
 
 def train(env, seed, policy_fn, reward_giver, dataset, algo,
           g_step, d_step, policy_entcoeff, num_timesteps, save_per_iter,
-          checkpoint_dir, log_dir, pretrained, BC_max_iter, task_name=None):
+          checkpoint_dir, log_dir, pretrained, BC_max_iter, task_name=None,
+          load_model_path=None):
 
     pretrained_weight = None
     if pretrained and (BC_max_iter > 0):
@@ -235,15 +241,16 @@ def train(env, seed, policy_fn, reward_giver, dataset, algo,
                        max_timesteps=num_timesteps,
                        ckpt_dir=checkpoint_dir, log_dir=log_dir,
                        save_per_iter=save_per_iter,
-                       timesteps_per_batch=1024,
+                       timesteps_per_batch=3600,
                        max_kl=0.01, cg_iters=10, cg_damping=0.1,
                        gamma=0.995, lam=0.97,
                        vf_iters=5, vf_stepsize=1e-3,
-                       task_name=task_name)
+                       task_name=task_name, load_model_path=load_model_path)
     else:
         raise NotImplementedError
 
     env.close()
+
 def runner(env, policy_func, load_model_path, timesteps_per_batch, number_trajs,
            stochastic_policy, save=False, reuse=False):
 
