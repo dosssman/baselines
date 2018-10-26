@@ -88,7 +88,11 @@ def main(args):
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
         "/raceconfig/agent_10fixed_sparsed_4.xml"
 
-    rendering = False
+    # Agent10Fixed_Sparse A Speedway
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+        "/raceconfig/agent_10fixed_sparsed_aspeedway_var_1.xml"
+
+    rendering = True
     noisy = False
 
     # TODO: How Restrict to 3 laps when evaling ?
@@ -143,6 +147,9 @@ def main(args):
     args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice/checkpoint/torcs_gail/torcs_gail_286"
     args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice/checkpoint/torcs_gail/torcs_gail_530"
     args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice/checkpoint/torcs_gail/torcs_gail_1050"
+
+    # Round 2 with NoSlice an traj sample at 3600
+    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice_Contd/checkpoint/torcs_gail/torcs_gail_150"
 
     print( "# DEBUG: Model path: ", args.load_model_path)
 
@@ -215,8 +222,8 @@ def train(env, seed, policy_fn, reward_giver, dataset, algo,
         from baselines.gail import trpo_mpi
         # Set up for MPI seed
         rank = MPI.COMM_WORLD.Get_rank()
-        if rank != 0:
-            logger.set_level(logger.DISABLED)
+        # if rank != 0:
+        #     logger.set_level(logger.DISABLED)
         workerseed = seed + 10000 * MPI.COMM_WORLD.Get_rank()
         set_global_seeds(workerseed)
         env.seed(workerseed)

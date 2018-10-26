@@ -14,7 +14,7 @@
   <section name="Tracks">
     <attnum name="maximum number" val="1"/>
     <section name="1">
-      <attstr name="name" val="g-track-1"/>
+      <attstr name="name" val="g-track-2"/>
       <attstr name="category" val="road"/>
     </section>
 
@@ -28,7 +28,7 @@
   </section>
 
   <section name="Practice">
-    <attnum name="laps" val="5"/>
+    <attnum name="laps" val="3"/>
     <attstr name="type" val="practice"/>
     <attstr name="starting order" val="drivers list"/>
     <attstr name="restart" val="yes"/>
@@ -94,19 +94,25 @@
       <attnum name="idx" val="9"/>
       <attstr name="module" val="fixed"/>
     </section>
+<!--
+    <section name="11">
+      <attnum name="idx" val="1"/>
+      <attstr name="module" val="human"/>
+    </section>
+-->
 
     <!-- Initdist for first driver-->
-    <attnum name="initdist_1" val="200"/>
-    <attnum name="initdist_2" val="300"/>
-    <attnum name="initdist_3" val="400"/>
-    <attnum name="initdist_4" val="500"/>
-    <attnum name="initdist_5" val="600"/>
-    <attnum name="initdist_6" val="700"/>
-    <attnum name="initdist_7" val="800"/>
-    <attnum name="initdist_8" val="870"/>
-    <attnum name="initdist_9" val="1000"/>
-    <attnum name="initdist_10" val="1200"/>
-    <attnum name="initdist_11" val="1630"/>
+    <attnum name="initdist_1" val="600"/>
+    <attnum name="initdist_2" val="700"/>
+    <attnum name="initdist_3" val="800"/>
+    <attnum name="initdist_4" val="1000"/>
+    <attnum name="initdist_5" val="1200"/>
+    <attnum name="initdist_6" val="1400"/>
+    <attnum name="initdist_7" val="1600"/>
+    <attnum name="initdist_8" val="1900"/>
+    <attnum name="initdist_9" val="2100"/>
+    <attnum name="initdist_10" val="2400"/>
+    <attnum name="initdist_11" val="2750"/>
 
   </section>
 
