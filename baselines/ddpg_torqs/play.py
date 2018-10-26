@@ -152,6 +152,9 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     # save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-10-25-21-57-22-599915/model_data/epoch_219.ckpt"
     # save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-10-25-21-57-22-599915/model_data/epoch_330.ckpt"
 
+    # THe Strongest so far
+    save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-10-12-21-21-29-099513/model_data/epoch_350.ckpt"
+
     step = 0
     episode = 0
     eval_episode_rewards_history = deque(maxlen=100)
