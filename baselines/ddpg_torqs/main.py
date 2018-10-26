@@ -43,7 +43,7 @@ def run(env_id, seed, noise_type, layer_norm, evaluation, **kwargs):
 
     # Agent 10 Fixed Second track First Variation
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/agent_10fixed_sparsed_track_2_var_1.xml"
+        "/raceconfig/agent_10fixed_sparsed_track_2_var_1.xml" 
 
     # env = gym.make(env_id)
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,

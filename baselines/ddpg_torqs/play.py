@@ -22,7 +22,7 @@ import baselines.common.tf_util as U
 from collections import deque
 
 # dosssman
-from baselines.ddpg_torqs.gym_torcs import TorcsEnv
+from baselines.ddpg_torqs.gym_torcs_lax import TorcsEnv
 import csv # CHecking trace for GIAL
 
 def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
@@ -54,6 +54,45 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     # Agent 10 Fixed Second track First Variation
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
         "/raceconfig/agent_10fixed_sparsed_track_2_var_1.xml" # Badoss
+
+    # Agent 10 Fixed Second track First Variation
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+        "/raceconfig/agent_10fixed_sparsed_street_1_var_1.xml"
+
+    # Agent 10 Fixed aalborg track First Variation
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+        "/raceconfig/agent_10fixed_sparsed_aalborg_var_1.xml"
+
+    # Agent 10 Fixed aalborg track First Variation
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+        "/raceconfig/agent_10fixed_sparsed_brondehach_var_1.xml"
+
+    # Agent 10 Fixed aalborg track First Variation
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+        "/raceconfig/agent_10fixed_sparsed_etrack1_var_1.xml"
+
+    # Agent 10 Fixed aalborg track First Variation
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+        "/raceconfig/agent_10fixed_sparsed_etrack4_var_1.xml" # Lots of straight parts, can work around corners
+
+    # Agent 10 Fixed aalborg track First Variation
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+        "/raceconfig/agent_10fixed_sparsed_eroad_var_1.xml"
+    # Not too bad with DDPG at the start, need some tweak to allow opp avoidance
+
+    # Agent 10 Fixed aalborg track First Variation
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    "/raceconfig/agent_10fixed_sparsed_forza_var_1.xml"
+
+    # Agent 10 Fixed aalborg track First Variation
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    "/raceconfig/agent_10fixed_sparsed_dirt5_var_1.xml" # Crap ... literally
+
+    # Agent 10 Fixed aalborg track First Variation
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    "/raceconfig/agent_10fixed_sparsed_aspeedway_var_1.xml" # Quite simple yes
+
+
 
     # Agent 10 Fixed Forza track First Var
     # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
@@ -175,7 +214,7 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-10-25-21-57-22-599915/model_data/epoch_560.ckpt" # We got the one
 
     # Overtrained Agent round 2
-    # save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-10-26-17-33-42-777289/model_data/epoch_112.ckpt" # We got the one # Bad because env too lax
+    save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-10-26-21-47-31-000396/model_data/epoch_75.ckpt" # We got the one # Bad because env too lax
 
     step = 0
     episode = 0
@@ -215,7 +254,7 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
                 while not done:
                     # Predict next action.
                     # TODO: Noise on or off ?
-                    action, q = agent.pi(obs, apply_noise=False, compute_Q=False)
+                    action, _ = agent.pi(obs, apply_noise=False, compute_Q=False)
 
                     assert action.shape == env.action_space.shape
 
@@ -260,7 +299,7 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
                         # obs = env.reset()
                         print( len( obss))
                         # np.save( "/home/z3r0/torcs_data/ddpg_obs", np.asarray( obss))
-                        print( "TIme %.6f\n" % (time.time() - start_time))
+                        print( "Time %.6f\n" % (time.time() - start_time))
 
     ### ENd training code
 
