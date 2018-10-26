@@ -110,7 +110,7 @@ def main(args):
 
     # Agent10Fixed_Sparse
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/agent_10fixed_sparsed_4.xml"
+        "/raceconfig/agent_10fixed_sparsed_2.xml"
 
     rendering = False
     noisy = False
@@ -149,11 +149,11 @@ def main(args):
 
     # DamDossDamFix_35eps
     args.expert_path = os.path.join( args.log_dir,
-        "data/DossCtrl10Fixed_170eps/expert_data.npz")
+        "data/DossCtrl10Fixed_170eps_NoSlice/expert_data.npz")
 
     # RL Expert data
     args.rl_expert_path = os.path.join( args.log_dir,
-        "data/DDPG_10Fixed_Sparse_Epoch350_200eps/expert_data.npz")
+        "data/DDPG_CKPT560_200eps_NoSlice/expert_data.npz")
 
     def policy_fn(name, ob_space, ac_space, reuse=False):
         return mlp_policy.MlpPolicy(name=name, ob_space=ob_space, ac_space=ac_space,
@@ -180,7 +180,7 @@ def main(args):
         dataset = Mujoco_Dset(expert_path=args.expert_path, traj_limitation=args.traj_limitation)
         rl_dataset = Mujoco_Dset(expert_path=args.rl_expert_path, traj_limitation=args.traj_limitation)
         reward_giver = TransitionClassifier(env, args.adversary_hidden_size,
-            entcoeff=args.adversary_entcoeff, alpha=.2)
+            entcoeff=args.adversary_entcoeff, alpha=.4)
         train(env,
               args.seed,
               policy_fn,
@@ -240,7 +240,7 @@ def train(env, seed, policy_fn, reward_giver, dataset, rl_dataset,  algo,
                        max_timesteps=num_timesteps,
                        ckpt_dir=checkpoint_dir, log_dir=log_dir,
                        save_per_iter=save_per_iter,
-                       timesteps_per_batch=1024,
+                       timesteps_per_batch=3600,
                        max_kl=0.01, cg_iters=10, cg_damping=0.1,
                        gamma=0.995, lam=0.97,
                        vf_iters=5, vf_stepsize=1e-3,
