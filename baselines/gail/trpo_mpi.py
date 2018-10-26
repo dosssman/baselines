@@ -129,11 +129,6 @@ def learn(env, policy_func, reward_giver, expert_dataset, rank,
     atarg = tf.placeholder(dtype=tf.float32, shape=[None])  # Target advantage function (if applicable)
     ret = tf.placeholder(dtype=tf.float32, shape=[None])  # Empirical return
 
-    # Enable support for reteraining
-    if load_model_path != None:
-        print( "Load path detected: %s" % load_model_path)
-        U.load_state( load_model_path)
-    
     ob = U.get_placeholder_cached(name="ob")
     ac = pi.pdtype.sample_placeholder([None])
 
@@ -231,6 +226,12 @@ def learn(env, policy_func, reward_giver, expert_dataset, rank,
         U.load_variables(pretrained_weight, variables=pi.get_variables(),
             sess=tf.get_default_session())
 
+
+    # Enable support for reteraining
+    if load_model_path != None:
+        print( "Load path detected: %s" % load_model_path)
+        U.load_state( load_model_path)
+
     while True:
         if callback: callback(locals(), globals())
         if max_timesteps and timesteps_so_far >= max_timesteps:
@@ -239,10 +240,6 @@ def learn(env, policy_func, reward_giver, expert_dataset, rank,
             break
         elif max_iters and iters_so_far >= max_iters:
             break
-
-        # Save model
-        print( "Log dir %s" % log_dir)
-        print( "Ckp Dir %s" % ckpt_dir)
 
         if rank == 0 and iters_so_far % save_per_iter == 0 and ckpt_dir is not None:
             fname = os.path.join(ckpt_dir, task_name)
