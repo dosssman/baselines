@@ -155,6 +155,11 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     # THe Strongest so far
     save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-10-12-21-21-29-099513/model_data/epoch_350.ckpt"
 
+    # Agent 10 Fixed Sparse 2 openai-ddpgtorcs-2018-10-25-21-57-22-599915
+    save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-10-25-21-57-22-599915/model_data/epoch_749.ckpt" # Loose fast
+    save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-10-25-21-57-22-599915/model_data/epoch_641.ckpt" # Loses at first Left corrner
+    save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-10-25-21-57-22-599915/model_data/epoch_500.ckpt"
+
     step = 0
     episode = 0
     eval_episode_rewards_history = deque(maxlen=100)
@@ -193,7 +198,7 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
                 while not done:
                     # Predict next action.
                     # TODO: Noise on or off ?
-                    action, q = agent.pi(obs, apply_noise=False, compute_Q=True)
+                    action, q = agent.pi(obs, apply_noise=False, compute_Q=False)
 
                     assert action.shape == env.action_space.shape
 
@@ -213,8 +218,8 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
 
                     lapsed = (time.time() - start_time)
 
-                    if  lapsed >= 30.0:
-                        done = True
+                    # if  lapsed >= 30.0:
+                    #     done = True
 
                     if done:
                         # Episode done.
@@ -237,7 +242,7 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
                             obs = env.reset()
                         # obs = env.reset()
                         print( len( obss))
-                        np.save( "/home/z3r0/torcs_data/ddpg_obs", np.asarray( obss))
+                        # np.save( "/home/z3r0/torcs_data/ddpg_obs", np.asarray( obss))
                         print( "TIme %.6f\n" % (time.time() - start_time))
 
     ### ENd training code
@@ -266,7 +271,7 @@ def parse_args():
     parser.add_argument('--nb-epochs', type=int, default=1)  # with default settings, perform 1M steps total
     parser.add_argument('--nb-epoch-cycles', type=int, default=1)
     parser.add_argument('--nb-train-steps', type=int, default=10000000000)  # per epoch cycle and MPI worker
-    parser.add_argument('--nb-eval-steps', type=int, default=100)  # per epoch cycle and MPI worker
+    parser.add_argument('--nb-eval-steps', type=int, default=10000000000)  # per epoch cycle and MPI worker
     parser.add_argument('--nb-rollout-steps', type=int, default=10000000000)  # per epoch cycle and MPI worker
     parser.add_argument('--noise-type', type=str, default='adaptive-param_0.2')  # choices are adaptive-param_xx, ou_xx, normal_xx, none
     parser.add_argument('--num-timesteps', type=int, default=None)

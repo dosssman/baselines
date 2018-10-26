@@ -239,7 +239,7 @@ class TorcsEnv( gym.Env):
 
         # Termination judgement #########################
         episode_terminate = False
-        if track.min() < 0:  # Episode is terminated if the car is out of track
+        if track.all() < 0:  # Episode is terminated if the car is out of track
             reward = - 1
             episode_terminate = True
             client.R.d['meta'] = True
