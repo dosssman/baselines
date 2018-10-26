@@ -25,7 +25,8 @@ class TorcsEnv( gym.Env):
     # Customized to accept more params
     def __init__(self, vision=False, throttle=False, gear_change=False,
         race_config_path=None,race_speed=1.0, rendering=True, damage=False,
-        lap_limiter=2, recdata=False, noisy=False):
+        lap_limiter=2, recdata=False, noisy=False, rec_episode_limit=1,
+        rec_timestep_limit=3600, rec_index=0):
         #print("Init")
         self.vision = vision
         self.throttle = throttle
@@ -40,6 +41,9 @@ class TorcsEnv( gym.Env):
         # Make sure to run torcs itself for more than 3 laps too, otherwise,
         # before terminating the episode
         self.lap_limiter = lap_limiter
+        self.rec_episode_limit = rec_episode_limit
+        self.rec_timestep_limit = rec_timestep_limit
+        self.rec_index = rec_index
 
         self.initial_run = True
 
@@ -70,7 +74,9 @@ class TorcsEnv( gym.Env):
             args.append( self.race_config_path)
 
         if self.recdata:
-            args.append( "-rechum")
+            args.append( "-rechum %d" % self.rec_index)
+            args.append( "-recepisodelim %d" % self.rec_episode_limit)
+            args.append( "-rectimesteplim %d" % self.rec_timestep_limit)
 
         args.append("&")
 
@@ -286,7 +292,9 @@ class TorcsEnv( gym.Env):
             race_config_path=self.race_config_path,
             race_speed=self.race_speed,
             rendering=self.rendering, lap_limiter=self.lap_limiter,
-            damage=self.damage, recdata=self.recdata, noisy=self.noisy)  #Open new UDP in vtorcs
+            damage=self.damage, recdata=self.recdata, noisy=self.noisy,
+            rec_index = self.rec_index,rec_episode_limit=self.rec_episode_limit,
+            rec_timestep_limit=self.rec_timestep_limit)  #Open new UDP in vtorcs
 
         self.client.MAX_STEPS = np.inf
 
@@ -385,7 +393,9 @@ class TorcsEnv( gym.Env):
             args.append( self.race_config_path)
 
         if self.recdata:
-            args.append( "-rechum")
+            args.append( "-rechum %d" % self.rec_index)
+            args.append( "-recepisodelim %d" % self.rec_episode_limit)
+            args.append( "-rectimesteplim %d" % self.rec_timestep_limit)
 
         args.append("&")
         # print( "##### DEBUG: Args in reset_torcs")

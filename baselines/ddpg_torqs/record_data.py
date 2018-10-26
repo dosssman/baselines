@@ -22,7 +22,7 @@ import baselines.common.tf_util as U
 from collections import deque
 
 # dosssman
-from baselines.ddpg_torqs.gym_torcs import TorcsEnv
+from baselines.ddpg_torqs.gym_torcs_lax import TorcsEnv
 import csv # CHecking trace for GIAL
 
 def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
@@ -57,17 +57,25 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
         "/raceconfig/agent_10fixed_sparsed.xml"
 
+    # Agent 10 Fixed First Track Second Variation
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+        "/raceconfig/agent_10fixed_sparsed_2.xml"
+
     # # Duh
-    rendering = False
-    lap_limiter = 2
-    recdata = False
-    rec_episode_limit = 200
-    rec_timestep_limit = 300
+    rendering = True
+    lap_limiter = 4
+    recdata = True
+    rec_episode_limit = 10
+    rec_timestep_limit = 3601
+    rec_index = 0
+    race_speed = 1.0
 
     # env = gym.make(env_id)
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
 		race_config_path=race_config_path, rendering=rendering,
-		lap_limiter = lap_limiter, recdata=recdata, noisy=True )
+		lap_limiter = lap_limiter, recdata=recdata, noisy=False,
+        rec_index=rec_index, rec_episode_limit=rec_episode_limit,
+        rec_timestep_limit=rec_timestep_limit, race_speed=race_speed)
 
     # env = bench.Monitor(env, logger.get_dir() and os.path.join(logger.get_dir(), str(rank)))
 
@@ -165,6 +173,8 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     save_filename = os.path.join( os.environ["HOME"],
         "random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-10-12-21-21-29-099513/model_data/epoch_350.ckpt")
 
+    save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-10-25-21-57-22-599915/model_data/epoch_560.ckpt" # We got the one
+    save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-10-25-21-57-22-599915/model_data/epoch_565.ckpt" # We got the one
     # openai-ddpgtorcs-2018-09-05-12-46-24-553500 Alone
     # save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-05-12-46-24-553500/model_data/epoch_309.ckpt"
     # save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-05-12-46-24-553500/model_data/epoch_104.ckpt"
@@ -182,7 +192,7 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
         agent.reset()
         obs = env.reset()
 
-        save = True
+        save = False
         # print( "### DEBUG : Print first obs")
         # print( obs)
         # input()
@@ -222,7 +232,7 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
             while not done:
                 # Predict next action.
                 # TODO: Noise on or off ?
-                action, q = agent.pi(obs, apply_noise=False, compute_Q=True)
+                action, q = agent.pi(obs, apply_noise=False, compute_Q=False)
 
                 assert action.shape == env.action_space.shape
 
