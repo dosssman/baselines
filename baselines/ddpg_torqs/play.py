@@ -95,6 +95,10 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     "/raceconfig/agent_10fixed_sparsed_2.xml"
 
+    # Agent 10 Fixed First Track Second Variation
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+        "/raceconfig/agent_10fixed_sparsed_track_2_var_1.xml"
+        
     # Agent 10 Fixed Forza track First Var
     # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     #     "/raceconfig/agent_10fixed_sparsed_forza_var_1.xml" # Badoss

@@ -61,6 +61,10 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
         "/raceconfig/agent_10fixed_sparsed_2.xml"
 
+    # Agent 10 Fixed First Track Second Variation
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+        "/raceconfig/agent_10fixed_sparsed_track_2_var_1.xml"
+
     # # Duh
     rendering = True
     lap_limiter = 4
@@ -175,6 +179,7 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
 
     save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-10-25-21-57-22-599915/model_data/epoch_560.ckpt" # We got the one
     save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-10-25-21-57-22-599915/model_data/epoch_565.ckpt" # We got the one
+
     # openai-ddpgtorcs-2018-09-05-12-46-24-553500 Alone
     # save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-05-12-46-24-553500/model_data/epoch_309.ckpt"
     # save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-05-12-46-24-553500/model_data/epoch_104.ckpt"
