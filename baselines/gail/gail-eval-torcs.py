@@ -101,6 +101,13 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice/checkpoint/torcs_gail/torcs_gail_530")
         checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice/checkpoint/torcs_gail/torcs_gail_715")
 
+        # Round 2 with NoSlice an traj sample at 3600
+        checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice_Contd/checkpoint/torcs_gail/torcs_gail_292")
+        checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice_Contd/checkpoint/torcs_gail/torcs_gail_345")
+
+        # ROund 3 ...
+        checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice_Contd2/checkpoint/torcs_gail/torcs_gail_205")
+
         print( "# DEBUG: Model path: ", (checkpoint_path + ".index"))
         # Not pretty but will do for now
         assert( os.path.isfile( checkpoint_path + ".index"))
@@ -117,6 +124,14 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         # DamDamAgentFix
         race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
             "/raceconfig/agent_10fixed_sparsed_4.xml"
+
+        # Agent 10 Fixed Second track First Variation
+        race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+        "/raceconfig/agent_10fixed_sparsed_track_2_var_1.xml" # Badoss
+
+        # Agent10Fixed_Sparse A Speedway
+        race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+            "/raceconfig/agent_10fixed_sparsed_aspeedway_var_1.xml"
 
         rendering = False
         lap_limiter = 2
