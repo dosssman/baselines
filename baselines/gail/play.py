@@ -122,6 +122,10 @@ def main(args):
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     "/raceconfig/agent_10fixed_sparsed_eroad_var_2.xml"
 
+    # Agent 10 Fixed Second track First Variation
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    "/raceconfig/agent_10fixed_track1_var3.xml"
+
     rendering = True
     noisy = False
 
