@@ -110,7 +110,7 @@ def main(args):
 
     # Agent10Fixed_Sparse
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/agent_10fixed_sparsed_2.xml"
+        "/raceconfig/agent_10fixed_sparsed_4.xml"
 
     rendering = False
     noisy = False

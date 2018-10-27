@@ -237,7 +237,7 @@ class TorcsEnv( gym.Env):
         if self.timestep_limit > 0 and self.time_step >= self.timestep_limit:
             episode_terminate = True
             client.R.d['meta'] = True
-        if track.all() < 0:  # Episode is terminated if the car is out of track
+        if track.min() < 0:  # Episode is terminated if the car is out of track
             # reward = - 50
             episode_terminate = True
             client.R.d['meta'] = True
