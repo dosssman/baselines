@@ -235,10 +235,6 @@ def learn(env, policy_func, reward_giver, expert_dataset, rl_expert_dataset, ran
         elif max_iters and iters_so_far >= max_iters:
             break
 
-        # Save model
-        print( "Log dir %s" % log_dir)
-        print( "Ckp Dir %s" % ckpt_dir)
-
         if rank == 0 and iters_so_far % save_per_iter == 0 and ckpt_dir is not None:
             fname = os.path.join(ckpt_dir, task_name)
             os.makedirs(os.path.dirname(fname), exist_ok=True)
