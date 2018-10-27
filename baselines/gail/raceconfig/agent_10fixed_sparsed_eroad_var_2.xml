@@ -14,7 +14,7 @@
   <section name="Tracks">
     <attnum name="maximum number" val="1"/>
     <section name="1">
-      <attstr name="name" val="forza"/>
+      <attstr name="name" val="eroad"/>
       <attstr name="category" val="road"/>
     </section>
 
@@ -102,17 +102,17 @@
 -->
 
     <!-- Initdist for first driver-->
-    <attnum name="initdist_1" val="600"/>
-    <attnum name="initdist_2" val="2600"/>
-    <attnum name="initdist_3" val="2800"/>
-    <attnum name="initdist_4" val="3000"/>
-    <attnum name="initdist_5" val="3200"/>
-    <attnum name="initdist_6" val="3400"/>
-    <attnum name="initdist_7" val="4400"/>
-    <attnum name="initdist_8" val="4600"/>
-    <attnum name="initdist_9" val="4800"/>
-    <attnum name="initdist_10" val="5000"/>
-    <attnum name="initdist_11" val="5200"/>
+    <attnum name="initdist_1" val="200"/>
+    <attnum name="initdist_2" val="500"/>
+    <attnum name="initdist_3" val="700"/>
+    <attnum name="initdist_4" val="900"/>
+    <attnum name="initdist_5" val="1000"/>
+    <attnum name="initdist_6" val="1200"/>
+    <attnum name="initdist_7" val="1300"/>
+    <attnum name="initdist_8" val="1500"/>
+    <attnum name="initdist_9" val="1700"/>
+    <attnum name="initdist_10" val="1900"/>
+    <attnum name="initdist_11" val="3000"/>
 
   </section>
 
