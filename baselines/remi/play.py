@@ -92,9 +92,22 @@ def main(args):
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     "/raceconfig/agent_10fixed_sparsed_track_2_var_1.xml" # Badoss
 
+    # Agent 10 Fixed Second track First Variation
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    "/raceconfig/agent_10fixed_track_1_var_3.xml"
+
     # Agent10Fixed_Sparse
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     "/raceconfig/agent_10fixed_sparsed_4.xml"
+
+    # Agent10Fixed_Sparse
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    "/raceconfig/agent_10fixed_sparsed_forza_var_1.xml"
+
+    # Agent10Fixed_Sparse
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    "/raceconfig/agent_10fixed_sparsed_forza_var_2.xml"
+
 
     rendering = True
     noisy = False
@@ -138,6 +151,18 @@ def main(args):
 
     # Round 2
     args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/DossCtrl_DDPGCkpt560_NoSlice_alpha_4_Run2/checkpoint/torcs_remi/torcs_remi_65" # Slow
+
+    # Run 5
+    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/DossCtrl_DDPGCkpt560_NoSlice_alpha_4_Run5/checkpoint/torcs_remi/torcs_remi_200" # Slow
+    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/DossCtrl_DDPGCkpt560_NoSlice_alpha_4_Run5/checkpoint/torcs_remi/torcs_remi_230" # Slow but effective
+    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/DossCtrl_DDPGCkpt560_NoSlice_alpha_4_Run5/checkpoint/torcs_remi/torcs_remi_250" # Slow but effective
+
+    # Run6 Olympia
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/DossCtrl_DDPGCkpt560_NoSlice_alpha_4_Run6/checkpoint/torcs_remi/torcs_remi_410" # Slow
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/DossCtrl_DDPGCkpt560_NoSlice_alpha_4_Run6/checkpoint/torcs_remi/torcs_remi_135" # Slow
+
+    # DDPG + Doss 130 eps Mix 0.5
+    # args.load_model_path = os.path.join( args.load_model_path, "Doss_DDPG_Mix_0_5_Run2/checkpoint/torcs_remi/torcs_remi_573")
 
     print( "# DEBUG: Model path: ", args.load_model_path)
 
