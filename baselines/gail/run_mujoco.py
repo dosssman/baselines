@@ -35,7 +35,8 @@ def argsparser():
     # Task
     parser.add_argument('--task', type=str, choices=['train', 'evaluate', 'sample'], default='train')
     # for evaluatation
-    boolean_flag(parser, 'stochastic_policy', default=True, help='use stochastic/deterministic policy to evaluate')
+    # TODO: Adapt for desired result boy !
+    boolean_flag(parser, 'stochastic_policy', default=False, help='use stochastic/deterministic policy to evaluate')
     boolean_flag(parser, 'save_sample', default=False, help='save the trajectories or not')
     #  Mujoco Dataset Configuration
     parser.add_argument('--traj_limitation', type=int, default=-1)
@@ -108,19 +109,19 @@ def main(args):
     # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     #     "/raceconfig/2damned_agent_1fixed_record.xml"
 
+    # Agent10Fixed_Track 2 Var 1
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    "/raceconfig/agent_10fixed_sparsed_track_2_var_1.xml"
+
     # Agent10Fixed_Sparse
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
         "/raceconfig/agent_10fixed_sparsed_4.xml"
-
-    # Agent10Fixed_Track 2 Var 1
-    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/agent_10fixed_sparsed_track_2_var_1.xml"
 
     rendering = False
     noisy = False
 
     # TODO: How Restrict to 3 laps when evaling ?
-    lap_limiter = 2
+    lap_limiter = 3
     timestep_limit = 320
 
     # env = gym.make(args.env_id)
@@ -150,19 +151,19 @@ def main(args):
     print( "# DEBUG: Logging to %s" % logger.get_dir())
 
     # ORder is importat
-    # args.expert_path = os.path.join( args.log_dir,
-    #     "data/DossCtrl10Fixed_170eps/expert_data.npz")
+    args.expert_path = os.path.join( args.log_dir,
+        "data/Doss10FixedAnal_1Ep/expert_data.npz")
 
     # Retraining ?
-    args.load_model_path = os.path.join( args.log_dir,
-        "DossCtrl10Fixed_170eps_BC_GAILed_NoSlice/checkpoint/torcs_gail/torcs_gail_1050")
+    # args.load_model_path = os.path.join( args.log_dir,
+    #     "DossCtrl10Fixed_170eps_BC_GAILed_NoSlice/checkpoint/torcs_gail/torcs_gail_1050")
 
-    args.load_model_path = os.path.join( args.log_dir,
-        "DossCtrl10Fixed_170eps_BC_GAILed_NoSlice_Contd/checkpoint/torcs_gail/torcs_gail_292")
+    # args.load_model_path = os.path.join( args.log_dir,
+    #     "DossCtrl10Fixed_170eps_BC_GAILed_NoSlice_Contd/checkpoint/torcs_gail/torcs_gail_292")
 
     # Damned 200eps
-    args.expert_path = os.path.join( args.log_dir,
-        "data/DossCtrl10Fixed_170eps_NoSlice/expert_data.npz")
+    # args.expert_path = os.path.join( args.log_dir,
+    #     "data/DossCtrl10Fixed_170eps_NoSlice/expert_data.npz")
 
     def policy_fn(name, ob_space, ac_space, reuse=False):
         return mlp_policy.MlpPolicy(name=name, ob_space=ob_space, ac_space=ac_space,
@@ -248,7 +249,7 @@ def train(env, seed, policy_fn, reward_giver, dataset, algo,
                        max_timesteps=num_timesteps,
                        ckpt_dir=checkpoint_dir, log_dir=log_dir,
                        save_per_iter=save_per_iter,
-                       timesteps_per_batch=3600,
+                       timesteps_per_batch=1024,
                        max_kl=0.01, cg_iters=10, cg_damping=0.1,
                        gamma=0.995, lam=0.97,
                        vf_iters=5, vf_stepsize=1e-3,
