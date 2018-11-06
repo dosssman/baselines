@@ -49,7 +49,6 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
         "/raceconfig/agent_10fixed_sparsed_1.xml"
 
-
     # Agent 10 Fixed Second track First Variation
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     "/raceconfig/agent_10fixed_sparsed_street_1_var_1.xml"
@@ -91,9 +90,6 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     "/raceconfig/agent_10fixed_sparsed_track_2_var_1.xml" # Badoss
 
-    # Agent 10 Fixed First Track Second Variation
-    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-    "/raceconfig/agent_10fixed_sparsed_2.xml"
 
     # Agent 10 Fixed First Track Second Variation
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
@@ -102,6 +98,18 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     # Agent 10 Fixed First Track Second Variation
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
         "/raceconfig/agent_10fixed_sparsed_track_2_var_2.xml"
+
+    # Agent 10 Fixed First Track Second Variation
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    "/raceconfig/agent_10fixed_sparsed_track_2_var_3.xml"
+
+    # Agent 10 Fixed First Track Second Variation
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    "/raceconfig/agent_10fixed_sparsed_2.xml"
+
+    # Agent 10 Fixed First Track Second Variation
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    "/raceconfig/agent_10fixed_sparsed_3.xml"
 
     # Agent 10 Fixed Forza track First Var
     # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
@@ -222,7 +230,6 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     # save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-10-25-21-57-22-599915/model_data/epoch_580.ckpt" # Gets out of track
     save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-10-25-21-57-22-599915/model_data/epoch_560.ckpt" # We got the one
     save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-10-25-21-57-22-599915/model_data/epoch_565.ckpt" # We got the one
-
 
     # Overtrained Agent round 2
     # save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-10-26-21-47-31-000396/model_data/epoch_90.ckpt" # We got the one # Bad because env too lax
