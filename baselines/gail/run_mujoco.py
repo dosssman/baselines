@@ -36,7 +36,7 @@ def argsparser():
     parser.add_argument('--task', type=str, choices=['train', 'evaluate', 'sample'], default='train')
     # for evaluatation
     # TODO: Adapt for desired result boy !
-    boolean_flag(parser, 'stochastic_policy', default=False, help='use stochastic/deterministic policy to evaluate')
+    boolean_flag(parser, 'stochastic_policy', default=True, help='use stochastic/deterministic policy to evaluate')
     boolean_flag(parser, 'save_sample', default=False, help='save the trajectories or not')
     #  Mujoco Dataset Configuration
     parser.add_argument('--traj_limitation', type=int, default=-1)
@@ -111,7 +111,7 @@ def main(args):
 
     # Agent10Fixed_Track 2 Var 1
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-    "/raceconfig/agent_10fixed_sparsed_track_2_var_1.xml"
+        "/raceconfig/agent_10fixed_sparsed_track_2_var_1.xml"
 
     # Agent10Fixed_Sparse
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
@@ -152,7 +152,7 @@ def main(args):
 
     # ORder is importat
     args.expert_path = os.path.join( args.log_dir,
-        "data/Doss10FixedAnal_1Ep/expert_data.npz")
+        "data/Doss10FixedAnal_70eps/expert_data.npz")
 
     # Retraining ?
     # args.load_model_path = os.path.join( args.log_dir,
