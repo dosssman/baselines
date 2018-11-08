@@ -85,7 +85,7 @@ def traj_segment_generator(pi, env, reward_giver, horizon, stochastic):
             cur_ep_true_ret = 0
             cur_ep_len = 0
             # ob = env.reset()
-            if( len( ep_rets) % 10 == 0):
+            if( len( ep_rets) % 5 == 0):
                 ob = env.reset( relaunch=True)
             else:
                 ob = env.reset()
