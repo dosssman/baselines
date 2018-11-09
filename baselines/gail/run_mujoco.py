@@ -152,7 +152,7 @@ def main(args):
 
     # ORder is importat
     args.expert_path = os.path.join( args.log_dir,
-        "data/Doss10FixedAnal_130eps/expert_data.npz")
+        "data/Doss10FixedAnal_200eps/expert_data.npz")
 
     # Retraining ?
     # args.load_model_path = os.path.join( args.log_dir,
