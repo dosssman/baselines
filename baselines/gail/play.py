@@ -212,7 +212,11 @@ def main(args):
     args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_130eps/checkpoint/torcs_gail/torcs_gail_500"
     args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_130eps/checkpoint/torcs_gail/torcs_gail_1160"
 
+    # 200 eps
+    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps/checkpoint/torcs_gail/torcs_gail_750"
+
     print( "# DEBUG: Model path: ", args.load_model_path)
+    args.stochastic_policy = True
 
     # env = bench.Monitor(env, logger.get_dir() and
     #                     osp.join(logger.get_dir(), "monitor.csv"), allow_early_resets=True)
