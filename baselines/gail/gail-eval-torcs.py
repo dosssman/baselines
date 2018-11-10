@@ -39,7 +39,7 @@ def argsparser():
     parser.add_argument('--policy_hidden_size', type=int, default=100)
     parser.add_argument('--env', type=str, choices=['Hopper', 'Walker2d', 'HalfCheetah',
                                                     'Humanoid', 'HumanoidStandup'])
-    boolean_flag(parser, 'stochastic_policy', default=True, help='use stochastic/deterministic policy to evaluate')
+    boolean_flag(parser, 'stochastic_policy', default=False, help='use stochastic/deterministic policy to evaluate')
     return parser.parse_args()
 
 
@@ -69,8 +69,9 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
     # data_path = os.path.join( log_dir,
     #     "openai-gailtorcs/best20180907damned200ep720tstpInterpolated/expert_data.npz")
 
+    args.stochastic_policy = False
     data_path = os.path.join( log_dir,
-        "openai-gailtorcs/data/DossCtrl10Fixed_170eps/expert_data.npz")
+        "openai-gailtorcs/data/Doss10FixedAnal_70eps_Sliced/expert_data.npz")
     # data_path = os.path.join('data', 'deterministic.trpo.' + env_name + '.0.00.npz')
     dataset = load_dataset(data_path)
     # checkpoint_list = glob.glob(os.path.join('checkpoint', '*' + env_name + ".*"))
@@ -96,21 +97,37 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         # checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/Doss10Fixed_130eps_GAILed_MildlyStrict_MaxKL_0.01/checkpoint/torcs_gail/torcs_gail_816")
 
         # Doss Ctrl 100 Episode most promising so far 2018-10-24
-        checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed/checkpoint/torcs_gail/torcs_gail_1040")
-        checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice/checkpoint/torcs_gail/torcs_gail_286")
-        checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice/checkpoint/torcs_gail/torcs_gail_530")
-        checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice/checkpoint/torcs_gail/torcs_gail_715")
+        # checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed/checkpoint/torcs_gail/torcs_gail_1040")
+        # checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice/checkpoint/torcs_gail/torcs_gail_286")
+        # checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice/checkpoint/torcs_gail/torcs_gail_530")
+        # checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice/checkpoint/torcs_gail/torcs_gail_715")
+        #
+        # # Round 2 with NoSlice an traj sample at 3600
+        # checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice_Contd/checkpoint/torcs_gail/torcs_gail_292")
+        # checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice_Contd/checkpoint/torcs_gail/torcs_gail_345")
+        #
+        # # ROund 3 ...
+        # checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice_Contd2/checkpoint/torcs_gail/torcs_gail_205")
 
-        # Round 2 with NoSlice an traj sample at 3600
-        checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice_Contd/checkpoint/torcs_gail/torcs_gail_292")
-        checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice_Contd/checkpoint/torcs_gail/torcs_gail_345")
+        # Doss 10 Fixed Analogs
+        # 1 eps + DETERMINSITRC POLICY MF
+        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_1ep/checkpoint/torcs_gail/torcs_gail_500"
+        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_1ep/checkpoint/torcs_gail/torcs_gail_900"
+        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_1ep/checkpoint/torcs_gail/torcs_gail_1050"
 
-        # ROund 3 ...
-        checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice_Contd2/checkpoint/torcs_gail/torcs_gail_205")
+        # 70 eps + STOCH POLICY
+        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_70eps/checkpoint/torcs_gail/torcs_gail_900"
+        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_70eps/checkpoint/torcs_gail/torcs_gail_1110"
+        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_70eps/checkpoint/torcs_gail/torcs_gail_1100" # Max wrt MazRew
+        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_70eps/checkpoint/torcs_gail/torcs_gail_1041" # Max wrt TrueRewMean
 
-        print( "# DEBUG: Model path: ", (checkpoint_path + ".index"))
+        # 130 eps + STOCH POLICY
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_130eps/checkpoint/torcs_gail/torcs_gail_500"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_130eps/checkpoint/torcs_gail/torcs_gail_1160"
+
+        print( "# DEBUG: Model path: ", args.load_model_path)
         # Not pretty but will do for now
-        assert( os.path.isfile( checkpoint_path + ".index"))
+        # assert( os.path.isfile( checkpoint_path + ".index"))
 
         # env = gym.make(env_name + '-v1')
         # XXX: Custom env declaration
@@ -121,19 +138,20 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
         #     "/raceconfig/agent_practice.xml"
 
-        # DamDamAgentFix
-        race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-            "/raceconfig/agent_10fixed_sparsed_4.xml"
 
         # Agent 10 Fixed Second track First Variation
         race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/agent_10fixed_sparsed_track_2_var_1.xml" # Badoss
+            "/raceconfig/agent_10fixed_sparsed_track_2_var_1.xml" # Badoss
 
         # Agent10Fixed_Sparse A Speedway
         race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
             "/raceconfig/agent_10fixed_sparsed_aspeedway_var_1.xml"
 
-        rendering = False
+        # DamDamAgentFix
+        race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+            "/raceconfig/agent_10fixed_sparsed_4.xml"
+
+        rendering = True
         lap_limiter = 2
         timestep_limit = 320
 
@@ -143,11 +161,12 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
     		lap_limiter = lap_limiter)
 
         env.seed(seed)
-        print('Trajectory limitation: {}, Load checkpoint: {}, '.format(limit, checkpoint_path))
+        print('Trajectory limitation: {}, Load checkpoint: {}, '.format(limit,
+            args.load_model_path))
         # TODO: RUn Mujoco not meant to be used here
         avg_len, avg_ret = run_torcs.runner(env,
                                              policy_fn,
-                                             checkpoint_path,
+                                             args.load_model_path,
                                              timesteps_per_batch=1024,
                                              number_trajs=10,
                                              stochastic_policy=stochastic,

@@ -95,9 +95,6 @@ def main(args):
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     "/raceconfig/agent_10fixed_sparsed_1.xml"
 
-    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-    "/raceconfig/agent_10fixed_sparsed_4.xml"
-
     # Agent 10 Fixed Second track First Variation
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     "/raceconfig/agent_10fixed_sparsed_track_2_var_1.xml" # Baboss
@@ -110,9 +107,6 @@ def main(args):
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     "/raceconfig/agent_10fixed_sparsed_forza_var_1.xml"
 
-    # Agent 10 Fixed Second track First Variation
-    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-    "/raceconfig/agent_10fixed_sparsed_forza_var_2.xml"
 
     # Agent 10 Fixed Second track First Variation
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
@@ -125,6 +119,13 @@ def main(args):
     # Agent 10 Fixed Second track First Variation
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     "/raceconfig/agent_10fixed_track1_var3.xml"
+
+    # Agent 10 Fixed Second track First Variation
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    "/raceconfig/agent_10fixed_sparsed_forza_var_2.xml"
+
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    "/raceconfig/agent_10fixed_sparsed_4.xml"
 
     rendering = True
     noisy = False
@@ -161,6 +162,7 @@ def main(args):
     # print( "# DEBUG: Logging to %s" % dir)
 
     # XXX Eval reparams
+    args.stochastic_policy = False
     args.task = "evaluate"
     args.load_model_path = os.path.join( args.log_dir, "checkpoint")
     # args.load_model_path = os.path.join( args.load_model_path,
@@ -196,6 +198,19 @@ def main(args):
     args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice_Contd2/checkpoint/torcs_gail/torcs_gail_329" # Ok on track 2 var 1
     args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice_Contd2/checkpoint/torcs_gail/torcs_gail_346"
 
+    # Doss 10 Fixed Analogs
+    # 1 eps + DETERMINSITRC POLICY MF
+    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_1ep/checkpoint/torcs_gail/torcs_gail_500"
+    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_1ep/checkpoint/torcs_gail/torcs_gail_900"
+    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_1ep/checkpoint/torcs_gail/torcs_gail_1050"
+
+    # 70 eps + STOCH POLICY
+    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_70eps/checkpoint/torcs_gail/torcs_gail_900"
+    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_70eps/checkpoint/torcs_gail/torcs_gail_1110"
+
+    # 130 eps + STOCH POLICY
+    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_130eps/checkpoint/torcs_gail/torcs_gail_500"
+    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_130eps/checkpoint/torcs_gail/torcs_gail_1160"
 
     print( "# DEBUG: Model path: ", args.load_model_path)
 
@@ -210,11 +225,11 @@ def main(args):
     # XXX Default params override
     args.expert_path = os.path.join( args.log_dir,
         "data/DossCtrl10Fixed_170eps/expert_data.npz")
-    task_name = get_task_name( args)
-    args.checkpoint_dir = os.path.join( args.log_dir, "checkpoint")
-    args.checkpoint_dir = os.path.join( args.checkpoint_dir, task_name)
-    assert isinstance(args.checkpoint_dir, str)
-    os.makedirs(args.checkpoint_dir, exist_ok=True)
+    # task_name = get_task_name( args)
+    # args.checkpoint_dir = os.path.join( args.log_dir, "checkpoint")
+    # args.checkpoint_dir = os.path.join( args.checkpoint_dir, task_name)
+    # assert isinstance(args.checkpoint_dir, str)
+    # os.makedirs(args.checkpoint_dir, exist_ok=True)
     # Training time ( hopefully) and timestep constraints
     # Save samples
     args.save_sample = False
@@ -372,6 +387,7 @@ def traj_1_generator(pi, env, horizon, stochastic):
 
     print( "### DEBUG: Duration %f" % (duration))
     print( "### DEBUG: Episode length %d" % cur_ep_len)
+    print( "### DEBUG: Episode Score %d" % cur_ep_ret)
     print( "### DEBUG: Sampling rate %f" % ( cur_ep_len / duration))
 
     obs = np.array(obs)
