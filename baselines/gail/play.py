@@ -138,9 +138,15 @@ def main(args):
 		race_config_path=race_config_path, rendering=rendering,
 		lap_limiter = lap_limiter, noisy=noisy)
 
+    # 2 hidden layers policy
     def policy_fn(name, ob_space, ac_space, reuse=False):
         return mlp_policy.MlpPolicy(name=name, ob_space=ob_space, ac_space=ac_space,
             reuse=reuse, hid_size=args.policy_hidden_size, num_hid_layers=2)
+
+    # 3 hid layers policy
+    def policy_fn(name, ob_space, ac_space, reuse=False):
+        return mlp_policy.MlpPolicy(name=name, ob_space=ob_space, ac_space=ac_space,
+            reuse=reuse, hid_size=args.policy_hidden_size, num_hid_layers=3)
 
     # XXX: Intuitive log folder, probably save weihts there too & params overide
     task_name = get_task_name( args)
@@ -214,9 +220,16 @@ def main(args):
 
     # 200 eps
     args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps/checkpoint/torcs_gail/torcs_gail_750"
+    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps/checkpoint/torcs_gail/torcs_gail_1100"
+
+    # 200 eps
+    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_3layers_2/checkpoint/torcs_gail/torcs_gail_1200"
+    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_3layers_2/checkpoint/torcs_gail/torcs_gail_1360"
+    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_3layers_2/checkpoint/torcs_gail/torcs_gail_1800"
+    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_3layers_2/checkpoint/torcs_gail/torcs_gail_2335"
 
     print( "# DEBUG: Model path: ", args.load_model_path)
-    args.stochastic_policy = True
+    args.stochastic_policy = False
 
     # env = bench.Monitor(env, logger.get_dir() and
     #                     osp.join(logger.get_dir(), "monitor.csv"), allow_early_resets=True)
