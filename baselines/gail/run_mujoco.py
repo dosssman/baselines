@@ -167,7 +167,7 @@ def main(args):
 
     def policy_fn(name, ob_space, ac_space, reuse=False):
         return mlp_policy.MlpPolicy(name=name, ob_space=ob_space, ac_space=ac_space,
-                                    reuse=reuse, hid_size=args.policy_hidden_size, num_hid_layers=3)
+                                    reuse=reuse, hid_size=args.policy_hidden_size, num_hid_layers=2)
     # env = bench.Monitor(env, logger.get_dir() and
     #                     osp.join(logger.get_dir(), "monitor.json"))
     env.seed(args.seed)
@@ -183,7 +183,7 @@ def main(args):
     args.log_dir = osp.join(args.log_dir, task_name)
 
     # print( "# DEBUG: Logging to %s" % args.expert_path )
-    args.num_timesteps = 3000000
+    args.num_timesteps = 5000000
     args.save_per_iter = 1
 
     if args.task == 'train':
