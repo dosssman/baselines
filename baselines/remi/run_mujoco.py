@@ -116,7 +116,7 @@ def main(args):
     noisy = False
 
     # TODO: How Restrict to 3 laps when evaling ?
-    lap_limiter = 2
+    lap_limiter = 3
     timestep_limit = 320
 
     # env = gym.make(args.env_id)
@@ -149,7 +149,7 @@ def main(args):
 
     # DamDossDamFix_35eps
     args.expert_path = os.path.join( args.log_dir,
-        "data/DossCtrl10Fixed_170eps_NoSlice/expert_data.npz")
+        "data/Doss10FixedAnal_200eps_Sliced/expert_data.npz")
 
     # RL Expert data
     args.rl_expert_path = os.path.join( args.log_dir,
@@ -173,7 +173,7 @@ def main(args):
     args.log_dir = osp.join(args.log_dir, task_name)
 
     # print( "# DEBUG: Logging to %s" % args.expert_path )
-    args.num_timesteps = 1500000
+    args.num_timesteps = 5000000
     args.save_per_iter = 1
 
     if args.task == 'train':
