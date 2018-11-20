@@ -25,6 +25,7 @@ from baselines.gail.gym_torcs import TorcsEnv
 plt.style.use('ggplot')
 CONFIG = {
     'traj_limitation': [1, 5, 10, 50, 100, 200],
+    # 'traj_limitation': [ 200],
 }
 
 
@@ -138,8 +139,8 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps/checkpoint/torcs_gail/torcs_gail_750"
         # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/DossCtrl_DDPGCkpt560_NoSlice_alpha_4_Run5/checkpoint/torcs_remi/torcs_remi_131" # Passes the 3rd corner + Almost goes to the end
 
-        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_5mTsteps/checkpoint/torcs_gail/torcs_gail_1900" # Boy this guy good, can go to the second corner but crash
-        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_5mTsteps/checkpoint/torcs_gail/torcs_gail_2700" # Boy this guy good, can go to the second corner but crash
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_5mTsteps/checkpoint/torcs_gail/torcs_gail_1900" # Boy this guy good, can go to the second corner but crash
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_5mTsteps/checkpoint/torcs_gail/torcs_gail_2700" # Boy this guy good, can go to the second corner but crash
         args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_5mTsteps/checkpoint/torcs_gail/torcs_gail_2732" # Boy this guy good, can go to the second corner but crash
 
         print( "# DEBUG: Model path: ", args.load_model_path)
