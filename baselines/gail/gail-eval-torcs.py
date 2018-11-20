@@ -39,7 +39,7 @@ def argsparser():
     parser.add_argument('--policy_hidden_size', type=int, default=100)
     parser.add_argument('--env', type=str, choices=['Hopper', 'Walker2d', 'HalfCheetah',
                                                     'Humanoid', 'HumanoidStandup'])
-    boolean_flag(parser, 'stochastic_policy', default=False, help='use stochastic/deterministic policy to evaluate')
+    boolean_flag(parser, 'stochastic_policy', default=True, help='use stochastic/deterministic policy to evaluate')
     return parser.parse_args()
 
 
@@ -112,24 +112,35 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         # # ROund 3 ...
         # checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice_Contd2/checkpoint/torcs_gail/torcs_gail_205")
 
+        # 200eps over 5m timnesteps First effective run
+        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/DossCtrl10Fixed_Series/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice_Contd/checkpoint/torcs_gail/torcs_gail_345" # Actually ok on second track
+
         # Doss 10 Fixed Analogs
         # 1 eps + DETERMINSITRC POLICY MF
-        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_1ep/checkpoint/torcs_gail/torcs_gail_500"
-        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_1ep/checkpoint/torcs_gail/torcs_gail_900"
-        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_1ep/checkpoint/torcs_gail/torcs_gail_1050"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_1ep/checkpoint/torcs_gail/torcs_gail_500"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_1ep/checkpoint/torcs_gail/torcs_gail_900"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_1ep/checkpoint/torcs_gail/torcs_gail_1050"
 
         # 70 eps + STOCH POLICY
-        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_70eps/checkpoint/torcs_gail/torcs_gail_900"
-        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_70eps/checkpoint/torcs_gail/torcs_gail_1110"
-        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_70eps/checkpoint/torcs_gail/torcs_gail_1100" # Max wrt MazRew
-        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_70eps/checkpoint/torcs_gail/torcs_gail_1041" # Max wrt TrueRewMean
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_70eps/checkpoint/torcs_gail/torcs_gail_900"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_70eps/checkpoint/torcs_gail/torcs_gail_1110"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_70eps/checkpoint/torcs_gail/torcs_gail_1100" # Max wrt MazRew
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_70eps/checkpoint/torcs_gail/torcs_gail_1041" # Max wrt TrueRewMean
 
         # 130 eps + STOCH POLICY
         # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_130eps/checkpoint/torcs_gail/torcs_gail_500"
-        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_130eps/checkpoint/torcs_gail/torcs_gail_1160"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_130eps/checkpoint/torcs_gail/torcs_gail_1160"
 
         # 200 eps
-        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps/checkpoint/torcs_gail/torcs_gail_750"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps/checkpoint/torcs_gail/torcs_gail_750"
+
+        # REMI Testing Because I can
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps/checkpoint/torcs_gail/torcs_gail_750"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/DossCtrl_DDPGCkpt560_NoSlice_alpha_4_Run5/checkpoint/torcs_remi/torcs_remi_131" # Passes the 3rd corner + Almost goes to the end
+
+        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_5mTsteps/checkpoint/torcs_gail/torcs_gail_1900" # Boy this guy good, can go to the second corner but crash
+        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_5mTsteps/checkpoint/torcs_gail/torcs_gail_2700" # Boy this guy good, can go to the second corner but crash
+        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_5mTsteps/checkpoint/torcs_gail/torcs_gail_2732" # Boy this guy good, can go to the second corner but crash
 
         print( "# DEBUG: Model path: ", args.load_model_path)
         # Not pretty but will do for now
@@ -170,7 +181,7 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         print('Trajectory limitation: {}, Load checkpoint: {}, '.format(limit,
             args.load_model_path))
         # TODO: RUn Mujoco not meant to be used here
-        avg_len, avg_ret = run_torcs.runner(env,
+        avg_len, avg_ret, max_ret, min_ret = run_torcs.runner(env,
                                              policy_fn,
                                              args.load_model_path,
                                              timesteps_per_batch=1024,
@@ -184,6 +195,10 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         log['upper_bound'].append(upper_bound)
         log['avg_ret'].append(avg_ret)
         log['avg_len'].append(avg_len)
+        log['max_ret'] = max_ret
+        log['min_ret'] = min_ret
+        log['avg_avg_ret'] = np.mean( log['avg_ret'])
+        log['std_avg_ret'] = np.std( log['avg_ret'])
         log['normalized_ret'].append(normalized_ret)
         env.close()
     return log

@@ -21,7 +21,8 @@ from baselines.gail.dataset.mujoco_dset import Mujoco_Dset
 
 plt.style.use('ggplot')
 CONFIG = {
-    'traj_limitation': [1, 5, 10, 50],
+    # 'traj_limitation': [1, 5, 10, 50],
+    'traj_limitation': [50], # For paper results
 }
 
 
@@ -60,7 +61,9 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         'upper_bound': [],
         'avg_ret': [],
         'avg_len': [],
-        'normalized_ret': []
+        'normalized_ret': [],
+        "max_ret": np.inf,
+        "min_ret": -np.inf
     }
     for i, limit in enumerate(CONFIG['traj_limitation']):
         # Do one evaluation

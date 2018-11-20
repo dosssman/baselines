@@ -161,9 +161,8 @@ def main(args):
     # args.load_model_path = os.path.join( args.log_dir,
     #     "DossCtrl10Fixed_170eps_BC_GAILed_NoSlice_Contd/checkpoint/torcs_gail/torcs_gail_292")
 
-    # Damned 200eps
-    # args.expert_path = os.path.join( args.log_dir,
-    #     "data/DossCtrl10Fixed_170eps_NoSlice/expert_data.npz")
+    args.load_model_path = os.path.join( args.log_dir,
+        "Doss10FixedAnal_200eps_5mTsteps/checkpoint/torcs_gail/torcs_gail_2732")
 
     def policy_fn(name, ob_space, ac_space, reuse=False):
         return mlp_policy.MlpPolicy(name=name, ob_space=ob_space, ac_space=ac_space,
@@ -297,7 +296,10 @@ def runner(env, policy_func, load_model_path, timesteps_per_batch, number_trajs,
     avg_ret = sum(ret_list)/len(ret_list)
     print("Average length:", avg_len)
     print("Average return:", avg_ret)
-    return avg_len, avg_ret
+    print("Max return:", np.max( ret_list))
+    print("Min return:", np.min( ret_list))
+
+    return avg_len, avg_ret, np.max( ret_list), np.min( ret_list)
 
 
 # Sample one trajectory (until trajectory end)
