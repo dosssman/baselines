@@ -149,7 +149,7 @@ def main(args):
 
     # DamDossDamFix_35eps
     args.expert_path = os.path.join( args.log_dir,
-        "data/Doss10FixedAnal_200eps_Sliced/expert_data.npz")
+        "data/Doss10FixedAnal_200eps/expert_data.npz")
 
     # RL Expert data
     args.rl_expert_path = os.path.join( args.log_dir,
