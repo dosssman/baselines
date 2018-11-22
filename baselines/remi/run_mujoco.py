@@ -202,7 +202,7 @@ def main(args):
         runner(env,
                policy_fn,
                args.load_model_path,
-               timesteps_per_batch=1024,
+               timesteps_per_batch=3600,
                number_trajs=10,
                stochastic_policy=args.stochastic_policy,
                save=args.save_sample
