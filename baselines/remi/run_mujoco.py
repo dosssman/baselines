@@ -173,7 +173,7 @@ def main(args):
     args.log_dir = osp.join(args.log_dir, task_name)
 
     # print( "# DEBUG: Logging to %s" % args.expert_path )
-    args.num_timesteps = 5000000
+    args.num_timesteps = 7500000
     args.save_per_iter = 1
 
     if args.task == 'train':
