@@ -37,13 +37,14 @@ def run(env_id, seed, noise_type, layer_norm, evaluation, **kwargs):
     rendering = kwargs["render"]
     lap_limiter = 4
 
+    # Agent 10 Fixed Second track First Variation
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+        "/raceconfig/agent_10fixed_sparsed_track_2_var_1.xml"
+
+
     # 10 Fixed Sparsed Config 2m not too much bots in corners
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
         "/raceconfig/agent_10fixed_sparsed_4.xml"
-
-    # Agent 10 Fixed Second track First Variation
-    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/agent_10fixed_sparsed_track_2_var_1.xml" 
 
     # env = gym.make(env_id)
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
@@ -105,8 +106,8 @@ def run(env_id, seed, noise_type, layer_norm, evaluation, **kwargs):
     if eval_env is not None:
         eval_env.seed(seed)
 
-    kwargs["pretrained_model"] = os.path.join( os.getenv('OPENAI_GEN_LOGDIR'),
-        "openai-ddpgtorcs-2018-10-25-21-57-22-599915/model_data/epoch_560.ckpt")
+    # kwargs["pretrained_model"] = os.path.join( os.getenv('OPENAI_GEN_LOGDIR'),
+    #     "openai-ddpgtorcs-2018-10-25-21-57-22-599915/model_data/epoch_560.ckpt")
 
     # Disable logging for rank != 0 to avoid noise.
     if rank == 0:
@@ -115,6 +116,7 @@ def run(env_id, seed, noise_type, layer_norm, evaluation, **kwargs):
         action_noise=action_noise, actor=actor, critic=critic, memory=memory, **kwargs)
 
     env.close()
+
     if eval_env is not None:
         eval_env.close()
     if rank == 0:
@@ -145,7 +147,7 @@ def parse_args():
     parser.add_argument('--nb-eval-steps', type=int, default=100)  # per epoch cycle and MPI worker
     parser.add_argument('--nb-rollout-steps', type=int, default=100)  # per epoch cycle and MPI worker
     parser.add_argument('--noise-type', type=str, default='adaptive-param_0.2')  # choices are adaptive-param_xx, ou_xx, normal_xx, none
-    parser.add_argument('--num-timesteps', type=int, default=None)
+    parser.add_argument('--num-timesteps', type=int, default=5000000)
     parser.add_argument('--pretrained_model', type=str, default=None)
     boolean_flag(parser, 'evaluation', default=True)
     args = parser.parse_args()
