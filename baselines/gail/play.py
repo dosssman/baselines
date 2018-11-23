@@ -255,7 +255,10 @@ def main(args):
     # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_5mTsteps_Contd1/checkpoint/torcs_gail/torcs_gail_825"
 
     # 200eps Doss10FixedAnal + DDPG Agent Mixed model
-    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps/checkpoint/torcs_remi/torcs_remi_1200"
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps/checkpoint/torcs_remi/torcs_remi_1200"
+
+    # 200eps Doss10FixedAnal_200eps_5mTsteps_Contd2
+    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_5mTsteps_Contd2/checkpoint/torcs_gail/torcs_gail_500"
 
     print( "# DEBUG: Model path: ", args.load_model_path)
     args.stochastic_policy = False
