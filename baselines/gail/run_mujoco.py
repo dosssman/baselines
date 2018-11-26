@@ -164,8 +164,8 @@ def main(args):
     # args.load_model_path = os.path.join( args.log_dir,
     #     "Doss10FixedAnal_200eps_5mTsteps/checkpoint/torcs_gail/torcs_gail_2732")
 
-    args.load_model_path = os.path.join( args.log_dir,
-        "Doss10FixedAnal_200eps_5mTsteps_Contd1/checkpoint/torcs_gail/torcs_gail_826")
+    # args.load_model_path = os.path.join( args.log_dir,
+    #     "Doss10FixedAnal_200eps_5mTsteps_Contd1/checkpoint/torcs_gail/torcs_gail_826")
 
     def policy_fn(name, ob_space, ac_space, reuse=False):
         return mlp_policy.MlpPolicy(name=name, ob_space=ob_space, ac_space=ac_space,
