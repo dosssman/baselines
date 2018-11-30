@@ -34,7 +34,7 @@ def run(env_id, seed, noise_type, layer_norm, evaluation, **kwargs):
     vision = False
     throttle = True
     gear_change = False
-    rendering = kwargs["render"]
+    rendering = False
     lap_limiter = 4
 
     # Agent 10 Fixed Second track First Variation
