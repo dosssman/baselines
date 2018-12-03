@@ -114,7 +114,7 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         # checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice_Contd2/checkpoint/torcs_gail/torcs_gail_205")
 
         # 200eps over 5m timnesteps First effective run
-        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/DossCtrl10Fixed_Series/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice_Contd/checkpoint/torcs_gail/torcs_gail_345" # Actually ok on second track
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/DossCtrl10Fixed_Series/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice_Contd/checkpoint/torcs_gail/torcs_gail_345" # Actually ok on second track
 
         # Doss 10 Fixed Analogs
         # 1 eps + DETERMINSITRC POLICY MF
@@ -141,12 +141,14 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
 
         # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_5mTsteps/checkpoint/torcs_gail/torcs_gail_1900" # Boy this guy good, can go to the second corner but crash
         # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_5mTsteps/checkpoint/torcs_gail/torcs_gail_2700" # Boy this guy good, can go to the second corner but crash
-        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_5mTsteps/checkpoint/torcs_gail/torcs_gail_2732" # Boy this guy good, can go to the second corner but crash
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_5mTsteps/checkpoint/torcs_gail/torcs_gail_2732" # Boy this guy good, can go to the second corner but crash
 
         # Contd1
         # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_5mTsteps_Contd1/checkpoint/torcs_gail/torcs_gail_806"
         # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_5mTsteps_Contd1/checkpoint/torcs_gail/torcs_gail_825"
 
+        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run2/checkpoint/torcs_remi/torcs_remi_483"
+        
         print( "# DEBUG: Model path: ", args.load_model_path)
         # Not pretty but will do for now
         # assert( os.path.isfile( checkpoint_path + ".index"))
