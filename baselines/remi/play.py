@@ -98,16 +98,15 @@ def main(args):
 
     # Agent10Fixed_Sparse
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-    "/raceconfig/agent_10fixed_sparsed_4.xml"
-
-    # Agent10Fixed_Sparse
-    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     "/raceconfig/agent_10fixed_sparsed_forza_var_1.xml"
 
     # Agent10Fixed_Sparse
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     "/raceconfig/agent_10fixed_sparsed_forza_var_2.xml"
 
+    # Agent10Fixed_Sparse
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    "/raceconfig/agent_10fixed_sparsed_4.xml"
 
     rendering = True
     noisy = False
@@ -163,6 +162,9 @@ def main(args):
 
     # DDPG + Doss 130 eps Mix 0.5
     # args.load_model_path = os.path.join( args.load_model_path, "Doss_DDPG_Mix_0_5_Run2/checkpoint/torcs_remi/torcs_remi_573")
+
+    # Doss10FixedAnal_DDPG_Chkp560_200eps_old
+    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run2/checkpoint/torcs_remi/torcs_remi_483"
 
     print( "# DEBUG: Model path: ", args.load_model_path)
 
