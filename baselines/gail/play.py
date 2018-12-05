@@ -260,9 +260,16 @@ def main(args):
     # 200eps Doss10FixedAnal_200eps_5mTsteps_Contd2
     args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_5mTsteps_Contd2/checkpoint/torcs_gail/torcs_gail_500"
     args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run2/checkpoint/torcs_remi/torcs_remi_483"
-    
+
+    # 200eps Doss10FixedAnal_200eps_Run3
+    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run3/checkpoint/torcs_gail/torcs_gail_3100"
+
+    # Remi Run2
+    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run2/checkpoint/torcs_remi/torcs_remi_1000"
+    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run2/checkpoint/torcs_remi/torcs_remi_1610"
+
     print( "# DEBUG: Model path: ", args.load_model_path)
-    args.stochastic_policy = False
+    args.stochastic_policy = True
 
     # env = bench.Monitor(env, logger.get_dir() and
     #                     osp.join(logger.get_dir(), "monitor.csv"), allow_early_resets=True)
