@@ -147,14 +147,14 @@ def parse_args():
     parser.add_argument('--nb-eval-steps', type=int, default=100)  # per epoch cycle and MPI worker
     parser.add_argument('--nb-rollout-steps', type=int, default=100)  # per epoch cycle and MPI worker
     parser.add_argument('--noise-type', type=str, default='adaptive-param_0.2')  # choices are adaptive-param_xx, ou_xx, normal_xx, none
-    parser.add_argument('--num-timesteps', type=int, default=5000000)
+    parser.add_argument('--num-timesteps', type=int, default=None)
     parser.add_argument('--pretrained_model', type=str, default=None)
     boolean_flag(parser, 'evaluation', default=True)
     args = parser.parse_args()
     # we don't directly specify timesteps for this script, so make sure that if we do specify them
     # they agree with the other parameters
-    # if args.num_timesteps is not None:
-    #     assert(args.num_timesteps == args.nb_epochs * args.nb_epoch_cycles * args.nb_rollout_steps)
+    if args.num_timesteps is not None:
+        assert(args.num_timesteps == args.nb_epochs * args.nb_epoch_cycles * args.nb_rollout_steps)
     dict_args = vars(args)
     del dict_args['num_timesteps']
     return dict_args
