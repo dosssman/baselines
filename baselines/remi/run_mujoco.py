@@ -177,8 +177,8 @@ def main(args):
     args.save_per_iter = 1
 
     # Custom Weights overload
-    args.pretrained = True
-    args.pretrained_weight = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run2/checkpoint/torcs_remi/torcs_remi_2084"
+    # args.pretrained = True
+    # args.pretrained_weight = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run2/checkpoint/torcs_remi/torcs_remi_2084"
 
     if args.task == 'train':
         dataset = Mujoco_Dset(expert_path=args.expert_path, traj_limitation=args.traj_limitation)
@@ -228,8 +228,8 @@ def train(env, seed, policy_fn, reward_giver, dataset, rl_dataset,  algo,
         pretrained_weight = behavior_clone.learn(env, policy_fn, dataset,
                                                  max_iters=BC_max_iter)
     # Override Pretraine_weights
-    if args.pretrained_weight is not None:
-        pretrained_weight = args.pretrained_weight
+    # if args.pretrained_weight is not None:
+    #     pretrained_weight = args.pretrained_weight
 
     if algo == 'trpo':
         from baselines.remi import trpo_mpi
