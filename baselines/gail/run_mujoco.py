@@ -238,6 +238,9 @@ def train(env, seed, policy_fn, reward_giver, dataset, algo,
         pretrained_weight = behavior_clone.learn(env, policy_fn, dataset,
                                                  max_iters=BC_max_iter)
 
+    if args.pretrained_weight is not None:
+        pretrained_weight = args.pretrained_weight
+        
     if algo == 'trpo':
         from baselines.gail import trpo_mpi
         # Set up for MPI seed

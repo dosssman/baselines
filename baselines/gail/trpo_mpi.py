@@ -223,8 +223,9 @@ def learn(env, policy_func, reward_giver, expert_dataset, rank,
     # if provide pretrained weight
     if pretrained_weight is not None:
         # U.load_state(pretrained_weight, var_list=pi.get_variables())
-        U.load_variables(pretrained_weight, variables=pi.get_variables(),
-            sess=tf.get_default_session())
+        U.load_state( pretrained_weight)
+        # U.load_variables(pretrained_weight, variables=pi.get_variables(),
+        #     sess=tf.get_default_session())
 
 
     # Enable support for reteraining
