@@ -76,10 +76,6 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
 
     # Agent 10 Fixed aalborg track First Variation
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-    "/raceconfig/agent_10fixed_sparsed_forza_var_1.xml"
-
-    # Agent 10 Fixed aalborg track First Variation
-    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     "/raceconfig/agent_10fixed_sparsed_dirt5_var_1.xml" # Crap ... literally
 
     # Agent 10 Fixed aalborg track First Variation
@@ -89,7 +85,6 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     # Agent 10 Fixed Second track First Variation
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     "/raceconfig/agent_10fixed_sparsed_track_2_var_1.xml" # Badoss
-
 
     # Agent 10 Fixed First Track Second Variation
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
@@ -106,6 +101,14 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     # Agent 10 Fixed First Track Second Variation
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     "/raceconfig/agent_10fixed_sparsed_2.xml"
+
+    # Agent 10 Fixed First Track Second Variation
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    "/raceconfig/agent_10fixed_sparsed_4.xml"
+
+    # Agent 10 Fixed aalborg track First Variation
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    "/raceconfig/agent_10fixed_sparsed_forza_var_1.xml"
 
     # Agent 10 Fixed First Track Second Variation
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
@@ -234,6 +237,11 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     # Overtrained Agent round 2
     # save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-10-26-21-47-31-000396/model_data/epoch_90.ckpt" # We got the one # Bad because env too lax
     # save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-10-26-21-47-31-000396/model_data/epoch_75.ckpt" # We got the one # Bad because env too lax
+
+    # From Scratch
+    save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-12-05-13-20-33-056875/model_data/epoch_525.ckpt" # We got the one
+    # save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-12-05-13-20-33-056875/model_data/epoch_801.ckpt"
+    # save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-12-05-13-20-33-056875/model_data/epoch_1366.ckpt"
 
     step = 0
     episode = 0
