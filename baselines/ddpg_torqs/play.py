@@ -22,7 +22,7 @@ import baselines.common.tf_util as U
 from collections import deque
 
 # dosssman
-from baselines.ddpg_torqs.gym_torcs_lax import TorcsEnv
+from baselines.ddpg_torqs.gym_torcs import TorcsEnv
 import csv # CHecking trace for GIAL
 
 def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
@@ -102,10 +102,6 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     "/raceconfig/agent_10fixed_sparsed_2.xml"
 
-    # Agent 10 Fixed First Track Second Variation
-    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-    "/raceconfig/agent_10fixed_sparsed_4.xml"
-
     # Agent 10 Fixed aalborg track First Variation
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     "/raceconfig/agent_10fixed_sparsed_forza_var_1.xml"
@@ -113,6 +109,10 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     # Agent 10 Fixed First Track Second Variation
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     "/raceconfig/agent_10fixed_sparsed_3.xml"
+
+    # Agent 10 Fixed First Track Second Variation
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    "/raceconfig/agent_10fixed_sparsed_4.xml"
 
     # Agent 10 Fixed Forza track First Var
     # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
@@ -239,9 +239,10 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     # save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-10-26-21-47-31-000396/model_data/epoch_75.ckpt" # We got the one # Bad because env too lax
 
     # From Scratch
-    save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-12-05-13-20-33-056875/model_data/epoch_525.ckpt" # We got the one
+    save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-12-05-13-20-33-056875/model_data/epoch_525.ckpt"
+    save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-12-05-13-20-33-056875/model_data/epoch_526.ckpt" # We got the one
     # save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-12-05-13-20-33-056875/model_data/epoch_801.ckpt"
-    # save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-12-05-13-20-33-056875/model_data/epoch_1366.ckpt"
+    save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-12-05-13-20-33-056875/model_data/epoch_1368.ckpt"
 
     step = 0
     episode = 0
@@ -305,6 +306,10 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
                     #     done = True
 
                     if done:
+                        print( "Timesteps: %d" % len( obss))
+                        print( "Score: %.3f" % episode_reward)
+                        # np.save( "/home/z3r0/torcs_data/ddpg_obs", np.asarray( obss))
+                        print( "Time %.6f\n" % (time.time() - start_time))
                         # Episode done.
                         # epoch_episode_rewards.append(episode_reward)
                         # episode_rewards_history.append(episode_reward)
@@ -324,9 +329,6 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
                         else:
                             obs = env.reset()
                         # obs = env.reset()
-                        print( len( obss))
-                        # np.save( "/home/z3r0/torcs_data/ddpg_obs", np.asarray( obss))
-                        print( "Time %.6f\n" % (time.time() - start_time))
 
     ### ENd training code
 

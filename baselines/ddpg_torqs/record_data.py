@@ -22,7 +22,7 @@ import baselines.common.tf_util as U
 from collections import deque
 
 # dosssman
-from baselines.ddpg_torqs.gym_torcs_lax import TorcsEnv
+from baselines.ddpg_torqs.gym_torcs import TorcsEnv
 import csv # CHecking trace for GIAL
 
 def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
@@ -65,21 +65,25 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
         "/raceconfig/agent_10fixed_sparsed_track_2_var_1.xml"
 
+    # Agent 10 Fixed First Track Second Variation
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    "/raceconfig/agent_10fixed_sparsed_4.xml"
+
     # # Duh
     rendering = True
-    lap_limiter = 4
+    lap_limiter = 2
     recdata = True
-    rec_episode_limit = 10
+    rec_episode_limit = 220
     rec_timestep_limit = 3601
     rec_index = 0
-    race_speed = 1.0
+    # race_speed = 1.0
 
     # env = gym.make(env_id)
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
 		race_config_path=race_config_path, rendering=rendering,
 		lap_limiter = lap_limiter, recdata=recdata, noisy=False,
         rec_index=rec_index, rec_episode_limit=rec_episode_limit,
-        rec_timestep_limit=rec_timestep_limit, race_speed=race_speed)
+        rec_timestep_limit=rec_timestep_limit)
 
     # env = bench.Monitor(env, logger.get_dir() and os.path.join(logger.get_dir(), str(rank)))
 
@@ -183,6 +187,11 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     # openai-ddpgtorcs-2018-09-05-12-46-24-553500 Alone
     # save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-05-12-46-24-553500/model_data/epoch_309.ckpt"
     # save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-05-12-46-24-553500/model_data/epoch_104.ckpt"
+    # From Scratch
+    save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-12-05-13-20-33-056875/model_data/epoch_525.ckpt"
+    save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-12-05-13-20-33-056875/model_data/epoch_526.ckpt" # We got the one
+    # save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-12-05-13-20-33-056875/model_data/epoch_801.ckpt"
+    save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-12-05-13-20-33-056875/model_data/epoch_1368.ckpt"
 
     step = 0
     episode = 0
