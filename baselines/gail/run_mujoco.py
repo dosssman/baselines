@@ -152,7 +152,7 @@ def main(args):
 
     # ORder is importat
     args.expert_path = os.path.join( args.log_dir,
-        "data/Doss10FixedAnal_200eps/expert_data.npz")
+        "data/Doss10FixedAnal_220eps/expert_data.npz")
 
     # Retraining ?
     # args.load_model_path = os.path.join( args.log_dir,
@@ -240,7 +240,7 @@ def train(env, seed, policy_fn, reward_giver, dataset, algo,
 
     if args.pretrained_weight is not None:
         pretrained_weight = args.pretrained_weight
-        
+
     if algo == 'trpo':
         from baselines.gail import trpo_mpi
         # Set up for MPI seed
