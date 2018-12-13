@@ -75,7 +75,7 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
     #     "openai-gailtorcs/data/Doss10FixedAnal_70eps_Sliced/expert_data.npz")
 
     data_path = os.path.join( log_dir,
-        "openai-gailtorcs/data/Doss10FixedAnal_130eps_Sliced/expert_data.npz")
+        "openai-gailtorcs/data/Doss10FixedAnal_200eps_Sliced/expert_data.npz")
     # data_path = os.path.join('data', 'deterministic.trpo.' + env_name + '.0.00.npz')
     dataset = load_dataset(data_path)
     # checkpoint_list = glob.glob(os.path.join('checkpoint', '*' + env_name + ".*"))
@@ -149,7 +149,20 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
 
         args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run2/checkpoint/torcs_remi/torcs_remi_483"
         args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run2/checkpoint/torcs_remi/torcs_remi_2084"
-        
+
+        # GailTorcs Run5
+        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run5/checkpoint/torcs_gail/torcs_gail_859"
+
+        # GailTorcs Run5 Contd
+        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run5_Contd/checkpoint/torcs_gail/torcs_gail_1646"
+        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run5_Contd/checkpoint/torcs_gail/torcs_gail_3375"
+        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run5_Contd/checkpoint/torcs_gail/torcs_gail_6501"
+        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run5_Contd/checkpoint/torcs_gail/torcs_gail_7538"
+
+        # Remi Run3
+        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run3/checkpoint/torcs_remi/torcs_remi_1868"
+        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run3/checkpoint/torcs_remi/torcs_remi_2014" # Full track, drifter
+
         print( "# DEBUG: Model path: ", args.load_model_path)
         # Not pretty but will do for now
         # assert( os.path.isfile( checkpoint_path + ".index"))
@@ -276,7 +289,7 @@ def main(args):
     print('Evaluation for {}'.format(args.env))
     print(bc_log)
     gail_log = evaluate_env(args.env, args.seed, args.policy_hidden_size,
-                            args.stochastic_policy, True, 'gail')
+                            args.stochastic_policy, True, 'remi')
     print('Evaluation for {}'.format(args.env))
     print(gail_log)
     plot(args.env, bc_log, gail_log, args.stochastic_policy)
