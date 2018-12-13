@@ -184,7 +184,7 @@ def main(args):
         dataset = Mujoco_Dset(expert_path=args.expert_path, traj_limitation=args.traj_limitation)
         rl_dataset = Mujoco_Dset(expert_path=args.rl_expert_path, traj_limitation=args.traj_limitation)
         reward_giver = TransitionClassifier(env, args.adversary_hidden_size,
-            entcoeff=args.adversary_entcoeff, alpha=.4)
+            entcoeff=args.adversary_entcoeff, alpha=.5)
         train(env,
               args.seed,
               policy_fn,
