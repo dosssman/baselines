@@ -188,7 +188,7 @@ def main(args):
     args.num_timesteps = 10000000
     args.save_per_iter = 1
 
-    # args.pretrained = True
+    args.pretrained = True
     # args.pretrained_weight = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run5/checkpoint/torcs_gail/torcs_gail_932"
     # args.pretrained_weight = None
 
