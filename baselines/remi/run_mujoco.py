@@ -149,11 +149,11 @@ def main(args):
 
     # DamDossDamFix_35eps
     args.expert_path = os.path.join( args.log_dir,
-        "data/Doss10FixedAnal_200eps/expert_data.npz")
+        "data/Doss10FixedAnal_220eps/expert_data.npz")
 
     # RL Expert data
     args.rl_expert_path = os.path.join( args.log_dir,
-        "data/DDPG_CKPT560_200eps_NoSlice/expert_data.npz")
+        "data/DDPG_20181215Run_ckpt1368_220eps/expert_data.npz")
 
     def policy_fn(name, ob_space, ac_space, reuse=False):
         return mlp_policy.MlpPolicy(name=name, ob_space=ob_space, ac_space=ac_space,
@@ -173,7 +173,7 @@ def main(args):
     args.log_dir = osp.join(args.log_dir, task_name)
 
     # print( "# DEBUG: Logging to %s" % args.expert_path )
-    args.num_timesteps = 7500000
+    args.num_timesteps = 10000000
     args.save_per_iter = 1
 
     # Custom Weights overload
