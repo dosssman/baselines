@@ -190,6 +190,7 @@ def main(args):
 
     # args.pretrained = True
     # args.pretrained_weight = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run5/checkpoint/torcs_gail/torcs_gail_932"
+    args.pretrained_weight = None
 
     if args.task == 'train':
         dataset = Mujoco_Dset(expert_path=args.expert_path, traj_limitation=args.traj_limitation)
