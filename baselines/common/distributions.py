@@ -339,4 +339,3 @@ def validate_probtype(probtype, pdparam):
     klval_ll_stderr = logliks.std() / np.sqrt(N) #pylint: disable=E1101
     assert np.abs(klval - klval_ll) < 3 * klval_ll_stderr # within 3 sigmas
     print('ok on', probtype, pdparam)
-

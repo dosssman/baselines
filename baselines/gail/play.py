@@ -91,23 +91,6 @@ def main(args):
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     "/raceconfig/agent_10fixed_sparsed_aspeedway_var_1.xml"
 
-    # Agent10Fixed_Sparse
-    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-    "/raceconfig/agent_10fixed_sparsed_1.xml"
-
-    # Agent 10 Fixed Second track First Variation
-    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-    "/raceconfig/agent_10fixed_sparsed_track_2_var_1.xml" # Baboss
-
-    # Agent 10 Fixed Second track First Variation
-    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-    "/raceconfig/agent_10fixed_sparsed_track_2_var_2.xml" # Baboss
-
-    # Agent 10 Fixed Second track First Variation
-    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-    "/raceconfig/agent_10fixed_sparsed_forza_var_1.xml"
-
-
     # Agent 10 Fixed Second track First Variation
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     "/raceconfig/agent_10fixed_sparsed_eroad_var_1.xml"
@@ -120,12 +103,36 @@ def main(args):
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     "/raceconfig/agent_10fixed_track1_var3.xml"
 
+    # Agent10Fixed_Sparse
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    "/raceconfig/agent_10fixed_sparsed_1.xml"
+
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    "/raceconfig/agent_10fixed_sparsed_4.xml"
+
+    # Agent 10 Fixed Second track First Variation
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    "/raceconfig/agent_10fixed_sparsed_forza_var_1.xml"
+
     # Agent 10 Fixed Second track First Variation
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     "/raceconfig/agent_10fixed_sparsed_forza_var_2.xml"
 
+    # Agent 10 Fixed Second track First Variation
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-    "/raceconfig/agent_10fixed_sparsed_4.xml"
+    "/raceconfig/agent_10fixed_sparsed_forza_var_1.xml"
+
+    # Agent 10 Fixed Second track First Variation
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    "/raceconfig/agent_10fixed_sparsed_track_2_var_2.xml" # Baboss
+
+    # Agent 10 Fixed Second track First Variation
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    "/raceconfig/agent_10fixed_sparsed_track_2_var_1.xml"
+
+    # Agent 10 Fixed Second track First Variation
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    "/raceconfig/agent_10fixed_sparsed_track_2_var_3.xml"
 
     rendering = True
     noisy = False
@@ -265,22 +272,44 @@ def main(args):
     # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run3/checkpoint/torcs_gail/torcs_gail_3100"
 
     # Remi Run2
-    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run2/checkpoint/torcs_remi/torcs_remi_1000"
-    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run2/checkpoint/torcs_remi/torcs_remi_1610"
-    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run2/checkpoint/torcs_remi/torcs_remi_2084"
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run2/checkpoint/torcs_remi/torcs_remi_1000"
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run2/checkpoint/torcs_remi/torcs_remi_1610"
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run2/checkpoint/torcs_remi/torcs_remi_2084"
 
     # GailTorcs Run5
-    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run5/checkpoint/torcs_gail/torcs_gail_859"
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run5/checkpoint/torcs_gail/torcs_gail_791"
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run5/checkpoint/torcs_gail/torcs_gail_859"
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run5/checkpoint/torcs_gail/torcs_gail_929"
 
     # GailTorcs Run5 Contd
-    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run5_Contd/checkpoint/torcs_gail/torcs_gail_1646"
-    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run5_Contd/checkpoint/torcs_gail/torcs_gail_3375"
-    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run5_Contd/checkpoint/torcs_gail/torcs_gail_6501"
-    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run5_Contd/checkpoint/torcs_gail/torcs_gail_7538"
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run5_Contd/checkpoint/torcs_gail/torcs_gail_985"
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run5_Contd/checkpoint/torcs_gail/torcs_gail_1646"
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run5_Contd/checkpoint/torcs_gail/torcs_gail_1649"
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run5_Contd/checkpoint/torcs_gail/torcs_gail_2090"
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run5_Contd/checkpoint/torcs_gail/torcs_gail_2255"
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run5_Contd/checkpoint/torcs_gail/torcs_gail_3375"
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run5_Contd/checkpoint/torcs_gail/torcs_gail_4978"
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run5_Contd/checkpoint/torcs_gail/torcs_gail_7538"
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run5_Contd/checkpoint/torcs_gail/torcs_gail_6501"
+
+    # Gail Run6
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run6/checkpoint/torcs_gail/torcs_gail_1641"
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run6/checkpoint/torcs_gail/torcs_gail_2006"
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run6/checkpoint/torcs_gail/torcs_gail_3911"
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run6/checkpoint/torcs_gail/torcs_gail_5661"
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run6/checkpoint/torcs_gail/torcs_gail_7729"
 
     # Remi Run3
-    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run3/checkpoint/torcs_remi/torcs_remi_1868" # Full Track
-    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run3/checkpoint/torcs_remi/torcs_remi_2014" # Full track, drifter
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run3/checkpoint/torcs_remi/torcs_remi_1868" # Full Track
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run3/checkpoint/torcs_remi/torcs_remi_1972" # Full Track
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run3/checkpoint/torcs_remi/torcs_remi_2014" # Full track, drifter
+
+    # Remi Run4
+    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run4/checkpoint/torcs_remi/torcs_remi_2336"
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run4/checkpoint/torcs_remi/torcs_remi_2451"
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run4/checkpoint/torcs_remi/torcs_remi_5381"
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run4/checkpoint/torcs_remi/torcs_remi_5785"
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run4/checkpoint/torcs_remi/torcs_remi_6158"
 
     print( "# DEBUG: Model path: ", args.load_model_path)
     args.stochastic_policy = True
