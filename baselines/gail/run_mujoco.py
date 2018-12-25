@@ -154,6 +154,9 @@ def main(args):
     args.expert_path = os.path.join( args.log_dir,
         "data/Doss10FixedAnal_220eps/expert_data.npz")
 
+    args.expert_path = os.path.join( args.log_dir,
+        "data/DDPG_20181215Run_ckpt1368_220eps/expert_data.npz")
+
     # Retraining ?
     # args.load_model_path = os.path.join( args.log_dir,
     #     "DossCtrl10Fixed_170eps_BC_GAILed_NoSlice/checkpoint/torcs_gail/torcs_gail_1050")
