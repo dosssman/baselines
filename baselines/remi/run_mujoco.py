@@ -56,6 +56,7 @@ def argsparser():
     # Behavior Cloning
     boolean_flag(parser, 'pretrained', default=True, help='Use BC to pretrain')
     parser.add_argument('--BC_max_iter', help='Max iteration for training BC', type=int, default=1e4)
+    parser.add_argument("--alpha", type=float, default=0.1)
     return parser.parse_args()
 
 
@@ -173,7 +174,7 @@ def main(args):
     args.log_dir = osp.join(args.log_dir, task_name)
 
     # print( "# DEBUG: Logging to %s" % args.expert_path )
-    args.num_timesteps = 10000000
+    args.num_timesteps = 5000000
     args.save_per_iter = 1
 
     # Custom Weights overload
@@ -184,7 +185,7 @@ def main(args):
         dataset = Mujoco_Dset(expert_path=args.expert_path, traj_limitation=args.traj_limitation)
         rl_dataset = Mujoco_Dset(expert_path=args.rl_expert_path, traj_limitation=args.traj_limitation)
         reward_giver = TransitionClassifier(env, args.adversary_hidden_size,
-            entcoeff=args.adversary_entcoeff, alpha=.5)
+            entcoeff=args.adversary_entcoeff, alpha=args.alpha)
         train(env,
               args.seed,
               policy_fn,

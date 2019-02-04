@@ -47,7 +47,7 @@ class TransitionClassifier(object):
          # XXX Remi Edited
         rl_expert_loss = tf.nn.sigmoid_cross_entropy_with_logits(logits=rl_expert_logits, labels=tf.ones_like(rl_expert_logits))
         rl_expert_loss = tf.reduce_mean(rl_expert_loss)
-        mixed_loss = alpha * expert_loss + ( 1- alpha) * rl_expert_loss
+        mixed_loss = (1-alpha) * expert_loss + (alpha) * rl_expert_loss
         # Build entropy loss
         # logits = tf.concat([generator_logits, expert_logits], 0)
         logits = tf.concat([generator_logits, expert_logits, rl_expert_logits], 0)
