@@ -56,7 +56,7 @@ def argsparser():
     # Behavior Cloning
     boolean_flag(parser, 'pretrained', default=True, help='Use BC to pretrain')
     parser.add_argument('--BC_max_iter', help='Max iteration for training BC', type=int, default=1e4)
-    parser.add_argument("--alpha", type=float, default=0.2)
+    parser.add_argument("--alpha", type=float, default=0.3)
     return parser.parse_args()
 
 
