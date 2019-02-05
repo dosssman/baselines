@@ -26,8 +26,13 @@ class TorcsEnv( gym.Env):
     def __init__(self, vision=False, throttle=False, gear_change=False,
         race_config_path=None,race_speed=1.0, rendering=True, damage=False,
         lap_limiter=2, recdata=False, noisy=False, rec_episode_limit=1,
-        rec_timestep_limit=3600, rec_index=0):
-        #print("Init")
+        rec_timestep_limit=3600, rec_index=0, hard_reset_interval=11,
+        randomisation=False, profile_reuse=200):
+
+        # Support for blackbox optimal reset
+        self.reset_ep_count = 1
+        self.hard_reset_interval = hard_reset_interval
+
         self.vision = vision
         self.throttle = throttle
         self.gear_change = gear_change
@@ -36,6 +41,25 @@ class TorcsEnv( gym.Env):
         self.damage = damage
         self.recdata = recdata
         self.noisy = noisy
+        self.randomisation = randomisation
+
+        if randomisation:
+            track_length = 2000 # Extract form torcs maybe
+            max_pos_length = .75 * 2000 # Floor to 100 tile
+            agent_init = 0 # Randomize in range 200 like
+            bot_count = np.random(1,10)
+            min_bound = agent_init + 50
+            max_leap = (max_pos_length - min_bound) / bot_count
+            bot_init_poss = []
+            for bot_idx n range(1,bot_count):
+                bot_init_poss[bot_idx] = 0 # Random generate in range minbound and max pos length with max leap
+                min_bound += max_leapz
+
+            # Check for random config file folder and create if not exists
+            # fecth XML template
+            # Gene appropriate fie templatem check if existsing and create if not
+
+            #
         # The episode will end when the lap_limiter is reached
         # To put it simply if you want env to stap after 3 laps, set this to 4
         # Make sure to run torcs itself for more than 3 laps too, otherwise,
@@ -274,14 +298,14 @@ class TorcsEnv( gym.Env):
     def reset(self, relaunch=False):
         #print("Reset")
         self.time_step = 0
-
         if self.initial_reset is not True:
             self.client.R.d['meta'] = True
             self.client.respond_to_server()
 
             ## TENTATIVE. Restarting TORCS every episode suffers the memory leak bug!
-            if relaunch is True:
+            if relaunch is True or self.reset_ep_count % self.hard_reset_interval == 0:
                 self.reset_torcs()
+                self.reset_ep_count = 1
                 print("### TORCS is RELAUNCHED ###")
 
 
@@ -312,6 +336,8 @@ class TorcsEnv( gym.Env):
         # THe newly created TOrcs PID is also reattached to the Gym Torcs Env
         # This should be temporary ... but only time knows
         self.torcs_process_id = self.client.torcs_process_id
+
+        self.reset_ep_count += 1
 
         return self.get_obs()
 
