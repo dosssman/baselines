@@ -22,7 +22,7 @@ import baselines.common.tf_util as U
 from collections import deque
 
 # dosssman
-from baselines.ddpg_torqs.gym_torcs_lax import TorcsEnv
+from baselines.ddpg_torqs.gym_torcs import TorcsEnv
 import csv # CHecking trace for GIAL
 
 def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
