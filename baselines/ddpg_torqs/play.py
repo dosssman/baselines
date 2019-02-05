@@ -122,8 +122,7 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     #     "/raceconfig/agent_10fixed_sparsed_forza_var_2.xml" # Badoss
 
-    # Duh
-    rendering = True
+    rendering = False
     lap_limiter = 4
 
     # env = gym.make(env_id)
@@ -325,10 +324,12 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
                         # Restore to trained state ?
                         saver.restore( sess, save_filename)
                         # Custom: Need to hard reset Torcs 'cause of mem leak
-                        if np.mod(episodes, 5) == 0:
-                            obs = env.reset(relaunch=True)   #relaunch TORCS every 3 episode because of the memory leak error
-                        else:
-                            obs = env.reset()
+                        # if np.mod(episodes, 5) == 0:
+                        #     obs = env.reset(relaunch=True)   #relaunch TORCS every 3 episode because of the memory leak error
+                        # else:
+                        #     obs = env.reset()
+                        obs = env.reset()
+
                         # obs = env.reset()
 
     ### ENd training code
@@ -354,8 +355,8 @@ def parse_args():
     parser.add_argument('--gamma', type=float, default=0.99)
     parser.add_argument('--reward-scale', type=float, default=1.)
     parser.add_argument('--clip-norm', type=float, default=None)
-    parser.add_argument('--nb-epochs', type=int, default=1)  # with default settings, perform 1M steps total
-    parser.add_argument('--nb-epoch-cycles', type=int, default=1)
+    parser.add_argument('--nb-epochs', type=int, default=20)  # with default settings, perform 1M steps total
+    parser.add_argument('--nb-epoch-cycles', type=int, default=10)
     parser.add_argument('--nb-train-steps', type=int, default=10000000000)  # per epoch cycle and MPI worker
     parser.add_argument('--nb-eval-steps', type=int, default=10000000000)  # per epoch cycle and MPI worker
     parser.add_argument('--nb-rollout-steps', type=int, default=10000000000)  # per epoch cycle and MPI worker

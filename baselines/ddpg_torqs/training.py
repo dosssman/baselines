@@ -119,10 +119,11 @@ def train(env, nb_epochs, nb_epoch_cycles, render_eval, reward_scale, render, pa
 
                         agent.reset()
                         # Custom: Need to hard reset Torcs 'cause of mem leak
-                        if np.mod(episodes, 4) == 0:
-                            obs = env.reset(relaunch=True)   #relaunch TORCS every 3 episode because of the memory leak error
-                        else:
-                            obs = env.reset()
+                        # if np.mod(episodes, 4) == 0:
+                        #     obs = env.reset(relaunch=True)   #relaunch TORCS every 3 episode because of the memory leak error
+                        # else:
+                        #     obs = env.reset()
+                        obs = env.reset()
                         # obs = env.reset()
 
                 # Train.
