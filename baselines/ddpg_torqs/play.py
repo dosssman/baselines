@@ -128,7 +128,7 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     # env = gym.make(env_id)
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
 		race_config_path=race_config_path, rendering=rendering,
-		lap_limiter = lap_limiter)
+		lap_limiter = lap_limiter, randomisation=True)
 
     # env = bench.Monitor(env, logger.get_dir() and os.path.join(logger.get_dir(), str(rank)))
 

@@ -12,6 +12,8 @@ import subprocess
 import psutil
 import time
 import math
+import random
+from xml.etree import ElementTree as ET
 
 DEF_BOX_DTYPE = np.float32
 
@@ -27,7 +29,7 @@ class TorcsEnv( gym.Env):
         race_config_path=None,race_speed=1.0, rendering=True, damage=False,
         lap_limiter=2, recdata=False, noisy=False, rec_episode_limit=1,
         rec_timestep_limit=3600, rec_index=0, hard_reset_interval=11,
-        randomisation=False, profile_reuse=200):
+        randomisation=False, profile_reuse_ep=200):
 
         # Support for blackbox optimal reset
         self.reset_ep_count = 1
@@ -42,24 +44,56 @@ class TorcsEnv( gym.Env):
         self.recdata = recdata
         self.noisy = noisy
         self.randomisation = randomisation
+        self.profile_reuse_count = 0
+        self.profile_reuse_ep = profile_reuse_ep
 
-        if randomisation:
-            track_length = 2000 # Extract form torcs maybe
-            max_pos_length = .75 * 2000 # Floor to 100 tile
-            agent_init = 0 # Randomize in range 200 like
-            bot_count = np.random(1,10)
-            min_bound = agent_init + 50
-            max_leap = (max_pos_length - min_bound) / bot_count
-            bot_init_poss = []
-            for bot_idx n range(1,bot_count):
-                bot_init_poss[bot_idx] = 0 # Random generate in range minbound and max pos length with max leap
-                min_bound += max_leapz
+        self.initial_run = True
 
-            # Check for random config file folder and create if not exists
-            # fecth XML template
-            # Gene appropriate fie templatem check if existsing and create if not
+        #Raceconfig compat edit
+        self.torcs_process_id = None
+        self.race_config_path = race_config_path
 
-            #
+        # Freshly initialised
+        if self.randomisation:
+            if self.profile_reuse_ep == 0 or self.profile_reuse_count % self.profile_reuse_ep == 0:
+                track_length = 2700 # Extract form torcs maybe
+                max_pos_length = .72 * track_length # Floor to 100 tile
+                agent_init = random.randint(0,20) * 10
+                bot_count = random.randint(1,10)
+                min_bound = agent_init + 50
+                max_leap = math.floor((max_pos_length - min_bound) / bot_count / 100) * 100
+                bot_init_poss = []
+                for _ in range(bot_count):
+                    bot_init_poss.append( random.randint( min_bound, min_bound + max_leap))
+                    # Random generate in range minbound and max pos length with max leap
+                    min_bound += max_leap
+
+                # Check for random config file folder and create if not exists
+                randconf_dir = os.path.join(  os.path.dirname(os.path.abspath(__file__)),
+                    "rand_raceconfigs")
+                if not os.path.isdir(randconf_dir):
+                    os.mkdir(randconf_dir)
+                randconf_filename = "agent_randfixed_%d" % agent_init
+                for bot_idx in bot_init_poss:
+                    randconf_filename += "_%d" % bot_idx
+                randconf_filename += ".xml"
+                if not os.path.isfile( os.path.join( randconf_dir, randconf_filename)):
+                    # Create Fielk config based on xml template
+                    with open( os.path.join( randconf_dir, "agent_randfixed_tmplt.xml")) as tmplt_f:
+                        root = ET.parse( tmplt_f).getroot()
+
+                    print(root.attrib)
+                    # for child in root:
+                    #     print( child.tag, child.attrib)
+
+                    driver_section = root.find("./params/[@name=Drivers]")
+                    print( driver_section)
+                    input()
+
+                self.race_config_path = os.path.join( randconf_dir,
+                    randconf_filename)
+
+
         # The episode will end when the lap_limiter is reached
         # To put it simply if you want env to stap after 3 laps, set this to 4
         # Make sure to run torcs itself for more than 3 laps too, otherwise,
@@ -68,12 +102,6 @@ class TorcsEnv( gym.Env):
         self.rec_episode_limit = rec_episode_limit
         self.rec_timestep_limit = rec_timestep_limit
         self.rec_index = rec_index
-
-        self.initial_run = True
-
-        #Raceconfig compat edit
-        self.torcs_process_id = None
-        self.race_config_path = race_config_path
 
         ##print("launch torcs")
         #Just to be sure
