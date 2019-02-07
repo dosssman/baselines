@@ -128,7 +128,7 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     # env = gym.make(env_id)
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
 		race_config_path=race_config_path, rendering=rendering,
-		lap_limiter = lap_limiter, randomisation=True)
+		lap_limiter = lap_limiter, randomisation=True, profile_reuse_ep=50)
 
     # env = bench.Monitor(env, logger.get_dir() and os.path.join(logger.get_dir(), str(rank)))
 
@@ -329,6 +329,7 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
                         # else:
                         #     obs = env.reset()
                         obs = env.reset()
+                        done = False
 
                         # obs = env.reset()
 
@@ -355,11 +356,11 @@ def parse_args():
     parser.add_argument('--gamma', type=float, default=0.99)
     parser.add_argument('--reward-scale', type=float, default=1.)
     parser.add_argument('--clip-norm', type=float, default=None)
-    parser.add_argument('--nb-epochs', type=int, default=20)  # with default settings, perform 1M steps total
-    parser.add_argument('--nb-epoch-cycles', type=int, default=10)
-    parser.add_argument('--nb-train-steps', type=int, default=10000000000)  # per epoch cycle and MPI worker
-    parser.add_argument('--nb-eval-steps', type=int, default=10000000000)  # per epoch cycle and MPI worker
-    parser.add_argument('--nb-rollout-steps', type=int, default=10000000000)  # per epoch cycle and MPI worker
+    parser.add_argument('--nb-epochs', type=int, default=100)  # with default settings, perform 1M steps total
+    parser.add_argument('--nb-epoch-cycles', type=int, default=20)
+    parser.add_argument('--nb-train-steps', type=int, default=50)  # per epoch cycle and MPI worker
+    parser.add_argument('--nb-eval-steps', type=int, default=100)  # per epoch cycle and MPI worker
+    parser.add_argument('--nb-rollout-steps', type=int, default=100)  # per epoch cycle and MPI worker
     parser.add_argument('--noise-type', type=str, default='adaptive-param_0.2')  # choices are adaptive-param_xx, ou_xx, normal_xx, none
     parser.add_argument('--num-timesteps', type=int, default=None)
     boolean_flag(parser, 'evaluation', default=False)
