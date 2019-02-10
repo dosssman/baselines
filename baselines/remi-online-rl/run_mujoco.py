@@ -89,7 +89,7 @@ def get_task_name(args):
 
 
 def main(args):
-    U.make_session(num_cpu=1).__enter__()
+    U.make_session(num_cpu=4).__enter__()
     set_global_seeds(args.seed)
     # env = gym.make(args.env_id)
 

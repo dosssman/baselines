@@ -56,7 +56,7 @@ def argsparser():
     # Behavior Cloning
     boolean_flag(parser, 'pretrained', default=True, help='Use BC to pretrain')
     parser.add_argument('--BC_max_iter', help='Max iteration for training BC', type=int, default=1e4)
-    parser.add_argument("--alpha", type=float, default=0.9)
+    parser.add_argument("--alpha", type=float, default=0.5)
     return parser.parse_args()
 
 
@@ -123,7 +123,8 @@ def main(args):
     # env = gym.make(args.env_id)
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
 		race_config_path=race_config_path, rendering=rendering,
-		lap_limiter = lap_limiter, noisy=noisy, timestep_limit=timestep_limit)
+		lap_limiter = lap_limiter, noisy=noisy, timestep_limit=timestep_limit,
+        host=(3001+rank))
 
     # XXX: Intuitive log folder, probably save weihts there too & params overide
     args.task = "train"

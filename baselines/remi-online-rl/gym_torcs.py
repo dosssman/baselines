@@ -2,7 +2,7 @@ import gym
 from gym import spaces
 import numpy as np
 # from os import path
-import baselines.remi.snakeoil3_gym as snakeoil3
+import baselines.ddpg_torqs.snakeoil3_gym as snakeoil3
 import numpy as np
 import copy
 import collections as col
@@ -25,7 +25,7 @@ class TorcsEnv( gym.Env):
     # Customized to accept more params
     def __init__(self, vision=False, throttle=False, gear_change=False,
         race_config_path=None,race_speed=1.0, rendering=True, damage=False,
-        lap_limiter=2, recdata=False, noisy=False, timestep_limit=-1):
+        lap_limiter=2, recdata=False, noisy=False, host=3001, rank=0):
         #print("Init")
         self.vision = vision
         self.throttle = throttle
@@ -35,7 +35,8 @@ class TorcsEnv( gym.Env):
         self.damage = damage
         self.recdata = recdata
         self.noisy = noisy
-        self.timestep_limit = timestep_limit
+        self.host = host
+        self.rank = rank
         # The episode will end when the lap_limiter is reached
         # To put it simply if you want env to stap after 3 laps, set this to 4
         # Make sure to run torcs itself for more than 3 laps too, otherwise,
@@ -52,6 +53,9 @@ class TorcsEnv( gym.Env):
         #Just to be sure
         args = ["torcs", "-nofuel", "-nolaptime",
             "-a", str( self.race_speed)]
+
+        args.append( "-p")
+        args.append( self.host)
 
         if self.damage:
             args.append( "-nodamage")
@@ -141,6 +145,7 @@ class TorcsEnv( gym.Env):
             # low = np.array([0., -np.inf, -np.inf, -np.inf, 0., -np.inf, 0., -np.inf, 0])
             self.observation_space = spaces.Box(low=0, high=255, shape=( 64, 64 ,1), dtype=np.uint8)
 
+    # Unused, just to add compatibility with Gym env class
     def seed( self, seed_value=42):
         self.seed_value = seed_value
     ### End Customized
@@ -232,19 +237,16 @@ class TorcsEnv( gym.Env):
         progress = sp*np.cos(obs['angle'])
         reward = progress
 
-        # Termination judgement #########################
-        episode_terminate = False
-        if self.timestep_limit > 0 and self.time_step >= self.timestep_limit:
-            episode_terminate = True
-            client.R.d['meta'] = True
-        if track.min() < 0:  # Episode is terminated if the car is out of track
-            # reward = - 50
+        # collision detection
+        if obs['damage'] - obs_pre['damage'] > 0:
+            reward = - 1
             episode_terminate = True
             client.R.d['meta'] = True
 
-        # collision detection
-        if obs['damage'] - obs_pre['damage'] > 0:
-            # reward = - 200
+        # Termination judgement #########################
+        episode_terminate = False
+        if track.min() < 0:  # Episode is terminated if the car is out of track
+            reward = - 1
             episode_terminate = True
             client.R.d['meta'] = True
 
@@ -285,7 +287,7 @@ class TorcsEnv( gym.Env):
 
         # Modify here if you use multiple tracks in the environment
         ### dosssman: Pass existing process id and race config path
-        self.client = snakeoil3.Client(p=3101, vision=self.vision,
+        self.client = snakeoil3.Client(H=self.host, p=(3101 + rank * 10), vision=self.vision,
             process_id=self.torcs_process_id,
             race_config_path=self.race_config_path,
             race_speed=self.race_speed,
@@ -341,18 +343,6 @@ class TorcsEnv( gym.Env):
         # End custom
 
     def reset_torcs(self):
-        #print("relaunch torcs")
-        # os.system('pkill torcs')
-        # time.sleep(0.5)
-        #
-        #
-        # if self.vision is True:
-        #     os.system('torcs -nofuel -nodamage -nolaptime -vision &')
-        # else:
-        #     os.system('torcs -nofuel -nodamage -nolaptime &')
-        # time.sleep(0.5)
-        # os.system('sh autostart.sh')
-        # time.sleep(0.5)
         print( "Process PID: ", self.torcs_process_id)
         if self.torcs_process_id is not None:
             try:
@@ -370,6 +360,9 @@ class TorcsEnv( gym.Env):
 
         args = ["torcs", "-nofuel", "-nolaptime",
             "-a", str( self.race_speed)]
+
+        args.append( "-p")
+        args.append( self.host)
 
         if self.damage:
             args.append( "-nodamage")

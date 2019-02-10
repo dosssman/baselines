@@ -118,8 +118,7 @@ def bargraph(x,mn,mx,w,c='X'):
 class Client():
     def __init__(self,H=None,p=None,i=None,e=None,t=None,s=None,d=None,
         vision=False, process_id=None, race_config_path=None, race_speed=1.0,
-        rendering=True, damage=False, lap_limiter=2, recdata=False, noisy=False,
-        timestep_limit=-1):
+        rendering=True, damage=False, lap_limiter=2, recdata=False, noisy=False):
         # If you don't like the option defaults,  change them here.
         self.vision = vision
 
@@ -149,7 +148,6 @@ class Client():
         self.lap_limiter = lap_limiter
         self.recdata = recdata
         self.noisy = noisy
-        self.timestep_limit = timestep_limit
 
         self.S= ServerState()
         self.R= DriverAction()
@@ -202,6 +200,9 @@ class Client():
 
                     args = ["torcs", "-nofuel", "-nolaptime",
                         "-a", str( self.race_speed)]
+
+                    args.append( "-p")
+                    args.append( self.host)
 
                     if self.damage:
                         args.append( "-nodamage")

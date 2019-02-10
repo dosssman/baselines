@@ -100,6 +100,58 @@ class Mujoco_Dset(object):
         plt.savefig("histogram_rets.png")
         plt.close()
 
+    # Adding freshly sampled observation - actions
+    def append(self, traj_data, traj_limitation=-1):
+        '''
+        fresh_dataset: {
+         "obs": [ [], [], ...],
+         "acs":               ,
+         "rews":              ,
+         "rets": [ val0, val1, val2 ... valN-1]
+        }
+        '''
+        if traj_limitation < 0:
+            traj_limitation = len(traj_data['obs'])
+        obs = traj_data['obs'][:traj_limitation]
+        acs = traj_data['acs'][:traj_limitation]
+
+        def flatten(x):
+            # x.shape = (E,), or (E, L, D)
+            _, size = x[0].shape
+            episode_length = [len(i) for i in x]
+            y = np.zeros((sum(episode_length), size))
+            start_idx = 0
+            for l, x_i in zip(episode_length, x):
+                y[start_idx:(start_idx+l)] = x_i
+                start_idx += l
+                return y
+        obs = np.array(flatten(obs))
+        acs = np.array(flatten(acs))
+        rets = traj_data['ep_rets'][:traj_limitation]
+        if len(acs) > 2:
+            acs = np.squeeze(acs)
+            assert len(obs) == len(acs)
+
+        # Forget part of the old stuff and append new trajectories
+        self.obs = np.concatenate( self.obs[-traj_limitation:], obs)
+        self.acs = np.concatenate( self.acs[-traj_limitation:], acs)
+        self.rets = np.concatenate( self.rets[-traj_limitation:], rets)
+        self.avg_ret = sum(rets)/len(rets)
+        self.std_ret = np.std(np.array(rets))
+        self.num_traj = min(traj_limitation, len(traj_data['obs']))
+        self.num_transition = len(obs)
+        self.randomize = randomize
+        ## Main changes from here
+        self.dset = Dset(self.obs, self.acs, self.randomize)
+        # for behavior cloning
+        self.train_set = Dset(self.obs[:int(self.num_transition*train_fraction), :],
+                              self.acs[:int(self.num_transition*train_fraction), :],
+                              self.randomize)
+        self.val_set = Dset(self.obs[int(self.num_transition*train_fraction):, :],
+                            self.acs[int(self.num_transition*train_fraction):, :],
+                            self.randomize)
+        print("Updated Teacher dataset")
+        self.log_info()
 
 def test(expert_path, traj_limitation, plot):
     dset = Mujoco_Dset(expert_path, traj_limitation=traj_limitation)

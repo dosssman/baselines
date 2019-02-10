@@ -361,6 +361,11 @@ def learn(env, policy_func, reward_giver, expert_dataset, rl_expert_dataset, ran
         if rank == 0:
             logger.dump_tabular()
 
+    # Pseudo online RL part: Sampling fresh trajectories from RL model and
+    # updatinf RL dataset accordingly
+    rl_env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
+		race_config_path=race_config_path, rendering=rendering,
+		lap_limiter = lap_limiter, noisy=noisy, timestep_limit=timestep_limit)
 
 def flatten_lists(listoflists):
     return [el for list_ in listoflists for el in list_]
