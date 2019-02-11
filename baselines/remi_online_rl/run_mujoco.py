@@ -11,18 +11,18 @@ from tqdm import tqdm
 import numpy as np
 import gym
 
-from baselines.remi import mlp_policy
+from baselines.remi_online_rl import mlp_policy
 from baselines.common import set_global_seeds, tf_util as U
 from baselines.common.misc_util import boolean_flag
 from baselines import bench
 from baselines import logger
-from baselines.remi.dataset.mujoco_dset import Mujoco_Dset
-from baselines.remi.adversary import TransitionClassifier
+from baselines.remi_online_rl.dataset.mujoco_dset import Mujoco_Dset
+from baselines.remi_online_rl.adversary import TransitionClassifier
 import os
 import os.path as osp
 import datetime
 
-from baselines.remi.gym_torcs import TorcsEnv
+from baselines.remi_online_rl.gym_torcs import TorcsEnv
 
 def argsparser():
     parser = argparse.ArgumentParser("Tensorflow Implementation of GAIL")
@@ -89,7 +89,7 @@ def get_task_name(args):
 
 
 def main(args):
-    U.make_session(num_cpu=4).__enter__()
+    U.make_session(num_cpu=1).__enter__()
     set_global_seeds(args.seed)
     # env = gym.make(args.env_id)
 
@@ -123,7 +123,7 @@ def main(args):
     # env = gym.make(args.env_id)
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
 		race_config_path=race_config_path, rendering=rendering,
-		lap_limiter = lap_limiter, noisy=noisy, timestep_limit=timestep_limit,
+		lap_limiter = lap_limiter, noisy=noisy,
         host=(MPI.COMM_WORLD.Get_rank() * 10 + 3001))
 
     # XXX: Intuitive log folder, probably save weihts there too & params overide

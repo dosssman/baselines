@@ -2,7 +2,7 @@ import gym
 from gym import spaces
 import numpy as np
 # from os import path
-import baselines.ddpg_torqs.snakeoil3_gym as snakeoil3
+import baselines.remi_online_rl.snakeoil3_gym as snakeoil3
 import numpy as np
 import copy
 import collections as col
@@ -74,7 +74,7 @@ class TorcsEnv( gym.Env):
             "-a", str( self.race_speed)]
 
         args.append( "-p")
-        args.append( self.host)
+        args.append( str(self.host))
 
         if self.damage:
             args.append( "-nodamage")
@@ -383,7 +383,7 @@ class TorcsEnv( gym.Env):
         if self.randomisation:
             self.randomise_track()
 
-        self.client = snakeoil3.Client(H=self.host, p=(3101 + rank * 10), vision=self.vision,
+        self.client = snakeoil3.Client(p=(3001 + self.rank), vision=self.vision,
             process_id=self.torcs_process_id,
             race_config_path=self.race_config_path,
             race_speed=self.race_speed,
@@ -466,7 +466,7 @@ class TorcsEnv( gym.Env):
             "-a", str( self.race_speed)]
 
         args.append( "-p")
-        args.append( self.host)
+        args.append( str(self.host))
 
         if self.damage:
             args.append( "-nodamage")

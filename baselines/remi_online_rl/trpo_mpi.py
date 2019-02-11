@@ -363,7 +363,10 @@ def learn(env, policy_func, reward_giver, expert_dataset, rl_expert_dataset, ran
 
     # Pseudo online RL part: Sampling fresh trajectories from RL model and
     # updatinf RL dataset accordingly
-    import 
+    print( "### DEBUG* Sampling fresh transitions from RL Model")
+    import sample_rl_traj
+    new_traj_data = sample_rl_traj( nb_actions=2,
+        rank=MPI.COMM_WORLD.Get_rank(), n_cpu=4, traj_limitation=100, traj_length=3600)
 
-def flatten_lists(listoflists):
+COMMdef flatten_lists(listoflists):
     return [el for list_ in listoflists for el in list_]

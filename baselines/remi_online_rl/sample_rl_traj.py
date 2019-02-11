@@ -22,10 +22,10 @@ import baselines.common.tf_util as U
 from collections import deque
 
 # dosssman
-from baselines.remi-online-rl.gym_torcs import TorcsEnv
+from baselines.remi_online_rl.gym_torcs import TorcsEnv
 import csv
 
-def run( nb_actions=2, rank=None, n_cpu=None, traj_limitation=100):
+def run( nb_actions=2, rank=None, n_cpu=None, traj_limitation=100, traj_length=3600):
     if rank is None:
         raise NotImplementedError
     if n_cpu is None:
@@ -47,7 +47,8 @@ def run( nb_actions=2, rank=None, n_cpu=None, traj_limitation=100):
     env.seed(seed)
 
     # save file name of the desired agent
-    save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-12-05-13-20-33-056875/model_data/epoch_1368.ckpt"
+    # DDPG Run 2 Trained on randomized track
+    save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2019-02-08-17-22-15-646939/model_data/epoch_99.ckpt"
 
     memory = Memory(limit=int(1e6), action_shape=env.action_space.shape, observation_shape=env.observation_space.shape)
     # TODO: Is critic still needed ? probably not ...
@@ -57,12 +58,13 @@ def run( nb_actions=2, rank=None, n_cpu=None, traj_limitation=100):
     assert (np.abs(env.action_space.low) == env.action_space.high).all()  # we assume symmetric actions.
     max_action = env.action_space.high
     # logger.info('scaling actions by {} before executing in env'.format(max_action))
+    # agent = DDPG(actor, critic, memory, env.observation_space.shape, env.action_space.shape,
+    #     gamma=gamma, tau=tau, normalize_returns=normalize_returns, normalize_observations=normalize_observations,
+    #     batch_size=batch_size, action_noise=action_noise, param_noise=param_noise, critic_l2_reg=critic_l2_reg,
+    #     actor_lr=actor_lr, critic_lr=critic_lr, enable_popart=popart, clip_norm=clip_norm,
+    #     reward_scale=reward_scale)
     agent = DDPG(actor, critic, memory, env.observation_space.shape, env.action_space.shape,
-        gamma=gamma, tau=tau, normalize_returns=normalize_returns, normalize_observations=normalize_observations,
-        batch_size=batch_size, action_noise=action_noise, param_noise=param_noise, critic_l2_reg=critic_l2_reg,
-        actor_lr=actor_lr, critic_lr=critic_lr, enable_popart=popart, clip_norm=clip_norm,
-        reward_scale=reward_scale)
-
+        **args)
 
     action_noise = None
     param_noise = None
@@ -94,20 +96,60 @@ def run( nb_actions=2, rank=None, n_cpu=None, traj_limitation=100):
         agent.initialize(sess)
         sess.graph.finalize()
 
-        agent.reset()
-        obs = env.reset()
+        completed_trajs = 0
 
-        saver.restore( sess, save_filename)
+        while completed_trajs < traj_limitation:
+            obss, acss, rews = [], [], []
+            episode_reward = 0.
+            sampled_count = 0
 
-        done = False
+            while sampled_count < traj_length:
+                done = False
 
+                # Reseting and affecting weights to the agent
+                agent.reset()
+                obs = env.reset()
+                saver.restore( sess, save_filename)
 
+                assert len( traj_data["obs"])
+                while not done:
+                    action, _ = agent.pi(obs, apply_noise=False, compute_Q=False)
 
+                    assert action.shape == env.action_space.shape
+                    assert max_action.shape == action.shape
+                    new_obs, r, done, info = env.step(max_action * action)  # scale for execution in env (as far as DDPG is concerned, every action is in [-1, 1])
+                    sampled_count += 1
 
+                    episode_reward += r
+                    rews.append( r)
 
+                    obss.append( obs)
+                    acss.append( action)
+                    obs = new_obs
 
+                    if done:
+                        print( "Timesteps: %d" % len( obss))
+                        print( "Score: %.3f" % episode_reward)
+                        print( "Time %.6f\n" % (time.time() - start_time))
 
+            # Check if to each obs its actions and reward hold up
+            assert len(obss) == len( acss)
+            assert len(obss) == len(rews)
+            # Trunc one traj data in case it was over sampled
+            obss = obss[0:traj_length]
+            acss = obss[0:traj_length]
+            rews = obss[0:traj_length]
+
+            traj_data["obs"].append(obss)
+            traj_data["acs"].append( accs)
+            traj_data["rews"].append( rews)
+            traj_data["rets"].append( episode_reward)
+
+            completed_trajs += 1
     env.close()
+
+    print( "Sampling traj_data completed; Stats:")
+    print( "Traj count: %d" % len( traj_data["obs"]))
     return traj_data
 
 def parse_args():
