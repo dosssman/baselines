@@ -123,7 +123,8 @@ def main(args):
     # env = gym.make(args.env_id)
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
 		race_config_path=race_config_path, rendering=rendering,
-		lap_limiter = lap_limiter, noisy=noisy, timestep_limit=timestep_limit)
+		lap_limiter = lap_limiter, noisy=noisy, timestep_limit=timestep_limit,
+        host=(MPI.COMM_WORLD.Get_rank() * 10 + 3001))
 
     # XXX: Intuitive log folder, probably save weihts there too & params overide
     args.task = "train"

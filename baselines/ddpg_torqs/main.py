@@ -34,31 +34,28 @@ def run(env_id, seed, noise_type, layer_norm, evaluation, **kwargs):
     vision = False
     throttle = True
     gear_change = False
-    rendering = kwargs["render"]
+    rendering = False
     lap_limiter = 4
-    # Alone
+
+    # Agent 10 Fixed Second track First Variation
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/agent_practice.xml"
+        "/raceconfig/agent_10fixed_sparsed_track_2_var_1.xml"
 
-    # With 1 Damned
-    # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-    #     "/raceconfig/agent_damned_practice.xml"
 
-    # With Damned, Inferno and Berniw
-    # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-    #     "/raceconfig/agent_damned_grid_practice.xml"
+    # 10 Fixed Sparsed Config 2m not too much bots in corners
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+        "/raceconfig/agent_10fixed_sparsed_4.xml"
 
     # env = gym.make(env_id)
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
 		race_config_path=race_config_path, rendering=rendering,
-		lap_limiter = lap_limiter)
+		lap_limiter = lap_limiter, randomisation=True)
 
     # env = bench.Monitor(env, logger.get_dir() and os.path.join(logger.get_dir(), str(rank)))
 
     # TODO: Eval env incocation will kill Torcs bad
     # Either enable parallel torcs apps or kill training env and instantiate
     # eval env, then kill it again, and so on
-
     # Original
     # if evaluation and rank==0:
     #     eval_env = gym.make(env_id)
@@ -109,12 +106,17 @@ def run(env_id, seed, noise_type, layer_norm, evaluation, **kwargs):
     if eval_env is not None:
         eval_env.seed(seed)
 
+    # kwargs["pretrained_model"] = os.path.join( os.getenv('OPENAI_GEN_LOGDIR'),
+    #     "openai-ddpgtorcs-2018-10-25-21-57-22-599915/model_data/epoch_560.ckpt")
+
     # Disable logging for rank != 0 to avoid noise.
     if rank == 0:
         start_time = time.time()
     training.train(env=env, eval_env=eval_env, param_noise=param_noise,
         action_noise=action_noise, actor=actor, critic=critic, memory=memory, **kwargs)
+
     env.close()
+
     if eval_env is not None:
         eval_env.close()
     if rank == 0:
@@ -139,13 +141,14 @@ def parse_args():
     parser.add_argument('--gamma', type=float, default=0.99)
     parser.add_argument('--reward-scale', type=float, default=1.)
     parser.add_argument('--clip-norm', type=float, default=None)
-    parser.add_argument('--nb-epochs', type=int, default=750)  # with default settings, perform 1M steps total
+    parser.add_argument('--nb-epochs', type=int, default=100)  # with default settings, perform 1M steps total
     parser.add_argument('--nb-epoch-cycles', type=int, default=20)
     parser.add_argument('--nb-train-steps', type=int, default=50)  # per epoch cycle and MPI worker
     parser.add_argument('--nb-eval-steps', type=int, default=100)  # per epoch cycle and MPI worker
     parser.add_argument('--nb-rollout-steps', type=int, default=100)  # per epoch cycle and MPI worker
     parser.add_argument('--noise-type', type=str, default='adaptive-param_0.2')  # choices are adaptive-param_xx, ou_xx, normal_xx, none
     parser.add_argument('--num-timesteps', type=int, default=None)
+    parser.add_argument('--pretrained_model', type=str, default=None)
     boolean_flag(parser, 'evaluation', default=True)
     args = parser.parse_args()
     # we don't directly specify timesteps for this script, so make sure that if we do specify them

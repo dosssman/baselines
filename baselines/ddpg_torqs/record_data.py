@@ -44,8 +44,8 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     throttle = True
     gear_change = False
     # Agent only
-    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/agent_practice.xml"
+    # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    #     "/raceconfig/agent_practice.xml"
     # Agent and one bot
     # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     #     "/raceconfig/agent_damned_practice.xml"
@@ -53,17 +53,37 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     #     "/raceconfig/agent_damned_grid_practice.xml"
 
+    # Agent vs 10 Fixed Sparely
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+        "/raceconfig/agent_10fixed_sparsed.xml"
+
+    # Agent 10 Fixed First Track Second Variation
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+        "/raceconfig/agent_10fixed_sparsed_2.xml"
+
+    # Agent 10 Fixed First Track Second Variation
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+        "/raceconfig/agent_10fixed_sparsed_track_2_var_1.xml"
+
+    # Agent 10 Fixed First Track Second Variation
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    "/raceconfig/agent_10fixed_sparsed_4.xml"
+
     # # Duh
-    rendering = False
-    lap_limiter = 4
-    recdata = False
-    rec_episode_limit = 200
-    rec_timestep_limit = 720
+    rendering = True
+    lap_limiter = 2
+    recdata = True
+    rec_episode_limit = 220
+    rec_timestep_limit = 3601
+    rec_index = 0
+    # race_speed = 1.0
 
     # env = gym.make(env_id)
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
 		race_config_path=race_config_path, rendering=rendering,
-		lap_limiter = lap_limiter, recdata=recdata, noisy=True )
+		lap_limiter = lap_limiter, recdata=recdata, noisy=False,
+        rec_index=rec_index, rec_episode_limit=rec_episode_limit,
+        rec_timestep_limit=rec_timestep_limit)
 
     # env = bench.Monitor(env, logger.get_dir() and os.path.join(logger.get_dir(), str(rank)))
 
@@ -154,12 +174,24 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
 
     # Alone special data collect trained agent
     # save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-04-15-18-28-480417/model_data/epoch_104.ckpt"
+    # save_filename = os.path.join( os.environ["HOME"],
+    #     "random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-04-15-18-28-480417/model_data/epoch_742.ckpt")
+
+    # DDPG Agent vs 10 Fixed Sparsely
     save_filename = os.path.join( os.environ["HOME"],
-        "random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-04-15-18-28-480417/model_data/epoch_742.ckpt")
+        "random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-10-12-21-21-29-099513/model_data/epoch_350.ckpt")
+
+    save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-10-25-21-57-22-599915/model_data/epoch_560.ckpt" # We got the one
+    save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-10-25-21-57-22-599915/model_data/epoch_565.ckpt" # We got the one
 
     # openai-ddpgtorcs-2018-09-05-12-46-24-553500 Alone
     # save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-05-12-46-24-553500/model_data/epoch_309.ckpt"
     # save_filename = "/home/z3r0/random/rl/openai_logs/defiant/openai-ddpgtorcs-2018-09-05-12-46-24-553500/model_data/epoch_104.ckpt"
+    # From Scratch
+    save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-12-05-13-20-33-056875/model_data/epoch_525.ckpt"
+    save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-12-05-13-20-33-056875/model_data/epoch_526.ckpt" # We got the one
+    # save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-12-05-13-20-33-056875/model_data/epoch_801.ckpt"
+    save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-12-05-13-20-33-056875/model_data/epoch_1368.ckpt"
 
     step = 0
     episode = 0
@@ -174,7 +206,10 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
         agent.reset()
         obs = env.reset()
 
-        save = True
+        save = False
+        # print( "### DEBUG : Print first obs")
+        # print( obs)
+        # input()
 
         # Restore to trained state ?
         saver.restore( sess, save_filename)
@@ -211,7 +246,7 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
             while not done:
                 # Predict next action.
                 # TODO: Noise on or off ?
-                action, q = agent.pi(obs, apply_noise=False, compute_Q=True)
+                action, q = agent.pi(obs, apply_noise=False, compute_Q=False)
 
                 assert action.shape == env.action_space.shape
 
@@ -228,16 +263,17 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
                 # epoch_qs.append(q)
                 # agent.store_transition(obs, action, r, new_obs, done)
                 ep_obs.append( obs)
+                ep_acs.append(action)
                 ep_rews.append( r)
 
-                def clip_accel( accel):
-                    if accel < 0.0:
-                        return 0.0
-                    else:
-                        return accel
-
-                ep_acs.append( [ action[0],
-                    clip_accel(action[1])])
+                # def clip_accel( accel):
+                #     if accel < 0.0:
+                #         return 0.0
+                #     else:
+                #         return accel
+                #
+                # ep_acs.append( [ action[0],
+                #     clip_accel(action[1])])
 
                 obs = new_obs
 
@@ -245,9 +281,6 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
 
                 # if  lapsed >= 30.0:
                 #     done = True
-
-                if t >= rec_timestep_limit:
-                    done = True
 
                 if done:
                     # Episode done.
@@ -276,12 +309,12 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
                         obs = env.reset()
                     # obs = env.reset()
                     # print( len( obss))
-                    # np.save( "/home/z3r0/torcs_data/ddpg_obs", np.asarray( obss))
-                    # np.save( "/home/z3r0/torcs_data/ddpg_rews", np.asarray( rewss))
-                    # np.save( "/home/z3r0/torcs_data/ddpg_acs", np.asarray( acss))
+                    # np.save( "/home/z3r0/torcs_data/ddpg_obs", np.asarray( expert_data["obs"][0]))
+                    # np.save( "/home/z3r0/torcs_data/ddpg_rews", np.asarray( expert_data["rews"][0]))
+                    # np.save( "/home/z3r0/torcs_data/ddpg_acs", np.asarray( expert_data["acs"][0]))
                     print( "Episode %d : TIme %.6f\n" % (episodes, lapsed))
                     # print( "Sampl. Rate: %f" % ( len( obss) / lapsed))
-                    # print( "Episode reward %f" % ( np.sum( rewss)))
+                    # print( "Episode reward %f" % ( np.sum( expert_data["rews"])))
 
         # Save expert data
         if save:
