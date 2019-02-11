@@ -122,7 +122,7 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     #     "/raceconfig/agent_10fixed_sparsed_forza_var_2.xml" # Badoss
 
-    rendering = False
+    rendering = True
     lap_limiter = 4
 
     # env = gym.make(env_id)
@@ -243,6 +243,9 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-12-05-13-20-33-056875/model_data/epoch_801.ckpt" # We got the one
     # save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-12-05-13-20-33-056875/model_data/epoch_1195.ckpt" # Good on Track 2
     save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-12-05-13-20-33-056875/model_data/epoch_1368.ckpt" # Poor pef on Track2
+
+    # DDPG on randomized tracks
+    save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2019-02-08-17-22-15-646939/model_data/epoch_99.ckpt"
 
     step = 0
     episode = 0
