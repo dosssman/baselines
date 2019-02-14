@@ -124,7 +124,7 @@ def main(args):
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
 		race_config_path=race_config_path, rendering=rendering,
 		lap_limiter = lap_limiter, noisy=noisy,
-        host=(MPI.COMM_WORLD.Get_rank() * 10 + 3001))
+        port=(MPI.COMM_WORLD.Get_rank() * 10 + 3001))
 
     # XXX: Intuitive log folder, probably save weihts there too & params overide
     args.task = "train"
@@ -226,7 +226,7 @@ def train(env, seed, policy_fn, reward_giver, dataset, rl_dataset,  algo,
     pretrained_weight = None
     if pretrained and (BC_max_iter > 0):
         # Pretrain with behavior cloning
-        from baselines.remi import behavior_clone
+        from baselines.remi_online_rl import behavior_clone
         pretrained_weight = behavior_clone.learn(env, policy_fn, dataset,
                                                  max_iters=BC_max_iter)
     # Override Pretraine_weights
@@ -234,7 +234,7 @@ def train(env, seed, policy_fn, reward_giver, dataset, rl_dataset,  algo,
     #     pretrained_weight = args.pretrained_weight
 
     if algo == 'trpo':
-        from baselines.remi import trpo_mpi
+        from baselines.remi_online_rl import trpo_mpi
         # Set up for MPI seed
         rank = MPI.COMM_WORLD.Get_rank()
         if rank != 0:

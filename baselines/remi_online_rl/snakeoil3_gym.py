@@ -209,7 +209,7 @@ class Client():
                         "-a", str( self.race_speed)]
 
                     args.append( "-p")
-                    args.append( self.host)
+                    args.append( self.port)
 
                     if self.damage:
                         args.append( "-nodamage")

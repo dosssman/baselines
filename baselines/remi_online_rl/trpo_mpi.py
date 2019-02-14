@@ -1,6 +1,19 @@
 '''
 Disclaimer: The trpo part highly rely on trpo_mpi at @openai/baselines
 '''
+# DPPGP rel
+import argparse
+from baselines.common.misc_util import (
+    set_global_seeds,
+    boolean_flag,
+)
+
+from baselines.ddpg_torqs.models import Actor, Critic
+from baselines.ddpg_torqs.memory import Memory
+from baselines.ddpg_torqs.noise import *
+from baselines.ddpg_torqs.ddpg import DDPG
+from tensorflow.python import pywrap_tensorflow
+# DDPG rel end
 
 import time
 import os
@@ -17,8 +30,9 @@ from baselines import logger
 from baselines.common import colorize
 from baselines.common.mpi_adam import MpiAdam
 from baselines.common.cg import cg
-from baselines.remi.statistics import stats
+from baselines.remi_online_rl.statistics import stats
 
+from baselines.remi_online_rl.gym_torcs import TorcsEnv
 
 def traj_segment_generator(pi, env, reward_giver, horizon, stochastic):
 
@@ -91,7 +105,6 @@ def traj_segment_generator(pi, env, reward_giver, horizon, stochastic):
                 ob = env.reset()
         t += 1
 
-
 def add_vtarg_and_adv(seg, gamma, lam):
     new = np.append(seg["new"], 0)  # last element is only used for last vtarg, but we already zeroed it if last new = 1
     vpred = np.append(seg["vpred"], seg["nextvpred"])
@@ -104,7 +117,6 @@ def add_vtarg_and_adv(seg, gamma, lam):
         delta = rew[t] + gamma * vpred[t+1] * nonterminal - vpred[t]
         gaelam[t] = lastgaelam = delta + gamma * lam * nonterminal * lastgaelam
     seg["tdlamret"] = seg["adv"] + seg["vpred"]
-
 
 def learn(env, policy_func, reward_giver, expert_dataset, rl_expert_dataset, rank,
           pretrained, pretrained_weight, *,
@@ -195,6 +207,98 @@ def learn(env, policy_func, reward_giver, expert_dataset, rl_expert_dataset, ran
         return out
 
     U.initialize()
+
+    ### Inserting DDPG agent initialization related params
+    ###
+    ###
+    rl_args = rl_parse_args()
+
+    rl_vision=False
+    rl_rendering = True
+    rl_lap_limiter = 4
+    rl_race_config_path=None
+    rl_env = TorcsEnv(vision=rl_vision, throttle=True, gear_change=False,
+		race_config_path=rl_race_config_path, rendering=rl_rendering,
+		lap_limiter = rl_lap_limiter, randomisation=True, profile_reuse_ep=100,
+        port=(rank*10*nworkers + 4001), rank=rank)
+    rl_seed = rl_args["seed"] + 1000000 * (rank*10*nworkers)
+    nb_actions = 2
+    # tf.reset_default_graph()
+
+    set_global_seeds(rl_seed)
+    env.seed(rl_seed)
+
+    memory = Memory(limit=int(1e6), action_shape=rl_env.action_space.shape,
+        observation_shape=rl_env.observation_space.shape)
+    # TODO: Is critic still needed ? probably not ...
+    actor = Actor(nb_actions, layer_norm=rl_args["layer_norm"])
+    critic = Critic( layer_norm=rl_args["layer_norm"])
+
+    assert (np.abs(rl_env.action_space.low) == rl_env.action_space.high).all() # we assume symmetric actions.
+    max_action = rl_env.action_space.high
+    action_noise = None
+    param_noise = None
+    nb_actions = rl_env.action_space.shape[-1]
+    for current_noise_type in rl_args["noise_type"].split(','):
+        current_noise_type = current_noise_type.strip()
+        if current_noise_type == 'none':
+            pass
+        elif 'adaptive-param' in current_noise_type:
+            _, stddev = current_noise_type.split('_')
+            param_noise = AdaptiveParamNoiseSpec(initial_stddev=float(stddev), desired_action_stddev=float(stddev))
+        elif 'normal' in current_noise_type:
+            _, stddev = current_noise_type.split('_')
+            action_noise = NormalActionNoise(mu=np.zeros(nb_actions), sigma=float(stddev) * np.ones(nb_actions))
+        elif 'ou' in current_noise_type:
+            _, stddev = current_noise_type.split('_')
+            action_noise = OrnsteinUhlenbeckActionNoise(mu=np.zeros(nb_actions), sigma=float(stddev) * np.ones(nb_actions))
+        else:
+            raise RuntimeError('unknown noise type "{}"'.format(current_noise_type))
+
+    agent = DDPG(actor, critic, memory, rl_env.observation_space.shape, rl_env.action_space.shape,
+        gamma=rl_args["gamma"], tau=.01, normalize_returns=rl_args["normalize_returns"],
+        normalize_observations=rl_args["normalize_observations"],
+        batch_size=rl_args["batch_size"], action_noise=action_noise,
+        param_noise=param_noise, critic_l2_reg=rl_args["critic_l2_reg"],
+        actor_lr=rl_args["actor_lr"], critic_lr=rl_args["critic_lr"],
+        enable_popart=rl_args["popart"], clip_norm=rl_args["clip_norm"],
+        reward_scale=rl_args["reward_scale"])
+
+    ###
+    ###
+    ### End DDPG part
+    ### DDPG Agent init
+    # save file name of the desired agent
+    # DDPG Run 2 Trained on randomized track
+    # tf.get_variable_scope().reuse_variables()
+    agent.initialize(tf.get_default_session())
+    # rl_save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2019-02-08-17-22-15-646939/model_data/epoch_99.ckpt"
+    # save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-12-05-13-20-33-056875/model_data/epoch_1368.ckpt"
+    # from tensorflow.python.tools import inspect_checkpoint as chkp
+    # chkp.print_tensors_in_checkpoint_file( rl_save_filename, tensor_name="",
+    #     all_tensors=True)
+    # rl_saver = tf.train.import_meta_graph("/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2019-02-08-17-22-15-646939/model_data/epoch_99.ckpt.meta")
+    # saver.restore( tf.get_default_session(), rl_save_filename)
+    # U.load_variables( rl_save_filename)
+    ### DDPG Agent Init end
+
+    # print( "### DEBUG: Variables name in tf session")
+    # for v in tf.get_default_graph().as_graph_def().node:
+    #     print( v.name)
+
+    # print( "### DEBUG: Listing variables in ckpt")
+    # reader = pywrap_tensorflow.NewCheckpointReader(rl_save_filename)
+    # var_to_shape_map = reader.get_variable_to_shape_map()
+    #
+    # for key in var_to_shape_map:
+    #     # print( key)
+    #     tf.assign( tf.get_default_graph().get_tensor_by_name( key + ":0"),
+    #         reader.get_tensor( key))
+        # print( "Key: ", key, ", Tensor: ", read.get_tensor( key), "\n")
+        # print( reader.get_tensor(key))
+        # print( key)
+
+
     th_init = get_flat()
     MPI.COMM_WORLD.Bcast(th_init, root=0)
     set_from_flat(th_init)
@@ -361,12 +465,118 @@ def learn(env, policy_func, reward_giver, expert_dataset, rl_expert_dataset, ran
         if rank == 0:
             logger.dump_tabular()
 
-    # Pseudo online RL part: Sampling fresh trajectories from RL model and
-    # updatinf RL dataset accordingly
-    print( "### DEBUG* Sampling fresh transitions from RL Model")
-    import sample_rl_traj
-    new_traj_data = sample_rl_traj( nb_actions=2,
-        rank=MPI.COMM_WORLD.Get_rank(), n_cpu=4, traj_limitation=100, traj_length=3600)
+        # Pseudo online RL part: Sampling fresh trajectories from RL model and
+        # updatinf RL dataset accordingly
+        print( "### DEBUG Sampling fresh transitions from RL Model")
+        new_traj_data = rl_traj_sampler( rl_env, agent, nb_actions=2,
+            traj_limitation=100, traj_length=3600)
+        ### Naive plugging
 
-COMMdef flatten_lists(listoflists):
+def flatten_lists(listoflists):
     return [el for list_ in listoflists for el in list_]
+
+def rl_traj_sampler( rl_env, agent, nb_actions=2, traj_limitation=100,
+    traj_length=3600):
+
+    assert (np.abs(rl_env.action_space.low) == rl_env.action_space.high).all()  # we assume symmetric actions.
+    max_action = rl_env.action_space.high
+
+    traj_data = { "obs": [], "acs": [], "rews": [], "rets": []}
+
+    completed_trajs = 0
+
+    while completed_trajs < traj_limitation:
+        print( "### DEBUG Current sampling traj %d" % completed_trajs)
+        obss, acss, rews = [], [], []
+        episode_reward = 0.
+        sampled_count = 0
+
+        while sampled_count < traj_length:
+            print( "### DEBUG Current sampled count %d" % sampled_count)
+            done = False
+
+            # Reseting and affecting weights to the agent
+            # agent.reset()
+            obs = rl_env.reset()
+            t = 0
+            while not done:
+                action, _ = agent.pi(obs, apply_noise=False, compute_Q=False)
+                assert action.shape == rl_env.action_space.shape
+                assert max_action.shape == action.shape
+                new_obs, r, done, info = rl_env.step(max_action * action)  # scale for execution in env (as far as DDPG is concerned, every action is in [-1, 1])
+                print( "### DEBUG Time step: %d - Action: ", action)
+
+                episode_reward += r
+                rews.append( r)
+
+                obss.append( obs)
+                acss.append( action)
+                obs = new_obs
+
+                if done:
+                    print( "Timesteps: %d" % len( obss))
+                    print( "Score: %.3f" % episode_reward)
+
+                sampled_count += 1
+                t += 1
+
+        print( "Obss shape", len( obss))
+        print( "Acss shape", len( acss))
+        print( "Rews shape", len( rews))
+
+        # Check if to each obs its actions and reward hold up
+        # assert len(obss) == len( acss)
+        # assert len(obss) == len(rews)
+        # Trunc one traj data in case it was over sampled
+        obss = obss[0:traj_length]
+        acss = obss[0:traj_length]
+        rews = obss[0:traj_length]
+
+        traj_data["obs"].append( obss)
+        traj_data["acs"].append( acss)
+        traj_data["rews"].append( rews)
+        traj_data["rets"].append( episode_reward)
+
+        completed_trajs += 1
+
+    # env.close()
+
+    print( "Sampling traj_data completed; Stats:")
+    print( "Traj count: %d" % len( traj_data["obs"]))
+
+    return traj_data
+
+def rl_parse_args():
+    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+
+    # parser.add_argument('--env-id', type=str, default='Pendulum-v0')
+    # boolean_flag(parser, 'render-eval', default=False)
+    boolean_flag(parser, 'layer-norm', default=True)
+    boolean_flag(parser, 'render', default=False)
+    boolean_flag(parser, 'normalize-returns', default=False)
+    boolean_flag(parser, 'normalize-observations', default=False)
+    parser.add_argument('--seed', help='RNG seed', type=int, default=0)
+    parser.add_argument('--critic-l2-reg', type=float, default=1e-2)
+    parser.add_argument('--batch-size', type=int, default=64)  # per MPI worker
+    parser.add_argument('--actor-lr', type=float, default=1e-4)
+    parser.add_argument('--critic-lr', type=float, default=1e-3)
+    boolean_flag(parser, 'popart', default=False)
+    parser.add_argument('--gamma', type=float, default=0.99)
+    parser.add_argument('--reward-scale', type=float, default=1.)
+    parser.add_argument('--clip-norm', type=float, default=None)
+    parser.add_argument('--nb-epochs', type=int, default=100)  # with default settings, perform 1M steps total
+    parser.add_argument('--nb-epoch-cycles', type=int, default=20)
+    parser.add_argument('--nb-train-steps', type=int, default=50)  # per epoch cycle and MPI worker
+    parser.add_argument('--nb-eval-steps', type=int, default=100)  # per epoch cycle and MPI worker
+    parser.add_argument('--nb-rollout-steps', type=int, default=100)  # per epoch cycle and MPI worker
+    parser.add_argument('--noise-type', type=str, default='adaptive-param_0.2')  # choices are adaptive-param_xx, ou_xx, normal_xx, none
+    parser.add_argument('--num-timesteps', type=int, default=None)
+    boolean_flag(parser, 'evaluation', default=False)
+    args = parser.parse_args()
+    # we don't directly specify timesteps for this script, so make sure that if we do specify them
+    # they agree with the other parameters
+    if args.num_timesteps is not None:
+        assert(args.num_timesteps == args.nb_epochs * args.nb_epoch_cycles * args.nb_rollout_steps)
+    dict_args = vars(args)
+    del dict_args['num_timesteps']
+    return dict_args

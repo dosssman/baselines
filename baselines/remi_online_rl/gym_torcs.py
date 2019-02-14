@@ -29,7 +29,7 @@ class TorcsEnv( gym.Env):
         race_config_path=None,race_speed=1.0, rendering=True, damage=False,
         lap_limiter=2, recdata=False, noisy=False, rec_episode_limit=1,
         rec_timestep_limit=3600, rec_index=0, hard_reset_interval=11,
-        randomisation=False, profile_reuse_ep=500, host=3001, rank=0):
+        randomisation=False, profile_reuse_ep=500, port=3001, rank=0):
 
         # Support for blackbox optimal reset
         self.reset_ep_count = 1
@@ -46,7 +46,7 @@ class TorcsEnv( gym.Env):
         self.randomisation = randomisation
         self.profile_reuse_count = 0
         self.profile_reuse_ep = profile_reuse_ep
-        self.host = host
+        self.port = port
         self.rank = rank
 
         self.initial_run = True
@@ -74,7 +74,7 @@ class TorcsEnv( gym.Env):
             "-a", str( self.race_speed)]
 
         args.append( "-p")
-        args.append( str(self.host))
+        args.append( str(self.port))
 
         if self.damage:
             args.append( "-nodamage")
@@ -383,7 +383,7 @@ class TorcsEnv( gym.Env):
         if self.randomisation:
             self.randomise_track()
 
-        self.client = snakeoil3.Client(p=(3001 + self.rank), vision=self.vision,
+        self.client = snakeoil3.Client(p=self.port, vision=self.vision,
             process_id=self.torcs_process_id,
             race_config_path=self.race_config_path,
             race_speed=self.race_speed,
@@ -466,7 +466,7 @@ class TorcsEnv( gym.Env):
             "-a", str( self.race_speed)]
 
         args.append( "-p")
-        args.append( str(self.host))
+        args.append( str(self.port))
 
         if self.damage:
             args.append( "-nodamage")

@@ -25,7 +25,8 @@ from collections import deque
 from baselines.remi_online_rl.gym_torcs import TorcsEnv
 import csv
 
-def run( nb_actions=2, rank=None, n_cpu=None, traj_limitation=100, traj_length=3600):
+def run( nb_actions=2, rank=None, n_cpu=1, traj_limitation=100,
+    traj_length=3600, tau=.01):
     if rank is None:
         raise NotImplementedError
     if n_cpu is None:
@@ -34,14 +35,17 @@ def run( nb_actions=2, rank=None, n_cpu=None, traj_limitation=100, traj_length=3
     args = parse_args()
 
     # Init randomized Gym Torcs
+    vision=False
     rendering = False
     lap_limiter = 4
+    race_config_path=None
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
 		race_config_path=race_config_path, rendering=rendering,
 		lap_limiter = lap_limiter, randomisation=True, profile_reuse_ep=100,
-        rank=(rank*10*n_cpu + 3001))
-    seed = seed + 1000000 * (rank*10*n_cpu)
-    tf.reset_default_graph()
+        port=(rank*10*n_cpu + 3001), rank=rank)
+    seed = args["seed"] + 1000000 * (rank*10*n_cpu)
+    print( "### DEBUG: DDPG Sampler listening on port  ", (rank*10*n_cpu + 3001))
+    # tf.reset_default_graph()
 
     set_global_seeds(seed)
     env.seed(seed)
@@ -52,24 +56,15 @@ def run( nb_actions=2, rank=None, n_cpu=None, traj_limitation=100, traj_length=3
 
     memory = Memory(limit=int(1e6), action_shape=env.action_space.shape, observation_shape=env.observation_space.shape)
     # TODO: Is critic still needed ? probably not ...
-    critic = Critic(layer_norm=layer_norm)
-    actor = Actor(nb_actions, layer_norm=args.layer_norm)
+    critic = Critic( layer_norm=args["layer_norm"])
+    actor = Actor(nb_actions, layer_norm=args["layer_norm"])
 
     assert (np.abs(env.action_space.low) == env.action_space.high).all()  # we assume symmetric actions.
     max_action = env.action_space.high
-    # logger.info('scaling actions by {} before executing in env'.format(max_action))
-    # agent = DDPG(actor, critic, memory, env.observation_space.shape, env.action_space.shape,
-    #     gamma=gamma, tau=tau, normalize_returns=normalize_returns, normalize_observations=normalize_observations,
-    #     batch_size=batch_size, action_noise=action_noise, param_noise=param_noise, critic_l2_reg=critic_l2_reg,
-    #     actor_lr=actor_lr, critic_lr=critic_lr, enable_popart=popart, clip_norm=clip_norm,
-    #     reward_scale=reward_scale)
-    agent = DDPG(actor, critic, memory, env.observation_space.shape, env.action_space.shape,
-        **args)
-
     action_noise = None
     param_noise = None
     nb_actions = env.action_space.shape[-1]
-    for current_noise_type in noise_type.split(','):
+    for current_noise_type in args["noise_type"].split(','):
         current_noise_type = current_noise_type.strip()
         if current_noise_type == 'none':
             pass
@@ -84,6 +79,21 @@ def run( nb_actions=2, rank=None, n_cpu=None, traj_limitation=100, traj_length=3
             action_noise = OrnsteinUhlenbeckActionNoise(mu=np.zeros(nb_actions), sigma=float(stddev) * np.ones(nb_actions))
         else:
             raise RuntimeError('unknown noise type "{}"'.format(current_noise_type))
+    # logger.info('scaling actions by {} before executing in env'.format(max_action))
+    # agent = DDPG(actor, critic, memory, env.observation_space.shape, env.action_space.shape,
+    #     gamma=gamma, tau=tau, normalize_returns=normalize_returns, normalize_observations=normalize_observations,
+    #     batch_size=batch_size, action_noise=action_noise, param_noise=param_noise, critic_l2_reg=critic_l2_reg,
+    #     actor_lr=actor_lr, critic_lr=critic_lr, enable_popart=popart, clip_norm=clip_norm,
+    #     reward_scale=reward_scale)
+    agent = DDPG(actor, critic, memory, env.observation_space.shape, env.action_space.shape,
+        gamma=args["gamma"], tau=tau, normalize_returns=args["normalize_returns"],
+        normalize_observations=args["normalize_observations"],
+        batch_size=args["batch_size"], action_noise=action_noise,
+        param_noise=param_noise, critic_l2_reg=args["critic_l2_reg"],
+        actor_lr=args["actor_lr"], critic_lr=args["critic_lr"],
+        enable_popart=args["popart"], clip_norm=args["clip_norm"],
+        reward_scale=args["reward_scale"])
+
 
     traj_data = { "obs": [], "acs": [], "rews": [], "rets": []}
 
