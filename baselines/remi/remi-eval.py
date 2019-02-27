@@ -145,7 +145,9 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
 
         # Doss10FixedAnal_DDPG_Chkp560_200eps_Run2
         # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_200eps_5mTsteps_Contd1/checkpoint/torcs_gail/torcs_gail_806"
-        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run2/checkpoint/torcs_remi/torcs_remi_483"
+
+        # Alpha Search
+        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Alpha_0.1_Run2/checkpoint/torcs_remi/torcs_remi_2828"
 
         #
         print( "# DEBUG: Model path: ", args.load_model_path)

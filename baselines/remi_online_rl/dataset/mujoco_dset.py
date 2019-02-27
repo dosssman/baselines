@@ -114,6 +114,7 @@ class Mujoco_Dset(object):
             traj_limitation = len(traj_data['obs'])
         obs = traj_data['obs'][:traj_limitation]
         acs = traj_data['acs'][:traj_limitation]
+        acs = traj_data['rews'][:traj_limitation]
 
         def flatten(x):
             # x.shape = (E,), or (E, L, D)
