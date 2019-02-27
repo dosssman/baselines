@@ -26,7 +26,6 @@ plt.style.use('ggplot')
 CONFIG = {
     'traj_limitation': [1, 5, 10, 50, 100, 200],
     # 'traj_limitation': [ 200],
-    # 'traj_limitation': [ 200],
 }
 
 
@@ -152,21 +151,33 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run2/checkpoint/torcs_remi/torcs_remi_2084"
 
         # GailTorcs Run5
-        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run5/checkpoint/torcs_gail/torcs_gail_859"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run5/checkpoint/torcs_gail/torcs_gail_859"
 
         # GailTorcs Run5 Contd
-        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run5_Contd/checkpoint/torcs_gail/torcs_gail_1646"
-        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run5_Contd/checkpoint/torcs_gail/torcs_gail_3375"
-        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run5_Contd/checkpoint/torcs_gail/torcs_gail_6501"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run5_Contd/checkpoint/torcs_gail/torcs_gail_1646"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run5_Contd/checkpoint/torcs_gail/torcs_gail_3375"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run5_Contd/checkpoint/torcs_gail/torcs_gail_6501"
         # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run5_Contd/checkpoint/torcs_gail/torcs_gail_7538"
 
         # Remi Run3
         # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run3/checkpoint/torcs_remi/torcs_remi_1868"
-        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run3/checkpoint/torcs_remi/torcs_remi_2014" # Full track, drifter
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run3/checkpoint/torcs_remi/torcs_remi_2014" # Full track, drifter
 
         # Gail Run7
         # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run7/checkpoint/torcs_gail/torcs_gail_1301"
         # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run7/checkpoint/torcs_gail/torcs_gail_1337"
+
+
+        # Alpha Search
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Alpha_0.1_Run2/checkpoint/torcs_remi/torcs_remi_2828"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Alpha_0.2_Run0/checkpoint/torcs_remi/torcs_remi_859"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Alpha_0.3_Run0/checkpoint/torcs_remi/torcs_remi_5899"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Alpha_0.4_Run0/checkpoint/torcs_remi/torcs_remi_3996"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Alpha_0.6_Run0/checkpoint/torcs_remi/torcs_remi_1188"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Alpha_0.7_Run2/checkpoint/torcs_remi/torcs_remi_2747"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Alpha_0.8_Run2/checkpoint/torcs_remi/torcs_remi_3144"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Alpha_0.9_Run1/checkpoint/torcs_remi/torcs_remi_4593"
+
 
         print( "# DEBUG: Model path: ", args.load_model_path)
         # Not pretty but will do for now
