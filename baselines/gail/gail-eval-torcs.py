@@ -163,6 +163,9 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run3/checkpoint/torcs_remi/torcs_remi_1868"
         # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run3/checkpoint/torcs_remi/torcs_remi_2014" # Full track, drifter
 
+        # Remi Run4
+        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run4/checkpoint/torcs_remi/torcs_remi_5785"
+        
         # Gail Run7
         # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run7/checkpoint/torcs_gail/torcs_gail_1301"
         # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run7/checkpoint/torcs_gail/torcs_gail_1337"
