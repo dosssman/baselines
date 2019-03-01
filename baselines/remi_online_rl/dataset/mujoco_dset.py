@@ -101,7 +101,7 @@ class Mujoco_Dset(object):
         plt.close()
 
     # Adding freshly sampled observation - actions
-    def append(self, traj_data, traj_limitation=-1):
+    def append(self, traj_data, traj_limitation=-1, traj_length=3600, train_fraction=.7):
         '''
         fresh_dataset: {
          "obs": [ [], [], ...],
@@ -112,9 +112,10 @@ class Mujoco_Dset(object):
         '''
         if traj_limitation < 0:
             traj_limitation = len(traj_data['obs'])
-        obs = traj_data['obs'][:traj_limitation]
-        acs = traj_data['acs'][:traj_limitation]
-        acs = traj_data['rews'][:traj_limitation]
+        obs = np.array([np.array( sub_array) for sub_array in traj_data['obs'][0:traj_limitation]])
+        acs = np.array([np.array( sub_array) for sub_array in traj_data['acs'][0:traj_limitation]])
+        rews = np.array([np.array( sub_array) for sub_array in traj_data['rews'][0:traj_limitation]])
+
 
         def flatten(x):
             # x.shape = (E,), or (E, L, D)
@@ -128,20 +129,26 @@ class Mujoco_Dset(object):
                 return y
         obs = np.array(flatten(obs))
         acs = np.array(flatten(acs))
-        rets = traj_data['ep_rets'][:traj_limitation]
+        rets = np.array( traj_data['ep_rets'][0:traj_limitation])
         if len(acs) > 2:
             acs = np.squeeze(acs)
             assert len(obs) == len(acs)
 
-        # Forget part of the old stuff and append new trajectories
-        self.obs = np.concatenate( self.obs[-traj_limitation:], obs)
-        self.acs = np.concatenate( self.acs[-traj_limitation:], acs)
-        self.rets = np.concatenate( self.rets[-traj_limitation:], rets)
+        from_idx = traj_limitation*traj_length
+        self.obs = np.concatenate( (self.obs[from_idx:], obs), axis=0)
+
+        print( "#### DEBUG: Acs shape:", acs.shape)
+        print( "#### DEBUG: self.acs shape", self.acs.shape)
+        print( "#### DEBUG: trunk self.acs shape", len(self.acs[from_idx:]))
+
+        self.acs = np.concatenate( (self.acs[from_idx:], acs), axis=0)
+        print( "#### DEBUG: Acs shape afgter: ", self.acs.shape)
+
+        self.rets = np.concatenate( (self.rets[from_idx:], rets), axis=0)
         self.avg_ret = sum(rets)/len(rets)
         self.std_ret = np.std(np.array(rets))
-        self.num_traj = min(traj_limitation, len(traj_data['obs']))
+        self.num_traj = min((traj_limitation*traj_length), len(traj_data['obs']))
         self.num_transition = len(obs)
-        self.randomize = randomize
         ## Main changes from here
         self.dset = Dset(self.obs, self.acs, self.randomize)
         # for behavior cloning

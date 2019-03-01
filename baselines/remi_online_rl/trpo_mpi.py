@@ -364,13 +364,14 @@ def learn(env, policy_func, reward_giver, expert_dataset, rl_expert_dataset, ran
         # updatinf RL dataset accordingly
         print( "#### DEBUG: Refreshing RL Teacher dataset")
         rl_traj_data = p_loads( rcon.get( "rl_traj_data"))
-        rl_traj_lim = min( 110, len( rl_traj_data))
+        rl_traj_lim = min( 110, len( rl_traj_data["obs"]))
         print( "#### DEBUG: Detected %d fresh trajectories" % rl_traj_lim)
-        rl_traj_data["obs"] = rl_traj_data["obs"][0:rl_traj_lim]
-        rl_traj_data["obs"] = rl_traj_data["acs"][0:rl_traj_lim]
-        rl_traj_data["obs"] = rl_traj_data["rews"][0:rl_traj_lim]
-        rl_traj_data["obs"] = rl_traj_data["rets"][0:rl_traj_lim]
-        rl_expert_dataset.append( rl_traj_data)
+        # rl_traj_data["obs"] = rl_traj_data["obs"][0:rl_traj_lim]
+        # rl_traj_data["obs"] = rl_traj_data["acs"][0:rl_traj_lim]
+        # rl_traj_data["obs"] = rl_traj_data["rews"][0:rl_traj_lim]
+        # rl_traj_data["obs"] = rl_traj_data["rets"][0:rl_traj_lim]
+        rl_expert_dataset.append( rl_traj_data, rl_traj_lim,
+            len( rl_traj_data["obs"][0]))
 
 def flatten_lists(listoflists):
     return [el for list_ in listoflists for el in list_]
