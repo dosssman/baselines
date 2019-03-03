@@ -118,8 +118,8 @@ def bargraph(x,mn,mx,w,c='X'):
 class Client():
     def __init__(self,H=None,p=None,i=None,e=None,t=None,s=None,d=None,
         vision=False, process_id=None, race_config_path=None, race_speed=1.0,
-        rendering=True, damage=False, lap_limiter=2, recdata=False, noisy=False,
-        timestep_limit=-1):
+        rendering=True, damage=False, lap_limiter=2, recdata=False,
+        noisy=False, rec_index=0, rec_episode_limit=1, rec_timestep_limit=3600):
         # If you don't like the option defaults,  change them here.
         self.vision = vision
 
@@ -149,7 +149,9 @@ class Client():
         self.lap_limiter = lap_limiter
         self.recdata = recdata
         self.noisy = noisy
-        self.timestep_limit = timestep_limit
+        self.rec_timestep_limit = rec_timestep_limit
+        self.rec_episode_limit = rec_episode_limit
+        self.rec_index = rec_index
 
         self.S= ServerState()
         self.R= DriverAction()
@@ -200,8 +202,14 @@ class Client():
                             self.torcs_process_id = None
                         #Sad life to be a process
 
+                    # if self.randomisation:
+                    #     self.randomise_track()
+
                     args = ["torcs", "-nofuel", "-nolaptime",
                         "-a", str( self.race_speed)]
+
+                    args.append( "-p")
+                    args.append( self.port)
 
                     if self.damage:
                         args.append( "-nodamage")
@@ -222,7 +230,9 @@ class Client():
                         args.append( self.race_config_path)
 
                     if self.recdata:
-                        args.append( "-rechum")
+                        args.append( "-rechum %d" % self.rec_index)
+                        args.append( "-recepisodelim %d" % self.rec_episode_limit)
+                        args.append( "-rectimesteplim %d" % self.rec_timestep_limit)
 
                     args.append("&")
 
@@ -347,6 +357,82 @@ class Client():
         self.so.close()
         self.so = None
         # sys.exit() # No need for this really.
+
+    def randomise_track():
+        print( "### DEBUG: randomisation requested")
+        print( "### DEBUG: Profile Reuse Count", self.profile_reuse_count)
+        print( "### DEBUG: Profile resue ep", profile_reuse_ep)
+
+        if self.profile_reuse_count == 0 or self.profile_reuse_count % self.profile_reuse_ep == 0:
+            print( "### DEBUG: Generating new profile")
+            track_length = 2700 # Extract form torcs maybe
+            max_pos_length = int(.7 * track_length) # Floor to 100 tile
+            agent_init = random.randint(0,20) * 10
+            bot_count = random.randint(1,10)
+            min_bound = agent_init + 50
+            max_leap = math.floor((max_pos_length - min_bound) / bot_count / 100) * 100
+            bot_init_poss = []
+            for _ in range(bot_count):
+                bot_init_poss.append( random.randint( min_bound, min_bound + max_leap))
+                # Random generate in range minbound and max pos length with max leap
+                min_bound += max_leap
+
+            # Check for random config file folder and create if not exists
+            randconf_dir = os.path.join(  os.path.dirname(os.path.abspath(__file__)),
+                "rand_raceconfigs")
+            if not os.path.isdir(randconf_dir):
+                os.mkdir(randconf_dir)
+            randconf_filename = "agent_randfixed_%d" % agent_init
+            for bot_idx in bot_init_poss:
+                randconf_filename += "_%d" % bot_idx
+            randconf_filename += ".xml"
+            if not os.path.isfile( os.path.join( randconf_dir, randconf_filename)):
+                # Create Fielk config based on xml template
+                tree = None
+                root = None
+                with open( os.path.join( randconf_dir, "agent_randfixed_tmplt.xml")) as tmplt_f:
+                    tree = ET.parse( tmplt_f)
+                    root = tree.getroot()
+
+                driver_node = None
+
+                driver_section = root.find(".//section[@name='Drivers']")
+                driver_section.append( ET.Element( "attnum",
+                    { "name": "maximum_number", "val": "%d" % (1+ bot_count)}))
+                driver_section.append( ET.Element( "attstr",
+                    { "name": "focused module", "val": "scr_server" }))
+                driver_section.append( ET.Element( "attnum",
+                    { "name": "focused idx", "val": "1" }))
+
+                # # Add Scr Server
+                agent_section = ET.Element( "section",
+                    { "name": "%d" % (1)})
+                agent_section.append( ET.Element( "attnum",
+                    { "name": "idx", "val": "%d" % (0) }))
+                agent_section.append( ET.Element( "attstr",
+                    { "name": "module", "val": "scr_server" }))
+                driver_section.append( agent_section)
+
+                driver_section.append( ET.Element( "attnum",
+                    { "name": "initdist_%d" % (1), "val": "%d" % agent_init}))
+
+                for bot_idx, bot_init_pos in enumerate( bot_init_poss):
+                    bot_section = ET.Element( "section",
+                        { "name": "%d" % (2+bot_idx)})
+                    bot_section.append( ET.Element( "attnum",
+                        { "name": "idx", "val": "%d" % (2+bot_idx) }))
+                    bot_section.append( ET.Element( "attstr",
+                        { "name": "module", "val": "fixed" }))
+                    driver_section.append( bot_section)
+                    driver_section.append( ET.Element( "attnum",
+                        { "name": "initdist_%d" % (bot_idx+1), "val": "%d" % bot_init_pos}))
+
+                print( randconf_filename)
+                randconf_abspath = os.path.join( randconf_dir, randconf_filename)
+                tree.write( randconf_abspath)
+
+                self.race_config_path = randconf_abspath
+                self.profile_reuse_count = 1
 
 class ServerState():
     '''What the server is reporting right now.'''
