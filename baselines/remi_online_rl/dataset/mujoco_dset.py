@@ -137,12 +137,12 @@ class Mujoco_Dset(object):
         from_idx = traj_limitation*traj_length
         self.obs = np.concatenate( (self.obs[from_idx:], obs), axis=0)
 
-        print( "#### DEBUG: Acs shape:", acs.shape)
-        print( "#### DEBUG: self.acs shape", self.acs.shape)
-        print( "#### DEBUG: trunk self.acs shape", len(self.acs[from_idx:]))
+        # print( "#### DEBUG: Acs shape:", acs.shape)
+        # print( "#### DEBUG: self.acs shape", self.acs.shape)
+        # print( "#### DEBUG: trunk self.acs shape", len(self.acs[from_idx:]))
 
         self.acs = np.concatenate( (self.acs[from_idx:], acs), axis=0)
-        print( "#### DEBUG: Acs shape afgter: ", self.acs.shape)
+        # print( "#### DEBUG: Acs shape afgter: ", self.acs.shape)
 
         self.rets = np.concatenate( (self.rets[from_idx:], rets), axis=0)
         self.avg_ret = sum(rets)/len(rets)
