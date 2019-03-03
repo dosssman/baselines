@@ -2,7 +2,7 @@ import gym
 from gym import spaces
 import numpy as np
 # from os import path
-import baselines.remi_online_rl.snakeoil3_gym as snakeoil3
+import baselines.remi.snakeoil3_gym as snakeoil3
 import numpy as np
 import copy
 import collections as col
@@ -12,8 +12,6 @@ import subprocess
 import psutil
 import time
 import math
-import random
-from xml.etree import ElementTree as ET
 
 DEF_BOX_DTYPE = np.float32
 
@@ -27,14 +25,8 @@ class TorcsEnv( gym.Env):
     # Customized to accept more params
     def __init__(self, vision=False, throttle=False, gear_change=False,
         race_config_path=None,race_speed=1.0, rendering=True, damage=False,
-        lap_limiter=2, recdata=False, noisy=False, rec_episode_limit=1,
-        rec_timestep_limit=3600, rec_index=0, hard_reset_interval=11,
-        randomisation=False, profile_reuse_ep=500, port=3001, rank=0):
-
-        # Support for blackbox optimal reset
-        self.reset_ep_count = 1
-        self.hard_reset_interval = hard_reset_interval
-
+        lap_limiter=2, recdata=False, noisy=False, timestep_limit=-1):
+        #print("Init")
         self.vision = vision
         self.throttle = throttle
         self.gear_change = gear_change
@@ -43,11 +35,12 @@ class TorcsEnv( gym.Env):
         self.damage = damage
         self.recdata = recdata
         self.noisy = noisy
-        self.randomisation = randomisation
-        self.profile_reuse_count = 0
-        self.profile_reuse_ep = profile_reuse_ep
-        self.port = port
-        self.rank = rank
+        self.timestep_limit = timestep_limit
+        # The episode will end when the lap_limiter is reached
+        # To put it simply if you want env to stap after 3 laps, set this to 4
+        # Make sure to run torcs itself for more than 3 laps too, otherwise,
+        # before terminating the episode
+        self.lap_limiter = lap_limiter
 
         self.initial_run = True
 
@@ -55,26 +48,10 @@ class TorcsEnv( gym.Env):
         self.torcs_process_id = None
         self.race_config_path = race_config_path
 
-        # Freshly initialised
-        if self.randomisation:
-            self.randomise_track()
-
-        # The episode will end when the lap_limiter is reached
-        # To put it simply if you want env to stap after 3 laps, set this to 4
-        # Make sure to run torcs itself for more than 3 laps too, otherwise,
-        # before terminating the episode
-        self.lap_limiter = lap_limiter
-        self.rec_episode_limit = rec_episode_limit
-        self.rec_timestep_limit = rec_timestep_limit
-        self.rec_index = rec_index
-
         ##print("launch torcs")
         #Just to be sure
         args = ["torcs", "-nofuel", "-nolaptime",
             "-a", str( self.race_speed)]
-
-        args.append( "-p")
-        args.append( str(self.port))
 
         if self.damage:
             args.append( "-nodamage")
@@ -94,9 +71,7 @@ class TorcsEnv( gym.Env):
             args.append( self.race_config_path)
 
         if self.recdata:
-            args.append( "-rechum %d" % self.rec_index)
-            args.append( "-recepisodelim %d" % self.rec_episode_limit)
-            args.append( "-rectimesteplim %d" % self.rec_timestep_limit)
+            args.append( "-rechum")
 
         args.append("&")
 
@@ -165,79 +140,6 @@ class TorcsEnv( gym.Env):
             # high = np.array([1., np.inf, np.inf, np.inf, 1., np.inf, 1., np.inf, 255])
             # low = np.array([0., -np.inf, -np.inf, -np.inf, 0., -np.inf, 0., -np.inf, 0])
             self.observation_space = spaces.Box(low=0, high=255, shape=( 64, 64 ,1), dtype=np.uint8)
-
-    def randomise_track(self):
-        if self.profile_reuse_count == 0 or self.profile_reuse_count % self.profile_reuse_ep == 0:
-            track_length = 2700 # Extract form torcs maybe
-            max_pos_length = int(.7 * track_length) # Floor to 100 tile
-            agent_init = random.randint(0,20) * 10
-            bot_count = random.randint(1,10)
-            min_bound = agent_init + 50
-            max_leap = math.floor((max_pos_length - min_bound) / bot_count / 100) * 100
-            bot_init_poss = []
-            for _ in range(bot_count):
-                bot_init_poss.append( random.randint( min_bound, min_bound + max_leap))
-                # Random generate in range minbound and max pos length with max leap
-                min_bound += max_leap
-
-            # Check for random config file folder and create if not exists
-            randconf_dir = os.path.join(  os.path.dirname(os.path.abspath(__file__)),
-                "rand_raceconfigs")
-            if not os.path.isdir(randconf_dir):
-                os.mkdir(randconf_dir)
-            randconf_filename = "agent_randfixed_%d" % agent_init
-            for bot_idx in bot_init_poss:
-                randconf_filename += "_%d" % bot_idx
-            randconf_filename += ".xml"
-            if not os.path.isfile( os.path.join( randconf_dir, randconf_filename)):
-                # Create Fielk config based on xml template
-                tree = None
-                root = None
-                with open( os.path.join( randconf_dir, "agent_randfixed_tmplt.xml")) as tmplt_f:
-                    tree = ET.parse( tmplt_f)
-                    root = tree.getroot()
-
-                driver_node = None
-
-                driver_section = root.find(".//section[@name='Drivers']")
-                driver_section.append( ET.Element( "attnum",
-                    { "name": "maximum_number", "val": "%d" % (1+ bot_count)}))
-                driver_section.append( ET.Element( "attstr",
-                    { "name": "focused module", "val": "scr_server" }))
-                driver_section.append( ET.Element( "attnum",
-                    { "name": "focused idx", "val": "1" }))
-
-                # # Add Scr Server
-                agent_section = ET.Element( "section",
-                    { "name": "%d" % (1)})
-                agent_section.append( ET.Element( "attnum",
-                    { "name": "idx", "val": "%d" % (0) }))
-                agent_section.append( ET.Element( "attstr",
-                    { "name": "module", "val": "scr_server" }))
-                driver_section.append( agent_section)
-
-                driver_section.append( ET.Element( "attnum",
-                    { "name": "initdist_%d" % (1), "val": "%d" % agent_init}))
-
-                for bot_idx, bot_init_pos in enumerate( bot_init_poss):
-                    bot_section = ET.Element( "section",
-                        { "name": "%d" % (2+bot_idx)})
-                    bot_section.append( ET.Element( "attnum",
-                        { "name": "idx", "val": "%d" % (2+bot_idx) }))
-                    bot_section.append( ET.Element( "attstr",
-                        { "name": "module", "val": "fixed" }))
-                    driver_section.append( bot_section)
-                    driver_section.append( ET.Element( "attnum",
-                        { "name": "initdist_%d" % (bot_idx+1), "val": "%d" % bot_init_pos}))
-
-                randconf_savedir = "/tmp/randconf_dir_gymtorcs"
-                if not os.path.isdir( randconf_savedir):
-                    os.mkdir( randconf_savedir)
-                randconf_abspath = os.path.join( randconf_savedir, randconf_filename)
-                tree.write( randconf_abspath)
-
-                self.race_config_path = randconf_abspath
-                self.profile_reuse_count = 1
 
     def seed( self, seed_value=42):
         self.seed_value = seed_value
@@ -330,16 +232,19 @@ class TorcsEnv( gym.Env):
         progress = sp*np.cos(obs['angle'])
         reward = progress
 
-        # collision detection
-        if obs['damage'] - obs_pre['damage'] > 0:
-            reward = - 1
+        # Termination judgement #########################
+        episode_terminate = False
+        if self.timestep_limit > 0 and self.time_step >= self.timestep_limit:
+            episode_terminate = True
+            client.R.d['meta'] = True
+        if track.min() < 0:  # Episode is terminated if the car is out of track
+            # reward = - 50
             episode_terminate = True
             client.R.d['meta'] = True
 
-        # Termination judgement #########################
-        episode_terminate = False
-        if track.min() < 0:  # Episode is terminated if the car is out of track
-            reward = - 1
+        # collision detection
+        if obs['damage'] - obs_pre['damage'] > 0:
+            # reward = - 200
             episode_terminate = True
             client.R.d['meta'] = True
 
@@ -366,31 +271,26 @@ class TorcsEnv( gym.Env):
 
     def reset(self, relaunch=False):
         #print("Reset")
-
         self.time_step = 0
+
         if self.initial_reset is not True:
             self.client.R.d['meta'] = True
             self.client.respond_to_server()
 
             ## TENTATIVE. Restarting TORCS every episode suffers the memory leak bug!
-            if relaunch is True or self.reset_ep_count % self.hard_reset_interval == 0:
+            if relaunch is True:
                 self.reset_torcs()
-                self.reset_ep_count = 1
                 print("### TORCS is RELAUNCHED ###")
+
 
         # Modify here if you use multiple tracks in the environment
         ### dosssman: Pass existing process id and race config path
-        if self.randomisation:
-            self.randomise_track()
-
-        self.client = snakeoil3.Client(p=self.port, vision=self.vision,
+        self.client = snakeoil3.Client(p=3101, vision=self.vision,
             process_id=self.torcs_process_id,
             race_config_path=self.race_config_path,
             race_speed=self.race_speed,
             rendering=self.rendering, lap_limiter=self.lap_limiter,
-            damage=self.damage, recdata=self.recdata, noisy=self.noisy,
-            rec_index = self.rec_index,rec_episode_limit=self.rec_episode_limit,
-            rec_timestep_limit=self.rec_timestep_limit)  #Open new UDP in vtorcs
+            damage=self.damage, recdata=self.recdata, noisy=self.noisy)  #Open new UDP in vtorcs
 
         self.client.MAX_STEPS = np.inf
 
@@ -408,9 +308,6 @@ class TorcsEnv( gym.Env):
         # THe newly created TOrcs PID is also reattached to the Gym Torcs Env
         # This should be temporary ... but only time knows
         self.torcs_process_id = self.client.torcs_process_id
-
-        self.reset_ep_count += 1
-        self.profile_reuse_count += 1
 
         return self.get_obs()
 
@@ -444,6 +341,18 @@ class TorcsEnv( gym.Env):
         # End custom
 
     def reset_torcs(self):
+        #print("relaunch torcs")
+        # os.system('pkill torcs')
+        # time.sleep(0.5)
+        #
+        #
+        # if self.vision is True:
+        #     os.system('torcs -nofuel -nodamage -nolaptime -vision &')
+        # else:
+        #     os.system('torcs -nofuel -nodamage -nolaptime &')
+        # time.sleep(0.5)
+        # os.system('sh autostart.sh')
+        # time.sleep(0.5)
         print( "Process PID: ", self.torcs_process_id)
         if self.torcs_process_id is not None:
             try:
@@ -459,14 +368,8 @@ class TorcsEnv( gym.Env):
                 pass
             #Sad life to be a process
 
-        if self.randomisation:
-            self.randomise_track()
-
         args = ["torcs", "-nofuel", "-nolaptime",
             "-a", str( self.race_speed)]
-
-        args.append( "-p")
-        args.append( str(self.port))
 
         if self.damage:
             args.append( "-nodamage")
@@ -486,9 +389,7 @@ class TorcsEnv( gym.Env):
             args.append( self.race_config_path)
 
         if self.recdata:
-            args.append( "-rechum %d" % self.rec_index)
-            args.append( "-recepisodelim %d" % self.rec_episode_limit)
-            args.append( "-rectimesteplim %d" % self.rec_timestep_limit)
+            args.append( "-rechum")
 
         args.append("&")
         # print( "##### DEBUG: Args in reset_torcs")
