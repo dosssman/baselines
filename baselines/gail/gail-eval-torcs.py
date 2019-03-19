@@ -183,7 +183,11 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Alpha_0.2_Run2/checkpoint/torcs_remi/torcs_remi_5463"
         # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Alpha_0.3_Run0/checkpoint/torcs_remi/torcs_remi_1238"
         # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Alpha_0.4_Run1/checkpoint/torcs_remi/torcs_remi_1256"
-        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_20181215_ckpt1368_220eps_Alpha_0.5_OnlineRL_Run0/checkpoint/torcs_remi/torcs_remi_1795"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_20181215_ckpt1368_220eps_Alpha_0.5_OnlineRL_Run0/checkint/torcs_remi/torcs_remi_1367"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Alpha_0.0_Run0/checkpoint/torcs_remi/torcs_remi_1367"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Alpha_1.0_Run0/checkpoint/torcs_remi/torcs_remi_4339"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Alpha_0.3_Run2/checkpoint/torcs_remi/torcs_remi_3248"
+        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Alpha_0.9_Run2/checkpoint/torcs_remi/torcs_remi_3981"
 
 
         print( "# DEBUG: Model path: ", args.load_model_path)
