@@ -567,12 +567,14 @@ class TorcsEnv( gym.Env):
             rsh = np.reshape( image_rgb, [64, 64, 3])
             return rsh
 
-            return Observation(focus=np.array(raw_obs['focus'], dtype=np.float32)/200.,
+            # Senosr range update
+            sensor_range = 400.
+            return Observation(focus=np.array(raw_obs['focus'], dtype=np.float32)/sensor_range,
                                speedX=np.array(raw_obs['speedX'], dtype=np.float32)/self.default_speed,
                                speedY=np.array(raw_obs['speedY'], dtype=np.float32)/self.default_speed,
                                speedZ=np.array(raw_obs['speedZ'], dtype=np.float32)/self.default_speed,
-                               opponents=np.array(raw_obs['opponents'], dtype=np.float32)/200.,
+                               opponents=np.array(raw_obs['opponents'], dtype=np.float32)/sensor_range,
                                rpm=np.array(raw_obs['rpm'], dtype=np.float32),
-                               track=np.array(raw_obs['track'], dtype=np.float32)/200.,
+                               track=np.array(raw_obs['track'], dtype=np.float32)/sensor_range,
                                wheelSpinVel=np.array(raw_obs['wheelSpinVel'], dtype=np.float32),
                                img=image_rgb)
