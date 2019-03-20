@@ -14,13 +14,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
 
-from baselines.remi import run_mujoco as run_torcs
-from baselines.remi import mlp_policy
+from baselines.gail import run_mujoco as run_torcs
+from baselines.gail import mlp_policy
 from baselines.common import set_global_seeds, tf_util as U
 from baselines.common.misc_util import boolean_flag
-from baselines.remi.dataset.mujoco_dset import Mujoco_Dset
+from baselines.gail.dataset.mujoco_dset import Mujoco_Dset
 
-from baselines.remi.gym_torcs import TorcsEnv
+from baselines.gail.gym_torcs import TorcsEnv
 
 plt.style.use('ggplot')
 CONFIG = {
@@ -59,23 +59,23 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
     dir = os.getenv('OPENAI_GEN_LOGDIR')
     # if dir is None:
     #     dir = osp.join(tempfile.gettempdir(),
-    #         datetime.datetime.now().strftime("openai-remi"))
+    #         datetime.datetime.now().strftime("openai-gailtorcs"))
     # else:
-    #     dir = osp.join( dir, datetime.datetime.now().strftime("openai-remi"))
+    #     dir = osp.join( dir, datetime.datetime.now().strftime("openai-gailtorcs"))
 
     assert isinstance(dir, str)
     os.makedirs(dir, exist_ok=True)
 
     log_dir = dir
     # data_path = os.path.join( log_dir,
-    #     "openai-remi/best20180907damned200ep720tstpInterpolated/expert_data.npz")
+    #     "openai-gailtorcs/best20180907damned200ep720tstpInterpolated/expert_data.npz")
 
-    # args.stochastic_policy = True
+    args.stochastic_policy = True
     # data_path = os.path.join( log_dir,
-    #     "openai-remi/data/Doss10FixedAnal_70eps_Sliced/expert_data.npz")
+    #     "openai-gailtorcs/data/Doss10FixedAnal_70eps_Sliced/expert_data.npz")
 
     data_path = os.path.join( log_dir,
-        "openai-remi/data/Doss10FixedAnal_200eps_Sliced/expert_data.npz")
+        "openai-gailtorcs/data/Doss10FixedAnal_220eps_Sliced/expert_data.npz")
     # data_path = os.path.join('data', 'deterministic.trpo.' + env_name + '.0.00.npz')
     dataset = load_dataset(data_path)
     # checkpoint_list = glob.glob(os.path.join('checkpoint', '*' + env_name + ".*"))
@@ -93,58 +93,83 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         # checkpoint_path = tf.train.latest_checkpoint(checkpoint_dir)
 
         # XXX Checkpoint path
-        # checkpoint_path = os.path.join( log_dir, "openai-remi/Doss10Fixed_130eps_GAILed_MildlyStrict_MaxKL_0.01/checkpoint/torcs_gail/torcs_gail_950")
+        # checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/Doss10Fixed_130eps_GAILed_MildlyStrict_MaxKL_0.01/checkpoint/torcs_gail/torcs_gail_950")
         # Damned Imitated
-        # checkpoint_path = os.path.join( log_dir, "openai-remi/best20180907damned200ep720tstpInterpolatedTrainLogs/checkpoint/torcs_gail/torcs_gail_460")
+        # checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/best20180907damned200ep720tstpInterpolatedTrainLogs/checkpoint/torcs_gail/torcs_gail_460")
 
         # Doss 130 Episodes
-        # checkpoint_path = os.path.join( log_dir, "openai-remi/Doss10Fixed_130eps_GAILed_MildlyStrict_MaxKL_0.01/checkpoint/torcs_gail/torcs_gail_816")
+        # checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/Doss10Fixed_130eps_GAILed_MildlyStrict_MaxKL_0.01/checkpoint/torcs_gail/torcs_gail_816")
 
         # Doss Ctrl 100 Episode most promising so far 2018-10-24
-        # checkpoint_path = os.path.join( log_dir, "openai-remi/DossCtrl10Fixed_170eps_BC_GAILed/checkpoint/torcs_gail/torcs_gail_1040")
-        # checkpoint_path = os.path.join( log_dir, "openai-remi/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice/checkpoint/torcs_gail/torcs_gail_286")
-        # checkpoint_path = os.path.join( log_dir, "openai-remi/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice/checkpoint/torcs_gail/torcs_gail_530")
-        # checkpoint_path = os.path.join( log_dir, "openai-remi/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice/checkpoint/torcs_gail/torcs_gail_715")
+        # checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed/checkpoint/torcs_gail/torcs_gail_1040")
+        # checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice/checkpoint/torcs_gail/torcs_gail_286")
+        # checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice/checkpoint/torcs_gail/torcs_gail_530")
+        # checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice/checkpoint/torcs_gail/torcs_gail_715")
         #
         # # Round 2 with NoSlice an traj sample at 3600
-        # checkpoint_path = os.path.join( log_dir, "openai-remi/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice_Contd/checkpoint/torcs_gail/torcs_gail_292")
-        # checkpoint_path = os.path.join( log_dir, "openai-remi/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice_Contd/checkpoint/torcs_gail/torcs_gail_345")
+        # checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice_Contd/checkpoint/torcs_gail/torcs_gail_292")
+        # checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice_Contd/checkpoint/torcs_gail/torcs_gail_345")
         #
         # # ROund 3 ...
-        # checkpoint_path = os.path.join( log_dir, "openai-remi/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice_Contd2/checkpoint/torcs_gail/torcs_gail_205")
+        # checkpoint_path = os.path.join( log_dir, "openai-gailtorcs/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice_Contd2/checkpoint/torcs_gail/torcs_gail_205")
 
         # 200eps over 5m timnesteps First effective run
-        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/DossCtrl10Fixed_Series/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice_Contd/checkpoint/torcs_gail/torcs_gail_345" # Actually ok on second track
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/DossCtrl10Fixed_Series/DossCtrl10Fixed_170eps_BC_GAILed_NoSlice_Contd/checkpoint/torcs_gail/torcs_gail_345" # Actually ok on second track
 
         # Doss 10 Fixed Analogs
         # 1 eps + DETERMINSITRC POLICY MF
-        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_1ep/checkpoint/torcs_gail/torcs_gail_500"
-        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_1ep/checkpoint/torcs_gail/torcs_gail_900"
-        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_1ep/checkpoint/torcs_gail/torcs_gail_1050"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_1ep/checkpoint/torcs_gail/torcs_gail_500"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_1ep/checkpoint/torcs_gail/torcs_gail_900"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_1ep/checkpoint/torcs_gail/torcs_gail_1050"
 
         # 70 eps + STOCH POLICY
-        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_70eps/checkpoint/torcs_gail/torcs_gail_900"
-        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_70eps/checkpoint/torcs_gail/torcs_gail_1110"
-        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_70eps/checkpoint/torcs_gail/torcs_gail_1100" # Max wrt MazRew
-        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_70eps/checkpoint/torcs_gail/torcs_gail_1041" # Max wrt TrueRewMean
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_70eps/checkpoint/torcs_gail/torcs_gail_900"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_70eps/checkpoint/torcs_gail/torcs_gail_1110"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_70eps/checkpoint/torcs_gail/torcs_gail_1100" # Max wrt MazRew
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_70eps/checkpoint/torcs_gail/torcs_gail_1041" # Max wrt TrueRewMean
 
         # 130 eps + STOCH POLICY
-        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_130eps/checkpoint/torcs_gail/torcs_gail_500"
-        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_130eps/checkpoint/torcs_gail/torcs_gail_1160"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_130eps/checkpoint/torcs_gail/torcs_gail_500"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_130eps/checkpoint/torcs_gail/torcs_gail_1160"
 
         # 200 eps
-        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_200eps/checkpoint/torcs_gail/torcs_gail_750"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps/checkpoint/torcs_gail/torcs_gail_750"
 
         # REMI Testing Because I can
-        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_200eps/checkpoint/torcs_gail/torcs_gail_750"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps/checkpoint/torcs_gail/torcs_gail_750"
         # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/DossCtrl_DDPGCkpt560_NoSlice_alpha_4_Run5/checkpoint/torcs_remi/torcs_remi_131" # Passes the 3rd corner + Almost goes to the end
 
-        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_200eps_5mTsteps/checkpoint/torcs_gail/torcs_gail_1900" # Boy this guy good, can go to the second corner but crash
-        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_200eps_5mTsteps/checkpoint/torcs_gail/torcs_gail_2700" # Boy this guy good, can go to the second corner but crash
-        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_200eps_5mTsteps/checkpoint/torcs_gail/torcs_gail_2732"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_5mTsteps/checkpoint/torcs_gail/torcs_gail_1900" # Boy this guy good, can go to the second corner but crash
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_5mTsteps/checkpoint/torcs_gail/torcs_gail_2700" # Boy this guy good, can go to the second corner but crash
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_5mTsteps/checkpoint/torcs_gail/torcs_gail_2732" # Boy this guy good, can go to the second corner but crash
 
-        # Doss10FixedAnal_DDPG_Chkp560_200eps_Run2
-        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_200eps_5mTsteps_Contd1/checkpoint/torcs_gail/torcs_gail_806"
+        # Contd1
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_5mTsteps_Contd1/checkpoint/torcs_gail/torcs_gail_806"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_5mTsteps_Contd1/checkpoint/torcs_gail/torcs_gail_825"
+
+        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run2/checkpoint/torcs_remi/torcs_remi_483"
+        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run2/checkpoint/torcs_remi/torcs_remi_2084"
+
+        # GailTorcs Run5
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run5/checkpoint/torcs_gail/torcs_gail_859"
+
+        # GailTorcs Run5 Contd
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run5_Contd/checkpoint/torcs_gail/torcs_gail_1646"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run5_Contd/checkpoint/torcs_gail/torcs_gail_3375"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run5_Contd/checkpoint/torcs_gail/torcs_gail_6501"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run5_Contd/checkpoint/torcs_gail/torcs_gail_7538"
+
+        # Remi Run3
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run3/checkpoint/torcs_remi/torcs_remi_1868"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run3/checkpoint/torcs_remi/torcs_remi_2014" # Full track, drifter
+
+        # Remi Run4
+        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run4/checkpoint/torcs_remi/torcs_remi_5785"
+
+        # Gail Run7
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run7/checkpoint/torcs_gail/torcs_gail_1301"
+        # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run7/checkpoint/torcs_gail/torcs_gail_1337"
+
 
         # Alpha Search
         # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Alpha_0.1_Run2/checkpoint/torcs_remi/torcs_remi_2828"
@@ -162,9 +187,9 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Alpha_0.0_Run0/checkpoint/torcs_remi/torcs_remi_1367"
         # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Alpha_1.0_Run0/checkpoint/torcs_remi/torcs_remi_4339"
         # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Alpha_0.3_Run2/checkpoint/torcs_remi/torcs_remi_3248"
-        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Alpha_0.9_Run2/checkpoint/torcs_remi/torcs_remi_3981"
+        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Alpha_0.3_Run2/checkpoint/torcs_remi/torcs_remi_3248"
 
-        #
+
         print( "# DEBUG: Model path: ", args.load_model_path)
         # Not pretty but will do for now
         # assert( os.path.isfile( checkpoint_path + ".index"))
@@ -177,6 +202,15 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         # Agent alone
         # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
         #     "/raceconfig/agent_practice.xml"
+
+
+        # Agent 10 Fixed Second track First Variation
+        race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+            "/raceconfig/agent_10fixed_sparsed_track_2_var_1.xml" # Badoss
+
+        # Agent10Fixed_Sparse A Speedway
+        race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+            "/raceconfig/agent_10fixed_sparsed_aspeedway_var_1.xml"
 
         # DamDamAgentFix
         race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
@@ -198,7 +232,7 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         avg_len, avg_ret, max_ret, min_ret = run_torcs.runner(env,
                                              policy_fn,
                                              args.load_model_path,
-                                             timesteps_per_batch=3600,
+                                             timesteps_per_batch=1024,
                                              number_trajs=10,
                                              stochastic_policy=stochastic,
                                              reuse=((i != 0) or reuse))
@@ -239,9 +273,9 @@ def plot(env_name, bc_log, gail_log, stochastic):
     dir = os.getenv('OPENAI_GEN_LOGDIR')
     if dir is None:
         dir = osp.join(tempfile.gettempdir(),
-            datetime.datetime.now().strftime("openai-remi/result"))
+            datetime.datetime.now().strftime("openai-gailtorcs/result"))
     else:
-        dir = osp.join( dir, datetime.datetime.now().strftime("openai-remi/result"))
+        dir = osp.join( dir, datetime.datetime.now().strftime("openai-gailtorcs/result"))
 
     assert isinstance(dir, str)
     os.makedirs(dir, exist_ok=True)
@@ -282,7 +316,7 @@ def main(args):
     print('Evaluation for {}'.format(args.env))
     print(bc_log)
     gail_log = evaluate_env(args.env, args.seed, args.policy_hidden_size,
-                            args.stochastic_policy, True, 'gail')
+                            args.stochastic_policy, True, 'remi')
     print('Evaluation for {}'.format(args.env))
     print(gail_log)
     plot(args.env, bc_log, gail_log, args.stochastic_policy)

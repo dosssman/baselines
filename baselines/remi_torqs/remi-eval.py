@@ -24,7 +24,7 @@ from baselines.remi_torqs.gym_torcs import TorcsEnv
 
 plt.style.use('ggplot')
 CONFIG = {
-    'traj_limitation': [1, 5, 10, 50],
+    'traj_limitation': [1, 5, 10, 50, 100, 200],
 }
 
 
@@ -118,8 +118,8 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         # checkpoint_path = os.path.join( log_dir, "openai-remi/mixedLossAlpha0_7_20180927/checkpoint/torcs_remi/torcs_remi_2350")
 
         # Doss + DDPG on 10 Fixed Bots
-        checkpoint_path = os.path.join( log_dir, "openai-remi/Doss_DDPG_Mix_0_5_Run2/checkpoint/torcs_remi/torcs_remi_573")
-
+        # checkpoint_path = os.path.join( log_dir, "openai-remi/Doss_DDPG_Mix_0_5_Run2/checkpoint/torcs_remi/torcs_remi_573")
+        
         print( "# DEBUG: Model path: ", (checkpoint_path + ".index"))
         # Not pretty but will do for now
         assert( os.path.isfile( checkpoint_path + ".index"))

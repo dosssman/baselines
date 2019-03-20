@@ -296,7 +296,10 @@ def runner(env, policy_func, load_model_path, timesteps_per_batch, number_trajs,
     avg_ret = sum(ret_list)/len(ret_list)
     print("Average length:", avg_len)
     print("Average return:", avg_ret)
-    return avg_len, avg_ret
+    print("Max return:", np.max( ret_list))
+    print("Min return:", np.min( ret_list))
+
+    return avg_len, avg_ret, np.max( ret_list), np.min( ret_list), ret_list
 
 # Sample one trajectory (until trajectory end)
 def traj_1_generator(pi, env, horizon, stochastic):
