@@ -76,6 +76,7 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
 
     data_path = os.path.join( log_dir,
         "openai-remi/data/Doss10FixedAnal_200eps_Sliced/expert_data.npz")
+
     # data_path = os.path.join('data', 'deterministic.trpo.' + env_name + '.0.00.npz')
     dataset = load_dataset(data_path)
     # checkpoint_list = glob.glob(os.path.join('checkpoint', '*' + env_name + ".*"))
@@ -164,7 +165,10 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Alpha_0.3_Run2/checkpoint/torcs_remi/torcs_remi_3248"
         args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Alpha_0.9_Run2/checkpoint/torcs_remi/torcs_remi_3981"
 
-        #
+        # Torcs GAIL
+        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run7/checkpoint/torcs_gail/torcs_gail_1337"
+        args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run7/checkpoint/torcs_gail/torcs_gail_2656"
+
         print( "# DEBUG: Model path: ", args.load_model_path)
         # Not pretty but will do for now
         # assert( os.path.isfile( checkpoint_path + ".index"))
@@ -182,7 +186,12 @@ def evaluate_env(env_name, seed, policy_hidden_size, stochastic, reuse, prefix):
         race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
             "/raceconfig/agent_10fixed_sparsed_4.xml"
 
-        rendering = False
+
+        # Agent10Fixed_Sparse Used for record Nomoto san
+        race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+            "/raceconfig/agent_10fixed_sparsed_2_humanrec.xml"
+
+        rendering = True
         lap_limiter = 2
         timestep_limit = 320
 

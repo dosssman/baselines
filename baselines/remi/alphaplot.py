@@ -98,7 +98,6 @@ if __name__ == '__main__':
         ecolor="black", elinewidth=.8, capsize=2)
     plt.xlabel( "Alphas")
     plt.ylabel( "Scores")
-    # plt.legend()
     axes = plt.gca()
     axes.set_ylim([0, 42000])
     plt.grid( color="lightgray", linewidth=.5, axis="y")
@@ -108,5 +107,8 @@ if __name__ == '__main__':
     # fig5 = plt.figure(5)
     plt.plot(["0.0", "1.0"], [31212.013,31212.013], color="orange",
         linewidth=.8, label="Human Avg. Score")
+    plt.plot(["0.0", "1.0"], [40415.,40415.], color="red",
+        linewidth=.8, label="RL Agent Avg. Score")
 
+    plt.legend()
     plt.show()

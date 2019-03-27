@@ -108,6 +108,10 @@ def main(args):
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     "/raceconfig/agent_10fixed_sparsed_4.xml"
 
+    # Agent10Fixed_Sparse Used for record Nomoto san
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+        "/raceconfig/agent_10fixed_sparsed_2_humanrec.xml"
+
     rendering = True
     noisy = False
 
@@ -164,7 +168,10 @@ def main(args):
     # args.load_model_path = os.path.join( args.load_model_path, "Doss_DDPG_Mix_0_5_Run2/checkpoint/torcs_remi/torcs_remi_573")
 
     # Doss10FixedAnal_DDPG_Chkp560_200eps_old
-    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run2/checkpoint/torcs_remi/torcs_remi_483"
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run2/checkpoint/torcs_remi/torcs_remi_483"
+
+    # Torcs GAIL
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run7/checkpoint/torcs_gail/torcs_gail_1337"
 
     print( "# DEBUG: Model path: ", args.load_model_path)
 
