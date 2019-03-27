@@ -118,6 +118,10 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
         "/raceconfig/agent_10fixed_sparsed_forza_var_1.xml" # Badoss
 
+    # Agent 10 Fixed First Track Second Variation
+    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+        "/raceconfig/agent_10fixed_sparsed_2_humanrec.xml"
+
     # Agent 10 Fixed Forza track Var 2
     # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
     #     "/raceconfig/agent_10fixed_sparsed_forza_var_2.xml" # Badoss
@@ -128,7 +132,7 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     # env = gym.make(env_id)
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
 		race_config_path=race_config_path, rendering=rendering,
-		lap_limiter = lap_limiter, randomisation=True, profile_reuse_ep=50)
+		lap_limiter = lap_limiter, randomisation=False, profile_reuse_ep=50)
 
     # env = bench.Monitor(env, logger.get_dir() and os.path.join(logger.get_dir(), str(rank)))
 
@@ -245,7 +249,7 @@ def run( seed, noise_type, layer_norm, nb_epochs, nb_epoch_cycles, reward_scale,
     save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2018-12-05-13-20-33-056875/model_data/epoch_1368.ckpt" # Poor pef on Track2
 
     # DDPG on randomized tracks
-    save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2019-02-08-17-22-15-646939/model_data/epoch_99.ckpt"
+    # save_filename = "/home/z3r0/random/rl/openai_logs/openai-ddpgtorcs-2019-02-08-17-22-15-646939/model_data/epoch_99.ckpt"
 
     step = 0
     episode = 0
