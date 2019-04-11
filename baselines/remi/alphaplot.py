@@ -61,8 +61,10 @@ if __name__ == '__main__':
     # print( "25th percentile", percentile_25th)
     # print( "75th percentile", percentile_75th)
 
-    yerr_25th = [ - di + avg_returns[i] for i, di in enumerate(percentile_25th)]
-    yerr_75th = [ di - avg_returns[i] for i, di in enumerate(percentile_75th)]
+    # yerr_25th = [ - di + avg_returns[i] for i, di in enumerate(percentile_25th)]
+    # yerr_75th = [ di - avg_returns[i] for i, di in enumerate(percentile_75th)]
+    yerr_25th = None
+    yerr_75th = None
 
     # Average returns
     # fig1 = plt.figure(1)
@@ -94,9 +96,11 @@ if __name__ == '__main__':
 
     # With Error bar
     fig4 = plt.figure(4)
-    plt.errorbar( alphas, avg_returns, yerr=[yerr_25th,yerr_75th], fmt="--o",
+    plt.errorbar( alphas, avg_returns, fmt="--o",
         ecolor="black", elinewidth=.8, capsize=2)
-    plt.xlabel( "Alphas")
+    # plt.errorbar( alphas, avg_returns, yerr=[yerr_25th,yerr_75th], fmt="--o",
+    #     ecolor="black", elinewidth=.8, capsize=2)
+    plt.xlabel( r"$\alpha$")
     plt.ylabel( "Scores")
     axes = plt.gca()
     axes.set_ylim([0, 42000])
@@ -105,10 +109,13 @@ if __name__ == '__main__':
     # Human expert line
     # plt.boxplot( x=returns, vert=True)
     # fig5 = plt.figure(5)
-    plt.plot(["0.0", "1.0"], [31212.013,31212.013], color="orange",
+    plt.plot(["0.0", "1.0"], [40170,40170], color="green",
         linewidth=.8, label="Human Avg. Score")
-    plt.plot(["0.0", "1.0"], [40415.,40415.], color="red",
-        linewidth=.8, label="RL Agent Avg. Score")
+    plt.plot(["0.0", "1.0"], [40415.,40415.], color="orange",
+        linewidth=.8, label="RL Agent Avg. Score (DDPG)")
+    plt.plot(["0.0", "1.0"], [23999.,23999.], color="yellow",
+        linewidth=.8, label="Human Imitation Avg. Score (GAIL)")
 
+    plt.title( "Torcs - Trade-off coefficient impact")
     plt.legend()
     plt.show()
