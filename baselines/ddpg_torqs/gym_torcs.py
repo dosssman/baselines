@@ -57,6 +57,7 @@ class TorcsEnv( gym.Env):
         if self.randomisation:
             self.randomise_track()
 
+        # Internal time tracker for
         # The episode will end when the lap_limiter is reached
         # To put it simply if you want env to stap after 3 laps, set this to 4
         # Make sure to run torcs itself for more than 3 laps too, otherwise,

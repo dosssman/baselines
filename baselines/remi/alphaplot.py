@@ -56,6 +56,10 @@ if __name__ == '__main__':
         percentile_10th.append( sorted( value["returns"])[ceil(.1*len( value["returns"]))])
         percentile_90th.append( sorted( value["returns"])[ceil(.9*len( value["returns"]))])
 
+    # Updated with test dat 2019-04-18, only use with alphastestres-2019-04-07-20-14-44-566013.pickle
+    avg_returns[4] = 28617.684704857 # Run5
+    avg_returns[7] = 31849.847364082 # Run5
+    avg_returns[10] = 25434.689256402 # Run7
     print( "Alphas: ", alphas)
     print( "Avg Rets: ", avg_returns)
     # print( "25th percentile", percentile_25th)
@@ -96,26 +100,26 @@ if __name__ == '__main__':
 
     # With Error bar
     fig4 = plt.figure(4)
-    plt.errorbar( alphas, avg_returns, fmt="--o",
-        ecolor="black", elinewidth=.8, capsize=2)
+    plt.errorbar( alphas, avg_returns, fmt=":D",
+        ecolor="black", elinewidth=.8, capsize=2, label="Proposed hybrid agent (RL+IL)")
     # plt.errorbar( alphas, avg_returns, yerr=[yerr_25th,yerr_75th], fmt="--o",
     #     ecolor="black", elinewidth=.8, capsize=2)
     plt.xlabel( r"$\alpha$")
     plt.ylabel( "Scores")
     axes = plt.gca()
-    axes.set_ylim([0, 42000])
+    axes.set_ylim([20000, 42000])
     plt.grid( color="lightgray", linewidth=.5, axis="y")
 
     # Human expert line
     # plt.boxplot( x=returns, vert=True)
     # fig5 = plt.figure(5)
-    plt.plot(["0.0", "1.0"], [40170,40170], color="green",
-        linewidth=.8, label="Human Avg. Score")
-    plt.plot(["0.0", "1.0"], [40415.,40415.], color="orange",
-        linewidth=.8, label="RL Agent Avg. Score (DDPG)")
-    plt.plot(["0.0", "1.0"], [23999.,23999.], color="yellow",
-        linewidth=.8, label="Human Imitation Avg. Score (GAIL)")
+    plt.plot(["0.0", "1.0"], [40170,40170], color="green", linestyle="dashed", dashes=(5, 5), zorder=2,
+        linewidth=1.2, label="Human")
+    plt.plot(["0.0", "1.0"], [40415.,40415.], color="rebeccapurple",
+        linewidth=1.2, label="DDPG Agent (RL)")
+    plt.plot(["0.0", "1.0"], [23999.,23999.], color="saddlebrown", linestyle="-.",
+        linewidth=1.2, label="Human Imitation (IL)")
 
-    plt.title( "Torcs - Trade-off coefficient impact")
+    # plt.title( "Torcs - Trade-off coefficient impact")
     plt.legend()
     plt.show()
