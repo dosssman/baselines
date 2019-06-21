@@ -109,8 +109,8 @@ def main(args):
     "/raceconfig/agent_10fixed_sparsed_4.xml"
 
     # Agent10Fixed_Sparse Used for record Nomoto san
-    race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
-        "/raceconfig/agent_10fixed_sparsed_2_humanrec.xml"
+    # race_config_path = os.path.dirname(os.path.abspath(__file__)) + \
+    #     "/raceconfig/agent_10fixed_sparsed_2_humanrec.xml"
 
     rendering = True
     noisy = False
@@ -121,7 +121,8 @@ def main(args):
     # env = gym.make(args.env_id)
     env = TorcsEnv(vision=vision, throttle=True, gear_change=False,
 		race_config_path=race_config_path, rendering=rendering,
-		lap_limiter = lap_limiter, noisy=noisy)
+		lap_limiter = lap_limiter, noisy=noisy, recdata=True, rec_timestep_limit=1800,
+        rec_episode_limit=1000)
 
     def policy_fn(name, ob_space, ac_space, reuse=False):
         return mlp_policy.MlpPolicy(name=name, ob_space=ob_space, ac_space=ac_space,
@@ -150,15 +151,15 @@ def main(args):
     args.task = "evaluate"
     args.load_model_path = os.path.join( args.log_dir, "checkpoint")
 
-    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/DossCtrl_DDPGCkpt560_NoSlice_alpha_4/checkpoint/torcs_remi/torcs_remi_80" # Slow
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/DossCtrl_DDPGCkpt560_NoSlice_alpha_4/checkpoint/torcs_remi/torcs_remi_80" # Slow
 
     # Round 2
-    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/DossCtrl_DDPGCkpt560_NoSlice_alpha_4_Run2/checkpoint/torcs_remi/torcs_remi_65" # Slow
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/DossCtrl_DDPGCkpt560_NoSlice_alpha_4_Run2/checkpoint/torcs_remi/torcs_remi_65" # Slow
 
     # Run 5
-    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/DossCtrl_DDPGCkpt560_NoSlice_alpha_4_Run5/checkpoint/torcs_remi/torcs_remi_200" # Slow
-    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/DossCtrl_DDPGCkpt560_NoSlice_alpha_4_Run5/checkpoint/torcs_remi/torcs_remi_230" # Slow but effective
-    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/DossCtrl_DDPGCkpt560_NoSlice_alpha_4_Run5/checkpoint/torcs_remi/torcs_remi_250" # Slow but effective
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/DossCtrl_DDPGCkpt560_NoSlice_alpha_4_Run5/checkpoint/torcs_remi/torcs_remi_200" # Slow
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/DossCtrl_DDPGCkpt560_NoSlice_alpha_4_Run5/checkpoint/torcs_remi/torcs_remi_230" # Slow but effective
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/DossCtrl_DDPGCkpt560_NoSlice_alpha_4_Run5/checkpoint/torcs_remi/torcs_remi_250" # Slow but effective
 
     # Run6 Olympia
     # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/DossCtrl_DDPGCkpt560_NoSlice_alpha_4_Run6/checkpoint/torcs_remi/torcs_remi_410" # Slow
@@ -172,6 +173,9 @@ def main(args):
 
     # Torcs GAIL
     # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run7/checkpoint/torcs_gail/torcs_gail_1337"
+
+    # REMI 2014
+    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run3/checkpoint/torcs_remi/torcs_remi_2014"
 
     print( "# DEBUG: Model path: ", args.load_model_path)
 
@@ -220,7 +224,7 @@ def main(args):
                policy_fn,
                args.load_model_path,
                timesteps_per_batch=1024,
-               number_trajs=10,
+               number_trajs=220,
                stochastic_policy=args.stochastic_policy,
                save=args.save_sample
                )
