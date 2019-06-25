@@ -262,7 +262,7 @@ class Client():
             (opts, args) = getopt.getopt(sys.argv[1:], 'H:p:i:m:e:t:s:dhv',
                        ['host=','port=','id=','steps=',
                         'episodes=','track=','stage=',
-                        'debug','help','version'])
+                        'debug','help','version',"load_model_path"])
         except getopt.error as why:
             print('getopt error: %s\n%s' % (why, usage))
             sys.exit(-1)

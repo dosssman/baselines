@@ -13,6 +13,7 @@ import numpy as np
 import datetime, time
 import gym
 import tempfile
+import sys
 
 from baselines.remi import mlp_policy
 from baselines.common import set_global_seeds, tf_util as U
@@ -76,6 +77,10 @@ def get_task_name(args):
 def main(args):
     U.make_session(num_cpu=1).__enter__()
     set_global_seeds(args.seed)
+
+    # Helps with the stuborn GetOpt in snakeoil3 gym
+    sys.argv[1:] = []
+    # print( sys.argv)
 
     # XXX: Hook up Gym Torcs
     vision = False
@@ -147,9 +152,10 @@ def main(args):
     # logger.configure( args.log_dir)
     # print( "# DEBUG: Logging to %s" % dir)
 
+    print( "# DEBUG: Model path: ", args.load_model_path)
     # XXX Eval reparams
     args.task = "evaluate"
-    args.load_model_path = os.path.join( args.log_dir, "checkpoint")
+    # args.load_model_path = os.path.join( args.log_dir, "checkpoint")
 
     # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/DossCtrl_DDPGCkpt560_NoSlice_alpha_4/checkpoint/torcs_remi/torcs_remi_80" # Slow
 
@@ -175,9 +181,8 @@ def main(args):
     # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-gailtorcs/Doss10FixedAnal_200eps_Run7/checkpoint/torcs_gail/torcs_gail_1337"
 
     # REMI 2014
-    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run3/checkpoint/torcs_remi/torcs_remi_2014"
-
-    print( "# DEBUG: Model path: ", args.load_model_path)
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run3/checkpoint/torcs_remi/torcs_remi_2014"
+    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Alpha_0.0_Run0/checkpoint/torcs_remi/torcs_remi_1367"
 
     # env = bench.Monitor(env, logger.get_dir() and
     #                     osp.join(logger.get_dir(), "monitor.csv"), allow_early_resets=True)
