@@ -20,7 +20,7 @@ declare -a ALPHA_VALS=( "0.0" "0.1" "0.2" "0.3" "0.4" "0.6" "0.7" "0.8" "0.9" "1
 for ALPHA_VAL in ${ALPHA_VALS[@]}; do
   # First RUn the record scripts
   # echo ${MODEL_PATHS[$ALPHA_VAL]}
-  xvfb-run -a python -m baselines.remi.play --load_model_path=${MODEL_PATHS[$ALPHA_VAL]}
+  xvfb-run -a -s "-screen $DISPLAY 640x480x24" python -m baselines.remi.play --load_model_path=${MODEL_PATHS[$ALPHA_VAL]}
   # Move the records raws somewhere
   ALPHA_VAL_DIR="/home/z3r0/torcs_data/""${ALPHA_VAL}"
   if [ ! -d $ALPHA_VAL_DIR ]; then
