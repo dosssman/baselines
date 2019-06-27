@@ -229,7 +229,7 @@ def main(args):
                policy_fn,
                args.load_model_path,
                timesteps_per_batch=1024,
-               number_trajs=100,
+               number_trajs=220,
                stochastic_policy=args.stochastic_policy,
                save=args.save_sample
                )
