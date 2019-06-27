@@ -17,15 +17,19 @@ declare -a ALPHA_VALS=( "0.0" "0.1" "0.2" "0.3" "0.4" "0.6" "0.7" "0.8" "0.9" "1
 
 # declare -p MODEL_PATHS
 
-for ALPHA_VAL in ${ALPHA_VALS[@]}; do
-  # First RUn the record scripts
-  # echo ${MODEL_PATHS[$ALPHA_VAL]}
-  # xvfb-run -a python -m baselines.remi.play --load_model_path=${MODEL_PATHS[$ALPHA_VAL]}
-  rsync -ravu "/home/z3r0/random/rl/openai_logs/openai-remi/""${MODEL_PATHS[$ALPHA_VAL]}" olympia:~/random/rl/openai_logs/openai-remi/.
-  # Move the records raws somewhere
-  # ALPHA_VAL_DIR="/home/z3r0/torcs_data/""${ALPHA_VAL}"
-  # if [ ! -d $ALPHA_VAL_DIR ]; then
-  #   mkdir ${ALPHA_VAL_DIR}
-  # fi
-  # mv /home/z3r0/torcs_data/{obs,acs,rews}.csv -t "${ALPHA_VAL_DIR}""/."
+declare -a SERVER_NAMES=( "cairo" "yeager" "defiant")
+
+for SERVER_NAME in ${SERVER_NAMES[@]}; do
+  for ALPHA_VAL in ${ALPHA_VALS[@]}; do
+    # First RUn the record scripts
+    # echo ${MODEL_PATHS[$ALPHA_VAL]}
+    # xvfb-run -a python -m baselines.remi.play --load_model_path=${MODEL_PATHS[$ALPHA_VAL]}
+    rsync -ravu "/home/z3r0/random/rl/openai_logs/openai-remi/""${MODEL_PATHS[$ALPHA_VAL]}" $SERVER_NAME:~/random/rl/openai_logs/openai-remi/.
+    # Move the records raws somewhere
+    # ALPHA_VAL_DIR="/home/z3r0/torcs_data/""${ALPHA_VAL}"
+    # if [ ! -d $ALPHA_VAL_DIR ]; then
+    #   mkdir ${ALPHA_VAL_DIR}
+    # fi
+    # mv /home/z3r0/torcs_data/{obs,acs,rews}.csv -t "${ALPHA_VAL_DIR}""/."
+  done
 done

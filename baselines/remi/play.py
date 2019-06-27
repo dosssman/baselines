@@ -182,7 +182,7 @@ def main(args):
 
     # REMI 2014
     # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Run3/checkpoint/torcs_remi/torcs_remi_2014"
-    args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Alpha_0.0_Run0/checkpoint/torcs_remi/torcs_remi_1367"
+    # args.load_model_path = "/home/z3r0/random/rl/openai_logs/openai-remi/Doss10FixedAnal_DDPG_Chkp560_200eps_Alpha_0.0_Run0/checkpoint/torcs_remi/torcs_remi_1367"
 
     # env = bench.Monitor(env, logger.get_dir() and
     #                     osp.join(logger.get_dir(), "monitor.csv"), allow_early_resets=True)
@@ -229,7 +229,7 @@ def main(args):
                policy_fn,
                args.load_model_path,
                timesteps_per_batch=1024,
-               number_trajs=220,
+               number_trajs=100,
                stochastic_policy=args.stochastic_policy,
                save=args.save_sample
                )
